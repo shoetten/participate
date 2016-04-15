@@ -1,0 +1,44 @@
+{
+  "presets": [
+      "meteor",
+      "es2015",
+      "react",
+    ],
+
+  "env": {
+    "development": {
+      "plugins": [
+        ["css-in-js", {
+          // autoprefixer options
+          "vendorPrefixes": {
+            "browsers": ["last 2 versions"]
+          },
+          // media query shortcuts
+          "mediaMap": {
+            "phone": "media only screen and (max-width: 640px)"
+          },
+          "identifier": "css",
+          "bundleFile": "client/main.css"
+        }]
+      ]
+    },
+    "production": {
+      "plugins": [
+        ["css-in-js", {
+          // autoprefixer options
+          "vendorPrefixes": {
+            "browsers": ["last 2 versions"]
+          },
+          "minify": true,
+          "compressClassNames": true,
+          // media query shortcuts
+          "mediaMap": {
+            "phone": "media only screen and (max-width: 640px)"
+          },
+          "identifier": "css",
+          "bundleFile": "client/main.css"
+        }]
+      ]
+    }
+  }
+}
