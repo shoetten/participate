@@ -3,7 +3,7 @@ import {Meteor} from 'meteor/meteor';
 import {check} from 'meteor/check';
 
 export default function () {
-  Meteor.publish('models.list', function() {
+  Meteor.publish('models.list', function () {
     const selector = {
       'members.userId': this.userId,
     };
@@ -14,7 +14,7 @@ export default function () {
     return Models.find(selector, options);
   });
 
-  Meteor.publish('models.single', function(modelId) {
+  Meteor.publish('models.single', function (modelId) {
     check(modelId, String);
     const selector = {
       _id: modelId,

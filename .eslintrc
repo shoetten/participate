@@ -22,5 +22,6 @@
   "rules": {
     "comma-dangle": [2, "always-multiline"],
     "object-curly-spacing": [0, "always"],
+    "func-names": 0
   }
 }
