@@ -1,0 +1,12 @@
+// overwrite scss variables
+@import "{poetic:materialize-scss}/sass/components/_color.scss";
+$primary-color: color("orange", "lighten-1") !default;
+
+$secondary-color: color("cyan", "lighten-1") !default;
+$success-color: color("green", "base") !default;
+$error-color: color("red", "base") !default;
+$link-color: color("deep-orange", "darken-1") !default;
+
+// import main scss file
+@import "{poetic:materialize-scss}/sass/materialize.scss";
+

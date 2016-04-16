@@ -1,9 +1,6 @@
-import routes from './routes';
-
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
 export default {
-  routes,
   load() {
     // init module here
 

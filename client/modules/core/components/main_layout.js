@@ -1,48 +1,36 @@
 import React from 'react';
 import Navigation from './navigation';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {cyan500} from 'material-ui/styles/colors';
 
-const styles = css({
-  root: {
-    padding: 0,
+class Layout extends React.Component {
+  render() {
+    const {
+      content,
+      NavActions,
+    } = this.props;
 
-    '@phone': {
-      padding: 20,
-    },
-  },
-});
+    return (
+      <div>
+        <header>
+          <Navigation>
+            <NavActions />
+          </Navigation>
+        </header>
 
-const muiTheme = getMuiTheme({
-  palette: {
-    textColor: cyan500,
-  },
-  appBar: {
-    height: 50,
-  },
-});
+        <main>
+          {content()}
+        </main>
 
-const Layout = ({content = () => null }) => (
-  <MuiThemeProvider muiTheme={muiTheme}>
-    <div className={styles.root}>
-      <header>
-        <Navigation />
-      </header>
+        <footer>
 
-      <main>
-        {content()}
-      </main>
-
-      <footer>
-        <small>Built with <a href="https://github.com/kadirahq/mantra">Mantra</a> &amp; Meteor.</small>
-      </footer>
-    </div>
-  </MuiThemeProvider>
-);
+        </footer>
+      </div>
+    );
+  }
+}
 
 Layout.propTypes = {
   content: React.PropTypes.func.isRequired,
+  NavActions: React.PropTypes.element,
 };
 
 export default Layout;

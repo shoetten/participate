@@ -22,3 +22,6 @@ socialize:messaging
 accounts-password
 check
 standard-minifier-js
+fourseven:scss
+seba:minifiers-autoprefixer
+poetic:materialize-scss
