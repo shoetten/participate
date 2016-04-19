@@ -1,0 +1,19 @@
+@import "{}/client/modules/core/components/main_layout.scss";
+
+.modellist {
+  ul {
+    li {
+      a {
+        display: block;
+        height: 150px;
+      }
+      .new {
+        text-align: center;
+        i {
+          font-size: 6rem;
+          line-height: 150px;
+        }
+      }
+    }
+  }
+}

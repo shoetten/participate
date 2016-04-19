@@ -30,7 +30,7 @@ class Layout extends React.Component {
 
 Layout.propTypes = {
   content: React.PropTypes.func.isRequired,
-  NavActions: React.PropTypes.element,
+  NavActions: React.PropTypes.func,
 };
 
 export default Layout;

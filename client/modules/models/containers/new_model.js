@@ -1,4 +1,4 @@
-import NewPost from '../components/newpost';
+import NewModel from '../components/new_model';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 
 export const composer = ({context, clearErrors}, onData) => {
@@ -11,12 +11,12 @@ export const composer = ({context, clearErrors}, onData) => {
 };
 
 export const depsMapper = (context, actions) => ({
-  create: actions.posts.create,
-  clearErrors: actions.posts.clearErrors,
-  context: () => context
+  create: actions.models.create,
+  clearErrors: actions.models.clearErrors,
+  context: () => context,
 });
 
 export default composeAll(
   composeWithTracker(composer),
   useDeps(depsMapper)
-)(NewPost);
+)(NewModel);
