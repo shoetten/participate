@@ -1,8 +1,10 @@
 @import "{}/client/modules/core/components/main_layout.scss";
 
 .modellist {
-  ul {
-    li {
+  padding-top: 1rem;
+
+  > div.row {
+    section {
       a {
         display: block;
         height: 150px;

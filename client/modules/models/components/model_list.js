@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import {pathFor} from '../../core/libs/helpers';
 import NewModel from '../containers/new_model';
 
 class ModelList extends React.Component {
@@ -20,19 +21,21 @@ class ModelList extends React.Component {
   render() {
     return (
       <div className="modellist">
-        <ul className="row">
+        <div className="row">
           {this.props.models.map(model => (
-            <li key={model._id} className="card-panel col s12 m4 l3">
-              <a href={`/model/${model._id}/${model.slug}`}>{model.title}</a>
-              <span>: {model.modifiedAt}</span>
-            </li>
+            <section key={model._id} className="btn col s12 m4 l3">
+              <a href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}>
+                {model.title}
+              </a>
+              <footer>: {model.modifiedAt}</footer>
+            </section>
           ))}
-          <li className="col s12 m4 l3">
+          <section className="col s12 m4 l3">
             <a className="btn waves-effect waves-light new" href="#new-model" onClick={this.showModelDialog}>
               <i className="material-icons large">add_circle</i>
             </a>
-          </li>
-        </ul>
+          </section>
+        </div>
 
         <NewModel />
       </div>
