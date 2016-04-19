@@ -8,7 +8,6 @@ meteor-base             # Packages every Meteor app needs to have
 mobile-experience       # Packages for a great mobile UX
 mongo                   # The database Meteor supports right now
 reactive-var            # Reactive variable for tracker
-jquery                  # Helpful client-side library
 tracker                 # Meteor's client-side reactive programming library
 
 es5-shim                # ECMAScript 5 compatibility for older browsers.
@@ -25,3 +24,4 @@ standard-minifier-js
 fourseven:scss
 seba:minifiers-autoprefixer
 poetic:materialize-scss
+std:accounts-ui
