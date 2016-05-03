@@ -1,5 +1,5 @@
 import React from 'react';
-import Navigation from './navigation';
+import Navigation from '../containers/navigation';
 
 class Layout extends React.Component {
   render() {
@@ -12,7 +12,7 @@ class Layout extends React.Component {
       <div>
         <header>
           <Navigation>
-            <NavActions />
+            { NavActions ? <NavActions /> : null }
           </Navigation>
         </header>
 
