@@ -1,9 +1,15 @@
 import {Models} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
-import {check} from 'meteor/check';
+import {Match, check} from 'meteor/check';
 
 export default function () {
   Meteor.publish('models.list', function () {
+    // Ensure that the user is logged in. If not, return an empty array
+    // to tell the client to remove the previously published docs.
+    if (!Match.test(this.userId, String)) {
+      return [];
+    }
+
     const selector = {
       'members.userId': this.userId,
     };
