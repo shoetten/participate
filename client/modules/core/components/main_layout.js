@@ -1,12 +1,16 @@
 import React from 'react';
+import {Meteor} from 'meteor/meteor';
+import {DocHead} from 'meteor/kadira:dochead';
+
 import Navigation from '../containers/navigation';
 
 class Layout extends React.Component {
+  componentDidMount() {
+    DocHead.setTitle(Meteor.settings.public.appName);
+  }
+
   render() {
-    const {
-      content,
-      NavActions,
-    } = this.props;
+    const {content, NavActions} = this.props;
 
     return (
       <div>
