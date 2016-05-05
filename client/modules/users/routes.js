@@ -1,8 +1,10 @@
 import React from 'react';
 import {mount} from 'react-mounter';
-import {Accounts, STATES} from 'meteor/std:accounts-ui';
+import {STATES} from 'meteor/std:accounts-ui';
+import AuthForms from './components/auth_forms';
 
 import MainLayout from '../core/components/main_layout';
+import Bye from './components/bye.js';
 // import NavActions from './components/nav_actions';
 
 export default function (injectDeps, {FlowRouter}) {
@@ -12,7 +14,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'users.login',
     action() {
       mount(MainLayoutCtx, {
-        content: () => (<Accounts.ui.LoginForm {...{
+        content: () => (<AuthForms {...{
           formState: STATES.SIGN_IN,
           signUpPath: '/signup',
         }} />),
@@ -24,10 +26,19 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'users.signup',
     action() {
       mount(MainLayoutCtx, {
-        content: () => (<Accounts.ui.LoginForm {...{
+        content: () => (<AuthForms {...{
           formState: STATES.SIGN_UP,
           loginPath: '/login',
         }} />),
+      });
+    },
+  });
+
+  FlowRouter.route('/bye', {
+    name: 'users.bye',
+    action() {
+      mount(MainLayoutCtx, {
+        content: () => (<Bye />),
       });
     },
   });

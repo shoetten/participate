@@ -29,12 +29,27 @@ $padding: 15px;
 @import "{poetic:materialize-scss}/sass/materialize.scss";
 
 
-/* Global styles
+/* Main Layout Component styles
  ***********************************************/
 
-.error {
+main {
+  padding: $padding;
+}
+
+/* Global aux styles
+ ***********************************************/
+
+.error, .warning {
+  width: 100%;
+  @media (min-width: $small-screen-up) {
+    width: 58.33333%;
+  }
+  @media (min-width: $medium-screen-up) {
+    width: 50%;
+  }
   i { color: $error-color; }
   border: 1px solid $error-color;
   border-radius: 5px;
   padding: 0.5rem 0.75rem !important;
+  margin: 0.7rem 0;
 }

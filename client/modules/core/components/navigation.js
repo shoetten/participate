@@ -1,25 +1,12 @@
-import {Meteor} from 'meteor/meteor';
 import React from 'react';
 import $ from 'jquery';
 import {pathFor} from '../../core/libs/helpers';
 
 class Navigation extends React.Component {
-  constructor(props) {
-    super(props);
-    this.logout = this.logout.bind(this);
-  }
-
   componentDidMount() {
     $('.dropdown-button').dropdown({
       belowOrigin: true,
     });
-  }
-
-  logout(event) {
-    if (event && event.preventDefault) {
-      event.preventDefault();
-    }
-    Meteor.logout();
   }
 
   render() {
@@ -31,7 +18,7 @@ class Navigation extends React.Component {
             <a href={pathFor('home')} className="brand-logo left">Participate!</a>
             {
               currentUser ?
-              <ul className="right">
+              <ul className="right" key="loggedInControls">
                 <li>
                   <a className="dropdown-button" href="#" data-activates="user-dropdown">
                     <i className="material-icons left">person</i>
@@ -43,7 +30,7 @@ class Navigation extends React.Component {
                       <i className="material-icons left">person</i>
                       Profile
                     </a></li>
-                    <li><a onClick={this.logout} href="/logout" className="logout">
+                    <li><a href={pathFor('users.bye')} className="logout">
                       <i className="material-icons left">exit_to_app</i>
                       Logout
                     </a></li>
@@ -51,7 +38,7 @@ class Navigation extends React.Component {
                 </li>
                 <li>{children}</li>
               </ul> :
-              <ul className="right">
+              <ul className="right" key="loggedOutControls">
                 <li>
                   <a href={pathFor('users.login')}>
                     Login

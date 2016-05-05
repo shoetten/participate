@@ -15,6 +15,6 @@ export function urlFor(pathName, params) {
 
 export function ensureLoggedIn(context, redirect) {
   if (!Meteor.userId()) {
-    redirect('/');
+    redirect('/login');
   }
 }

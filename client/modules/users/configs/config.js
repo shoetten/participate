@@ -8,6 +8,6 @@ export default function () {
     signUpPath: '/signup',
     profilePath: '/profile',
     onSignedInHook: () => FlowRouter.go('models.list'),
-    onSignedOutHook: () => FlowRouter.go('/'),
+    onSignedOutHook: () => FlowRouter.go('users.bye'),
   });
 }

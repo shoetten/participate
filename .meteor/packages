@@ -26,3 +26,4 @@ fourseven:scss
 seba:minifiers-autoprefixer
 poetic:materialize-scss
 std:accounts-ui
+std:accounts-material

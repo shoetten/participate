@@ -27,7 +27,7 @@ class NewModel extends React.Component {
           <div className="row">
             <h4>New Model</h4>
 
-            {error ? <p className="error col s12 m8 l6">
+            {error ? <p className="error">
               <i className="material-icons left">error_outline</i>
               {error}
             </p> : null}
