@@ -1,0 +1,6 @@
+[submodule "packages/std-accounts-material"]
+	path = packages/std-accounts-material
+	url = https://github.com/shoetten/accounts-material
+[submodule "packages/std-accounts-ui"]
+	path = packages/std-accounts-ui
+	url = https://github.com/shoetten/accounts-ui
