@@ -26,7 +26,12 @@ class Navigation extends React.Component {
                     <i className="material-icons right">arrow_drop_down</i>
                   </a>
                   <ul id="user-dropdown" className="dropdown-content">
-                    <li><a href="#!">
+                    <li><a href={pathFor('models.list')}>
+                      { /* XXX: A clearer icon would be nice */ }
+                      <i className="material-icons left">group_work</i>
+                      My Models
+                    </a></li>
+                    <li><a href={pathFor('users.profile')}>
                       <i className="material-icons left">person</i>
                       Profile
                     </a></li>

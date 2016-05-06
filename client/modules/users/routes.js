@@ -34,6 +34,17 @@ export default function (injectDeps, {FlowRouter}) {
     },
   });
 
+  FlowRouter.route('/profile', {
+    name: 'users.profile',
+    action() {
+      mount(MainLayoutCtx, {
+        content: () => (<AuthForms {...{
+          formState: STATES.PROFILE,
+        }} />),
+      });
+    },
+  });
+
   FlowRouter.route('/bye', {
     name: 'users.bye',
     action() {
