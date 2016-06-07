@@ -5,6 +5,7 @@ import MainLayout from '../core/components/main_layout';
 import NavActions from './components/nav_actions';
 import ModelList from './containers/model_list';
 import Model from './containers/model';
+import NewModel from './containers/new_model';
 
 export default function (injectDeps, {FlowRouter}) {
   const MainLayoutCtx = injectDeps(MainLayout);
@@ -24,7 +25,17 @@ export default function (injectDeps, {FlowRouter}) {
     action({modelId}) {
       mount(MainLayoutCtx, {
         NavActions,
-        content: () => (<Model postId={modelId} />),
+        content: () => (<Model modelId={modelId} />),
+      });
+    },
+  });
+
+  FlowRouter.route('/model/new', {
+    name: 'models.new',
+    action() {
+      mount(MainLayoutCtx, {
+        NavActions,
+        content: () => (<NewModel modal={false} />),
       });
     },
   });

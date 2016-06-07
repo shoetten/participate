@@ -39,6 +39,24 @@ main {
 /* Global aux styles
  ***********************************************/
 
+.help {
+  font-size: 22px;
+  width: 22px;
+  height: 22px;
+  color: lighten($text-color, 15);
+  margin: 0 1.5rem;
+  cursor: help;
+}
+
+// For use with HTML in materialize tooltips hack
+.tooltipped-content {
+  display: none;
+}
+
+.material-tooltip {
+  text-align: left;
+}
+
 .error, .warning {
   width: 100%;
   @media (min-width: $small-screen-up) {

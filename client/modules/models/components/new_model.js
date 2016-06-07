@@ -1,9 +1,24 @@
 import React from 'react';
+import $ from 'jquery';
+import InputAutocompleteUsers from '../containers/input_autocomplete_users';
 
 class NewModel extends React.Component {
   constructor(props) {
     super(props);
     this.createModel = this.createModel.bind(this);
+    this.reset = this.reset.bind(this);
+  }
+
+  componentDidMount() {
+    $('.tooltipped').tooltip({delay: 50});
+    // XXX: HTML in materialize tooltips. This hack should be removed, once
+    // materialize css comes up with something better, here
+    // https://github.com/Dogfalo/materialize/issues/1537
+    $('.tooltipped').each((index, element) => {
+      const span = $(`#${$(element).attr('data-tooltip-id')} > span:first-child`);
+      span.before($(element).find('.tooltipped-content').html());
+      span.remove();
+    });
   }
 
   createModel(event) {
@@ -19,11 +34,27 @@ class NewModel extends React.Component {
     create(titleRef.value, descRef.value);
   }
 
+  reset(event) {
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
+
+    const {formRef} = this.refs;
+    formRef.reset();
+
+    const {clearErrors} = this.props;
+    clearErrors();
+  }
+
   render() {
-    const {error, clearErrors} = this.props;
+    const {
+      error,
+      modal = true,
+    } = this.props;
+
     return (
-      <div id="new-model" className="modal bottom-sheet">
-        <form className="new-model modal-content" onSubmit={this.createModel}>
+      <div id="new-model" className={modal ? 'modal bottom-sheet' : ''}>
+        <form ref="formRef" className="new-model modal-content" onSubmit={this.createModel}>
           <div className="row">
             <h4>New Model</h4>
 
@@ -46,13 +77,27 @@ class NewModel extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="switch">
-              <label>
-                Private
-                <input type="checkbox" ref="permissionRef" />
-                <span className="lever"></span>
-                Public
-              </label>
+            <div className="col">
+              <div className="switch left">
+                <label>
+                  Private
+                  <input type="checkbox" ref="permissionRef" />
+                  <span className="lever"></span>
+                  Public
+                </label>
+              </div>
+              <i className="material-icons tooltipped help" data-position="right">
+                help
+                <div className="tooltipped-content">
+                  Private models are visible only to members.<br />
+                  Public models can be accessed by everybody with the link.
+                </div>
+              </i>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <InputAutocompleteUsers />
             </div>
           </div>
 
@@ -61,8 +106,9 @@ class NewModel extends React.Component {
               <i className="material-icons left">add</i>
               Add Model
             </button>
-            <button type="reset" onClick={clearErrors} className="btn-flat modal-action modal-close waves-effect waves-light">
-              Cancel
+            <button type="reset" onClick={this.reset}
+              className="btn-flat modal-action modal-close waves-effect waves-light">
+              {modal ? 'Cancel' : 'Reset'}
             </button>
           </div>
         </form>
@@ -75,6 +121,8 @@ NewModel.propTypes = {
   create: React.PropTypes.func.isRequired,
   error: React.PropTypes.string,
   clearErrors: React.PropTypes.func,
+  // is the component displayed in material modal
+  modal: React.PropTypes.bool,
 };
 
 export default NewModel;
