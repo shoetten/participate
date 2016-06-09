@@ -1,19 +1,30 @@
 import React from 'react';
 import {mount} from 'react-mounter';
+import {AppContainer} from 'react-hot-loader';
 
-import MainLayout from '../core/components/main_layout';
 import NavActions from './components/nav_actions';
-import ModelList from './containers/model_list';
-import Model from './containers/model';
-import NewModel from './containers/new_model';
+
+// So we can call FlowRotuer again later during hot reload
+let localFlowRouter;
 
 export default function (injectDeps, {FlowRouter}) {
-  const MainLayoutCtx = injectDeps(MainLayout);
+  localFlowRouter = FlowRouter;
+
+  const MainLayoutCtxHot = function (props) {
+    const MainLayout = require('../core/components/main_layout').default;
+    const MainLayoutCtx = injectDeps(MainLayout);
+    return (
+      <AppContainer>
+        <MainLayoutCtx {...props} />
+      </AppContainer>
+    );
+  };
 
   FlowRouter.route('/models', {
     name: 'models.list',
     action() {
-      mount(MainLayoutCtx, {
+      const ModelList = require('./containers/model_list').default;
+      mount(MainLayoutCtxHot, {
         NavActions,
         content: () => (<ModelList />),
       });
@@ -23,7 +34,8 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/:modelId/:modelSlug', {
     name: 'models.single',
     action({modelId}) {
-      mount(MainLayoutCtx, {
+      const Model = require('./containers/model').default;
+      mount(MainLayoutCtxHot, {
         NavActions,
         content: () => (<Model modelId={modelId} />),
       });
@@ -33,10 +45,26 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/new', {
     name: 'models.new',
     action() {
-      mount(MainLayoutCtx, {
+      const NewModel = require('./containers/new_model').default;
+      mount(MainLayoutCtxHot, {
         NavActions,
         content: () => (<NewModel modal={false} />),
       });
     },
+  });
+}
+
+if (module.hot) {
+  module.hot.accept([
+    '../core/components/main_layout',
+    './containers/model_list',
+    './containers/model',
+    './containers/new_model',
+  ], () => {
+    // If any of the above files (or their dependencies) are updated, all we
+    // really need to do is re-run the current route's action() method, which
+    // will require() the updated modules and re-mount MainLayoutCtx
+    // (which itself require()'s the updated MainLayout at render time).
+    localFlowRouter._current.route._action(localFlowRouter._current.params);
   });
 }

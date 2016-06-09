@@ -13,7 +13,7 @@ tracker                 # Meteor's client-side reactive programming library
 es5-shim                # ECMAScript 5 compatibility for older browsers.
 
 #ecmascript              # Enable ECMAScript2015+ syntax in app code
-gadicc:ecmascript-hot@2.0.0-beta.4 # for hot module reload of react components
+gadicc:ecmascript-hot@2.0.0-beta.4  # for hot module reload of react components
 
 kadira:flow-router
 aldeed:collection2

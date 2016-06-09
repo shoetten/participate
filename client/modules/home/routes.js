@@ -5,13 +5,12 @@ import {AppContainer} from 'react-hot-loader';
 // import MainLayout from '../core/components/main_layout';
 // import Home from './components/home';
 
-let localFlowRouter = null;
+let localFlowRouter;
 
 export default function (injectDeps, {FlowRouter}) {
   localFlowRouter = FlowRouter;
 
-  // const MainLayoutCtx = injectDeps(MainLayout);
-  const MainLayoutCtx = function (props) {
+  const MainLayoutCtxHot = function (props) {
     const MainLayout = require('../core/components/main_layout').default;
     const MainLayoutCtx = injectDeps(MainLayout);
     return (
@@ -25,7 +24,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'home',
     action() {
       const Home = require('./components/home').default;
-      mount(MainLayoutCtx, {
+      mount(MainLayoutCtxHot, {
         content: () => (<Home />),
       });
     },
@@ -41,6 +40,6 @@ if (module.hot) {
     // really need to do is re-run the current route's action() method, which
     // will require() the updated modules and re-mount MainLayoutCtx
     // (which itself require()'s the updated MainLayout at render time).
-    localFlowRouter._current.route._action();
+    localFlowRouter._current.route._action(localFlowRouter._current.params);
   });
 }

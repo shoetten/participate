@@ -2,8 +2,6 @@
  * https://kadirahq.github.io/mantra/
  */
 
-import 'react-hot-loader/patch';
-
 import {createApp} from 'mantra-core';
 import initContext from '/client/configs/context';
 
