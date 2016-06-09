@@ -14,6 +14,7 @@
     "url": "https://github.com/shoetten/como/issues"
   },
   "dependencies": {
+    "babel-runtime": "^6.9.2",
     "d3": "^3.5.17",
     "jquery": "^2.2.4",
     "lodash": "^4.13.1",
@@ -26,8 +27,7 @@
     "react-komposer": "^1.8.0",
     "react-mounter": "^1.2.0",
     "react-tap-event-plugin": "^1.0.0",
-    "speakingurl": "^9.0.0",
-    "babel-runtime": "^6.9.2"
+    "speakingurl": "^9.0.0"
   },
   "devDependencies": {
     "babel-preset-react": "^6.5.0",

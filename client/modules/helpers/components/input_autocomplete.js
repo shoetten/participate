@@ -66,7 +66,8 @@ class InputAutocomplete extends React.Component {
         handleAddition={this.handleAddition}
         handleInputChange={this.handleInputChange}
         minQueryLength={3}
-        classNames={classNames} />
+        classNames={classNames}
+      />
     );
   }
 }

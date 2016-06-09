@@ -22,6 +22,7 @@ export default function () {
           },
           {
             emails: {
+              // XXX: Matching by email doesn't work yet.
               $in: [new RegExp(`^${query}`)],
             },
           },

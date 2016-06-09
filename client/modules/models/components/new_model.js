@@ -1,5 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
+import getSlug from 'speakingurl';
+
 import InputAutocompleteUsers from '../containers/input_autocomplete_users';
 
 class NewModel extends React.Component {
@@ -7,6 +9,13 @@ class NewModel extends React.Component {
     super(props);
     this.createModel = this.createModel.bind(this);
     this.reset = this.reset.bind(this);
+    this.updateSlug = this.updateSlug.bind(this);
+    this.onSlugChange = this.onSlugChange.bind(this);
+
+    this.state = {
+      slugEdited: false,
+      slugValue: '',
+    };
   }
 
   componentDidMount() {
@@ -21,6 +30,27 @@ class NewModel extends React.Component {
     });
   }
 
+  onSlugChange(event) {
+    const slug = getSlug(event.target.value);
+    this.setState({
+      slugEdited: slug !== '',
+      slugValue: slug,
+    });
+  }
+
+  updateSlug() {
+    if (!this.state.slugEdited) {
+      const {titleRef} = this.refs;
+      const slug = getSlug(titleRef.value);
+      this.setState({
+        slugValue: slug,
+      }, () => {
+        // XXX: Use with a proper import..
+        Materialize.updateTextFields();
+      });
+    }
+  }
+
   createModel(event) {
     // Becaus the test cannot get event argument
     // so call preventDefault() on undefined cause an error
@@ -29,9 +59,9 @@ class NewModel extends React.Component {
     }
 
     const {create} = this.props;
-    const {titleRef, descRef} = this.refs;
+    const {titleRef, slugRef, descRef, permissionRef, usersRef} = this.refs;
 
-    create(titleRef.value, descRef.value);
+    create(titleRef.value, slugRef.value, descRef.value, permissionRef.checked);
   }
 
   reset(event) {
@@ -66,8 +96,18 @@ class NewModel extends React.Component {
 
           <div className="row">
             <div className="input-field col s12 m8 l6">
-              <input id="title" ref="titleRef" type="text" className="validate" />
+              <input
+                id="title" ref="titleRef" type="text" className="validate"
+                onChange={this.updateSlug}
+              />
               <label htmlFor="title">Title</label>
+            </div>
+            <div className="input-field col s12 m8 l6">
+              <input
+                id="slug" ref="slugRef" type="text" className="validate"
+                value={this.state.slugValue} onChange={this.onSlugChange}
+              />
+              <label htmlFor="slug">Slug</label>
             </div>
           </div>
           <div className="row">
@@ -97,7 +137,7 @@ class NewModel extends React.Component {
           </div>
           <div className="row">
             <div className="col">
-              <InputAutocompleteUsers />
+              <InputAutocompleteUsers ref="usersRef" />
             </div>
           </div>
 
@@ -106,8 +146,10 @@ class NewModel extends React.Component {
               <i className="material-icons left">add</i>
               Add Model
             </button>
-            <button type="reset" onClick={this.reset}
-              className="btn-flat modal-action modal-close waves-effect waves-light">
+            <button
+              type="reset" onClick={this.reset}
+              className="btn-flat modal-action modal-close waves-effect waves-light"
+            >
               {modal ? 'Cancel' : 'Reset'}
             </button>
           </div>
