@@ -2,7 +2,6 @@ import {Mongo} from 'meteor/mongo';
 import {useDeps, composeAll, composeWithTracker} from 'mantra-core';
 import InputAutocomplete from '../../helpers/components/input_autocomplete';
 
-
 const AutocompleteUsers = new Mongo.Collection('autocomplete.users');
 
 export const composer = ({context}, onData) => {

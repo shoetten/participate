@@ -15,6 +15,7 @@ class NewModel extends React.Component {
     this.state = {
       slugEdited: false,
       slugValue: '',
+      members: [],
     };
   }
 
@@ -59,9 +60,10 @@ class NewModel extends React.Component {
     }
 
     const {create} = this.props;
-    const {titleRef, slugRef, descRef, permissionRef, usersRef} = this.refs;
+    const {titleRef, slugRef, descRef, permissionRef} = this.refs;
+    const {members} = this.state;
 
-    create(titleRef.value, slugRef.value, descRef.value, permissionRef.checked);
+    create(titleRef.value, slugRef.value, descRef.value, permissionRef.checked, members);
   }
 
   reset(event) {
@@ -69,8 +71,12 @@ class NewModel extends React.Component {
       event.preventDefault();
     }
 
-    const {formRef} = this.refs;
+    const {formRef, membersRef} = this.refs;
     formRef.reset();
+    // XXX: The members ref does not reference the underlying component,
+    // but the react komposer container. Therefore the public component API
+    // is not accesible via the membersRef.
+    // membersRef.reset();
 
     const {clearErrors} = this.props;
     clearErrors();
@@ -112,7 +118,7 @@ class NewModel extends React.Component {
           </div>
           <div className="row">
             <div className="input-field col s12">
-              <textarea id="description" ref="descRef" className="materialize-textarea" />
+              <textarea id="description" ref="descRef" className="materialize-textarea validate" />
               <label htmlFor="description">Description</label>
             </div>
           </div>
@@ -137,7 +143,10 @@ class NewModel extends React.Component {
           </div>
           <div className="row">
             <div className="col">
-              <InputAutocompleteUsers ref="usersRef" />
+              <InputAutocompleteUsers
+                ref="membersRef"
+                onChange={(members) => this.setState({members})}
+              />
             </div>
           </div>
 

@@ -46,6 +46,7 @@ class InputAutocomplete extends React.Component {
       name: tag.name,
     });
     this.setState({tags});
+    this.props.onChange(tags);
   }
 
   handleInputChange(input) {
@@ -53,6 +54,13 @@ class InputAutocomplete extends React.Component {
     if (!this.props.busy) {
       setQuery(input);
     }
+  }
+
+  reset() {
+    this.setState({
+      tags: [],
+      suggestions: [],
+    });
   }
 
   render() {
@@ -66,6 +74,7 @@ class InputAutocomplete extends React.Component {
         handleAddition={this.handleAddition}
         handleInputChange={this.handleInputChange}
         minQueryLength={3}
+        autofocus={false}
         classNames={classNames}
       />
     );
@@ -73,6 +82,7 @@ class InputAutocomplete extends React.Component {
 }
 
 InputAutocomplete.propTypes = {
+  onChange: React.PropTypes.func.isRequired,
   setQuery: React.PropTypes.func.isRequired,
   initialTags: React.PropTypes.object,
   busy: React.PropTypes.bool,
