@@ -1,6 +1,6 @@
 import React from 'react';
-import _ from 'lodash';
 import ReactTags from 'react-tag-autocomplete';
+import {differenceWith, isEqual, some, uniqueId} from 'lodash/fp';
 
 class InputAutocomplete extends React.Component {
   constructor(props) {
@@ -23,7 +23,7 @@ class InputAutocomplete extends React.Component {
   componentWillReceiveProps(newProps) {
     this.setState({
       // do not suggest already included elements and store them in state
-      suggestions: _.differenceWith(newProps.suggestions, this.state.tags, _.isEqual),
+      suggestions: differenceWith(isEqual, newProps.suggestions, this.state.tags),
     });
   }
 
@@ -37,12 +37,12 @@ class InputAutocomplete extends React.Component {
     const tags = this.state.tags;
 
     // since tag names are unique, don't add already existing ones
-    if (_.some(tags, ['name', tag.name])) {   // uses the `_.matchesProperty` iteratee shorthand
+    if (some(['name', tag.name], tags)) {   // uses the `_.matchesProperty` iteratee shorthand
       return;
     }
 
     tags.push({
-      id: tag.id || _.uniqueId('new_'),
+      id: tag.id || uniqueId('new_'),
       name: tag.name,
     });
     this.setState({tags});
