@@ -19,9 +19,11 @@ const NotLoggedInMessage = () => (
       <i className="material-icons left">error_outline</i>
       Please log in to view this page.
     </p>
-    <AuthForms {...{
-      formState: STATES.SIGN_IN,
-    }} />
+    <AuthForms
+      {...{
+        formState: STATES.SIGN_IN,
+      }}
+    />
   </div>
 );
 

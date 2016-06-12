@@ -16,7 +16,7 @@ class Layout extends React.Component {
       <div>
         <header>
           <Navigation>
-            { NavActions ? <NavActions /> : null }
+            {NavActions ? <NavActions /> : null}
           </Navigation>
         </header>
 

@@ -71,7 +71,7 @@ class NewModel extends React.Component {
       event.preventDefault();
     }
 
-    const {formRef, membersRef} = this.refs;
+    const {formRef} = this.refs;
     formRef.reset();
     // XXX: The members ref does not reference the underlying component,
     // but the react komposer container. Therefore the public component API

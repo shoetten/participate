@@ -30,7 +30,7 @@ export const composer = ({context}, onData) => {
 };
 
 export const depsMapper = (context, actions) => ({
-  setQuery: actions.input_autocomplete_users.setQuery,
+  setQuery: actions.inputAutocompleteUsers.setQuery,
   context: () => context,
 });
 

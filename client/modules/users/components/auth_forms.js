@@ -1,4 +1,5 @@
-import {Accounts, STATES} from 'meteor/std:accounts-material';
+import {Accounts} from 'meteor/std:accounts-material';
+// import {Accounts, STATES} from 'meteor/std:accounts-material';
 
 class AuthForms extends Accounts.ui.LoginForm {
   fields() {

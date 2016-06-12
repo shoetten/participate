@@ -7,12 +7,14 @@
 
   "plugins": [
     "react",
-    "meteor"
+    "meteor",
+    "lodash-fp"
   ],
 
   "extends": [
     "airbnb",
-    "plugin:meteor/recommended"
+    "plugin:meteor/recommended",
+    "plugin:lodash-fp/recommended"
   ],
 
   "parserOptions": {
@@ -22,10 +24,16 @@
     }
   },
 
+  "settings": {
+    "import/resolver": "meteor"
+  },
+
   "rules": {
     "comma-dangle": [2, "always-multiline"],
     "object-curly-spacing": [0, "always"],
     "func-names": 0,
-    "no-param-reassign": ["error", { "props": false }]
+    "no-param-reassign": ["error", { "props": false }],
+    "no-underscore-dangle": ["error", { "allow": ["_id", "_qs", "_current", "_action"] }],
+    "max-len": ["warn", 100]
   }
 }

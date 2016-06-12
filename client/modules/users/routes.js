@@ -14,10 +14,14 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'users.login',
     action() {
       mount(MainLayoutCtx, {
-        content: () => (<AuthForms {...{
-          formState: STATES.SIGN_IN,
-          signUpPath: '/signup',
-        }} />),
+        content: () => (
+          <AuthForms
+            {...{
+              formState: STATES.SIGN_IN,
+              signUpPath: '/signup',
+            }}
+          />
+        ),
       });
     },
   });
@@ -26,10 +30,14 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'users.signup',
     action() {
       mount(MainLayoutCtx, {
-        content: () => (<AuthForms {...{
-          formState: STATES.SIGN_UP,
-          loginPath: '/login',
-        }} />),
+        content: () => (
+          <AuthForms
+            {...{
+              formState: STATES.SIGN_UP,
+              loginPath: '/login',
+            }}
+          />
+        ),
       });
     },
   });
@@ -38,9 +46,13 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'users.profile',
     action() {
       mount(MainLayoutCtx, {
-        content: () => (<AuthForms {...{
-          formState: STATES.PROFILE,
-        }} />),
+        content: () => (
+          <AuthForms
+            {...{
+              formState: STATES.PROFILE,
+            }}
+          />
+        ),
       });
     },
   });
