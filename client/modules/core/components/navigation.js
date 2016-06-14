@@ -19,7 +19,7 @@ class Navigation extends React.Component {
             {
               currentUser ?
                 <ul className="right" key="loggedInControls">
-                  <li>
+                  <li className="user">
                     <a className="dropdown-button" href="#" data-activates="user-dropdown">
                       <i className="material-icons left">person</i>
                       {currentUser.username}
@@ -29,15 +29,15 @@ class Navigation extends React.Component {
                       <li><a href={pathFor('models.list')}>
                         {/* XXX: A clearer icon would be nice */}
                         <i className="material-icons left">group_work</i>
-                        My Models
+                        <span>My Models</span>
                       </a></li>
                       <li><a href={pathFor('users.profile')}>
                         <i className="material-icons left">person</i>
-                        Profile
+                        <span>Profile</span>
                       </a></li>
                       <li><a href={pathFor('users.bye')} className="logout">
                         <i className="material-icons left">exit_to_app</i>
-                        Logout
+                        <span>Logout</span>
                       </a></li>
                     </ul>
                   </li>

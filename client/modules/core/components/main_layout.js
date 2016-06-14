@@ -7,6 +7,10 @@ import Navigation from '../containers/navigation';
 class Layout extends React.Component {
   componentDidMount() {
     DocHead.setTitle(Meteor.settings.public.appName);
+    DocHead.addMeta({
+      name: 'viewport',
+      content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
+    });
   }
 
   render() {

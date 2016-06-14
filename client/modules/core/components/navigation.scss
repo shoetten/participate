@@ -14,9 +14,30 @@ nav .nav-wrapper {
     line-height: inherit;
   }
 
-  .logout {
-    i.material-icons {
-      transform: rotate(180deg);
+  .user {
+    min-width: 155px;
+    a {
+      min-width: 100%;
+    }
+
+    .dropdown-content {
+      a {
+        position: relative;
+        i {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        span {
+          display: block;
+          padding-left: 43px;
+        }
+      }
+    }
+    .logout {
+      i.material-icons {
+        transform: translateY(-50%) rotate(180deg);
+      }
     }
   }
 }
