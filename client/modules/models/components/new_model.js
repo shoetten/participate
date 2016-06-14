@@ -3,6 +3,7 @@ import $ from 'jquery';
 import getSlug from 'speakingurl';
 
 import InputAutocompleteUsers from '../containers/input_autocomplete_users';
+import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
 class NewModel extends React.Component {
   constructor(props) {
@@ -93,81 +94,83 @@ class NewModel extends React.Component {
     } = this.props;
 
     return (
-      <div id="new-model" className={modal ? 'modal bottom-sheet' : ''}>
-        <form ref="formRef" className="new-model modal-content" onSubmit={this.createModel}>
-          <div className="row">
-            <h4>New Model</h4>
+      <EnsureLoggedIn>
+        <div id="new-model" className={modal ? 'modal bottom-sheet' : ''}>
+          <form ref="formRef" className="new-model modal-content" onSubmit={this.createModel}>
+            <div className="row">
+              <h4>New Model</h4>
 
-            {error ? <p className="error">
-              <i className="material-icons left">error_outline</i>
-              {error}
-            </p> : null}
-          </div>
+              {error ? <p className="error">
+                <i className="material-icons left">error_outline</i>
+                {error}
+              </p> : null}
+            </div>
 
-          <div className="row">
-            <div className="input-field col s12 m8 l6">
-              <input
-                id="title" ref="titleRef" type="text" className="validate"
-                onChange={this.updateSlug}
-              />
-              <label htmlFor="title">Title</label>
-            </div>
-            <div className="input-field col s12 m8 l6">
-              <input
-                id="slug" ref="slugRef" type="text" className="validate"
-                value={this.state.slugValue} onChange={this.onSlugChange}
-              />
-              <label htmlFor="slug">Slug</label>
-            </div>
-          </div>
-          <div className="row">
-            <div className="input-field col s12">
-              <textarea id="description" ref="descRef" className="materialize-textarea validate" />
-              <label htmlFor="description">Description</label>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <div className="switch left">
-                <label>
-                  Private
-                  <input type="checkbox" ref="permissionRef" />
-                  <span className="lever"></span>
-                  Public
-                </label>
+            <div className="row">
+              <div className="input-field col s12 m8 l6">
+                <input
+                  id="title" ref="titleRef" type="text" className="validate"
+                  onChange={this.updateSlug}
+                />
+                <label htmlFor="title">Title</label>
               </div>
-              <i className="material-icons tooltipped help" data-position="right">
-                help
-                <div className="tooltipped-content">
-                  Private models are visible only to members.<br />
-                  Public models can be accessed by everybody with the link.
+              <div className="input-field col s12 m8 l6">
+                <input
+                  id="slug" ref="slugRef" type="text" className="validate"
+                  value={this.state.slugValue} onChange={this.onSlugChange}
+                />
+                <label htmlFor="slug">Slug</label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="input-field col s12">
+                <textarea id="description" ref="descRef" className="materialize-textarea validate" />
+                <label htmlFor="description">Description</label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col">
+                <div className="switch left">
+                  <label>
+                    Private
+                    <input type="checkbox" ref="permissionRef" />
+                    <span className="lever"></span>
+                    Public
+                  </label>
                 </div>
-              </i>
+                <i className="material-icons tooltipped help" data-position="right">
+                  help
+                  <div className="tooltipped-content">
+                    Private models are visible only to members.<br />
+                    Public models can be accessed by everybody with the link.
+                  </div>
+                </i>
+              </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <InputAutocompleteUsers
-                exposeApiCallback={this.handleMembersApiCallback}
-                onChange={(members) => this.setState({members})}
-              />
+            <div className="row">
+              <div className="col">
+                <InputAutocompleteUsers
+                  exposeApiCallback={this.handleMembersApiCallback}
+                  onChange={(members) => this.setState({members})}
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="modal-footer">
-            <button type="submit" className="btn waves-effect waves-light">
-              <i className="material-icons left">add</i>
-              Add Model
-            </button>
-            <button
-              type="reset" onClick={this.reset}
-              className="btn-flat modal-action modal-close waves-effect waves-light"
-            >
-              {modal ? 'Cancel' : 'Reset'}
-            </button>
-          </div>
-        </form>
-      </div>
+            <div className="modal-footer">
+              <button type="submit" className="btn waves-effect waves-light">
+                <i className="material-icons left">add</i>
+                Add Model
+              </button>
+              <button
+                type="reset" onClick={this.reset}
+                className="btn-flat modal-action modal-close waves-effect waves-light"
+              >
+                {modal ? 'Cancel' : 'Reset'}
+              </button>
+            </div>
+          </form>
+        </div>
+      </EnsureLoggedIn>
     );
   }
 }
