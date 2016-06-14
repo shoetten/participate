@@ -5,17 +5,41 @@
 
   > div.row {
     section {
-      a {
-        display: block;
-        height: 150px;
-      }
-      .new {
-        text-align: center;
-        i {
-          font-size: 6rem;
-          line-height: 150px;
+      margin-bottom: 2rem;
+
+      .model {
+        height: 250px;
+        margin: 0;
+        background-color: #fff;
+        .card-content {
+          padding: 0.5rem 0.7rem 0;
+          .card-title {
+            font-size: 2rem;
+            margin: 0;
+            a {
+              color: inherit;
+            }
+          }
+          a.activator {
+            cursor: pointer;
+            color: inherit;
+            i { font-size: 35px; }
+          }
+          i.material-icons {
+            line-height: 1;
+            vertical-align: bottom;
+          }
         }
       }
+    }
+  }
+  .new {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    @media (min-width: $small-screen-up) {
+      bottom: 2rem;
+      right: 2rem;
     }
   }
 }

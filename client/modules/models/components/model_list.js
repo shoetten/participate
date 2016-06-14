@@ -25,19 +25,55 @@ class ModelList extends React.Component {
         <div className="modellist">
           <div className="row">
             {this.props.models.map(model => (
-              <section key={model._id} className="btn col s12 m4 l3">
-                <a href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}>
-                  {model.title}
-                </a>
-                <footer>: {model.modifiedAt}</footer>
+              <section key={model._id} className="col s12 m4 l3">
+                <div className="card small model">
+                  <a
+                    className="card-image waves-effect waves-block waves-light"
+                    href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}
+                  >
+                    <img alt={model.title} src="/images/model-example-thumb.png" />
+                  </a>
+                  <div className="card-content">
+                    <a title="Show details" className="activator right">
+                      <i className="material-icons">arrow_drop_up</i>
+                    </a>
+                    <h2 className="card-title">
+                      <a href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}>
+                        {model.title}
+                      </a>
+                    </h2>
+                    <div className="activator">
+                      <time className="lastModified" title="Last modified">
+                        <i className="material-icons">update</i>
+                        {/* XXX: use proper localization */}
+                        {model.modifiedAt.toLocaleString()}
+                      </time>
+                    </div>
+                  </div>
+                  <div className="card-reveal">
+                    <h2 className="card-title">
+                      {model.title}
+                      <i className="material-icons right">close</i>
+                    </h2>
+                    <p>{model.description}</p>
+                    <div className="card-action">
+                      <a href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}>
+                        Go to model
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </section>
             ))}
-            <section className="col s12 m4 l3">
-              <a className="btn waves-effect waves-light new" href="#new-model" onClick={this.showModelDialog}>
-                <i className="material-icons large">add_circle</i>
-              </a>
-            </section>
           </div>
+
+          <a
+            className="btn-floating btn-large waves-effect waves-light new"
+            href="#new-model"
+            onClick={this.showModelDialog}
+          >
+            <i className="material-icons">add</i>
+          </a>
 
           <NewModel />
         </div>
