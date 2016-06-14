@@ -20,6 +20,15 @@ class InputAutocomplete extends React.Component {
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
+  componentWillMount() {
+    // Expose all public API functions here.
+    // For more info, see
+    // https://medium.com/@erikras/the-hoc-drill-pattern-a676a3889ced
+    this.props.exposeApiCallback(
+      this.reset.bind(this)
+    );
+  }
+
   componentWillReceiveProps(newProps) {
     this.setState({
       // do not suggest already included elements and store them in state
@@ -82,6 +91,7 @@ class InputAutocomplete extends React.Component {
 }
 
 InputAutocomplete.propTypes = {
+  exposeApiCallback: React.PropTypes.func.isRequired,
   onChange: React.PropTypes.func.isRequired,
   setQuery: React.PropTypes.func.isRequired,
   initialTags: React.PropTypes.object,

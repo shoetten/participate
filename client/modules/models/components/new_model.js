@@ -11,6 +11,7 @@ class NewModel extends React.Component {
     this.reset = this.reset.bind(this);
     this.updateSlug = this.updateSlug.bind(this);
     this.onSlugChange = this.onSlugChange.bind(this);
+    this.handleMembersApiCallback = this.handleMembersApiCallback.bind(this);
 
     this.state = {
       slugEdited: false,
@@ -52,6 +53,12 @@ class NewModel extends React.Component {
     }
   }
 
+  // XXX: let the HOC handle this, so the api can be called
+  // through their reference, e.g. membersRef.reset();
+  handleMembersApiCallback(reset) {
+    this.resetMembersInput = reset;
+  }
+
   createModel(event) {
     // Becaus the test cannot get event argument
     // so call preventDefault() on undefined cause an error
@@ -73,10 +80,7 @@ class NewModel extends React.Component {
 
     const {formRef} = this.refs;
     formRef.reset();
-    // XXX: The members ref does not reference the underlying component,
-    // but the react komposer container. Therefore the public component API
-    // is not accesible via the membersRef.
-    // membersRef.reset();
+    this.resetMembersInput();
 
     const {clearErrors} = this.props;
     clearErrors();
@@ -144,7 +148,7 @@ class NewModel extends React.Component {
           <div className="row">
             <div className="col">
               <InputAutocompleteUsers
-                ref="membersRef"
+                exposeApiCallback={this.handleMembersApiCallback}
                 onChange={(members) => this.setState({members})}
               />
             </div>
