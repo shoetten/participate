@@ -4,7 +4,7 @@
   "description": "Online participatory modeling",
   "private": true,
   "scripts": {
-    "start": "meteor run",
+    "start": "meteor --settings settings.json",
     "lint": "eslint ./lib ./client ./server --ext .js"
   },
   "repository": {
