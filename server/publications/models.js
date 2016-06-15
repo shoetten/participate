@@ -1,4 +1,4 @@
-import {Models} from '/lib/collections';
+import {Models, Variables, Links} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {Match, check} from 'meteor/check';
 
@@ -20,16 +20,34 @@ export default function () {
     return Models.find(selector, options);
   });
 
-  Meteor.publish('models.single', function (modelId) {
+  Meteor.publishComposite('models.single', function (modelId) {
     check(modelId, String);
-    const selector = {
-      _id: modelId,
-      // If the model is not public the user has to be a member of it to see it.
-      $or: [
-        { permission: 'public' },
-        { 'members.userId': this.userId },
+
+    return {
+      find() {
+        const selector = {
+          _id: modelId,
+          // If the model is not public the user has to be a member of it to see it.
+          $or: [
+            { permission: 'public' },
+            { 'members.userId': this.userId },
+          ],
+        };
+        return Models.find(selector);
+      },
+
+      children: [
+        {
+          find(model) {
+            return Variables.find({modelId: model._id});
+          },
+        },
+        {
+          find(model) {
+            return Links.find({modelId: model._id});
+          },
+        },
       ],
     };
-    return Models.find(selector);
   });
 }

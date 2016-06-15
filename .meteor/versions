@@ -78,6 +78,7 @@ reactive-dict@1.1.8
 reactive-var@1.0.10
 reload@1.1.9
 retry@1.0.8
+reywood:publish-composite@1.4.2
 routepolicy@1.0.11
 sanjo:meteor-files-helpers@1.2.0_1
 sanjo:meteor-version@1.0.0

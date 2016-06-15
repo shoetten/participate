@@ -6,15 +6,12 @@ export const composer = ({context, modelId, setPageTitle}, onData) => {
 
   if (Meteor.subscribe('models.single', modelId).ready()) {
     const model = Collections.Models.findOne(modelId);
+    const variables = Collections.Variables.find({modelId: model._id}).fetch();
+    const links = Collections.Links.find({modelId: model._id}).fetch();
 
-    onData(null, {model});
+    onData(null, {model, variables, links});
   } else {
-    const model = Collections.Models.findOne(modelId);
-    if (model) {
-      onData(null, {model});
-    } else {
-      onData();
-    }
+    onData();
   }
 
   // clear page title when unmounting container
