@@ -3,12 +3,14 @@ import {useDeps, composeAll, composeWithTracker} from 'mantra-core';
 import Navigation from '../components/navigation';
 
 export const composer = ({context}, onData) => {
-  const {Meteor} = context();
+  const {Meteor, LocalState} = context();
 
   if (Meteor.subscribe('users.current').ready()) {
     const currentUser = Meteor.user();
+    const appTitle = LocalState.get('APP_TITLE');
+    const pageTitle = LocalState.get('PAGE_TITLE').trim();
 
-    onData(null, {currentUser});
+    onData(null, {currentUser, appTitle, pageTitle});
   }
 };
 

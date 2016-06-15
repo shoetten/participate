@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import {DocHead} from 'meteor/kadira:dochead';
 import {pathFor} from '../../core/libs/helpers';
 
 class Navigation extends React.Component {
@@ -7,15 +8,38 @@ class Navigation extends React.Component {
     $('.dropdown-button').dropdown({
       belowOrigin: true,
     });
+
+    this.setTitle(this.props);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setTitle(nextProps);
+  }
+
+  setTitle({pageTitle, appTitle}) {
+    DocHead.setTitle(`${pageTitle ? `${pageTitle} | ` : ''}${appTitle}`);
   }
 
   render() {
-    const {currentUser, children} = this.props;
+    const {currentUser, children, appTitle, pageTitle} = this.props;
     return (
       <div className="navbar-fixed">
         <nav>
           <div className="nav-wrapper">
-            <a href={pathFor('home')} className="brand-logo left">Participate!</a>
+            {
+              pageTitle ?
+                <span className="brand-logo left">
+                  <a title="Go back to dashboard" href={pathFor('home')} className="back">
+                    <i className="material-icons">chevron_left</i>
+                  </a>
+                  <span>{pageTitle}</span>
+                </span>
+              :
+                <a href={pathFor('home')} className="brand-logo left">
+                  {appTitle}
+                </a>
+            }
+
             {
               currentUser ?
                 <ul className="right" key="loggedInControls">
@@ -67,6 +91,8 @@ class Navigation extends React.Component {
 Navigation.propTypes = {
   currentUser: React.PropTypes.object,
   children: React.PropTypes.element,
+  appTitle: React.PropTypes.string.isRequired,
+  pageTitle: React.PropTypes.string,
 };
 
 export default Navigation;

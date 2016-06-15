@@ -3,8 +3,9 @@ import React from 'react';
 class Model extends React.Component {
   constructor(props) {
     super(props);
-    // bind handlers to this, as suggested in react docs
-    this.createPost = this.createPost.bind(this);
+
+    const {setPageTitle, model} = this.props;
+    setPageTitle(model.title);
   }
 
   render() {
@@ -13,5 +14,10 @@ class Model extends React.Component {
     );
   }
 }
+
+Model.propTypes = {
+  setPageTitle: React.PropTypes.func.isRequired,
+  model: React.PropTypes.object.isRequired,
+};
 
 export default Model;

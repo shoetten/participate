@@ -3,6 +3,14 @@
 nav .nav-wrapper {
   .brand-logo {
     padding: 0 $padding;
+
+    .back {
+      margin-right: 0.8rem;
+      i {
+        display: inline;
+        vertical-align: top;
+      }
+    }
   }
 
   a.active {
