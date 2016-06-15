@@ -1,16 +1,22 @@
 import React from 'react';
+import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
 class Model extends React.Component {
   constructor(props) {
     super(props);
 
     const {setPageTitle, model} = this.props;
-    setPageTitle(model.title);
+    // if user is not authorized, there might be no model
+    if (model) {
+      setPageTitle(model.title);
+    }
   }
 
   render() {
     return (
-      <span>Placehodler</span>
+      <EnsureLoggedIn>
+        <span>Placehodler</span>
+      </EnsureLoggedIn>
     );
   }
 }
