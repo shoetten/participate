@@ -23,12 +23,23 @@ nav .nav-wrapper {
   }
 
   .user {
-    min-width: 155px;
+    @media (min-width: $small-screen-up) {
+      min-width: 155px;
+    }
     a {
       min-width: 100%;
     }
 
+    .dropdown-button {
+      @media (max-width: $small-screen) {
+        span { display: none; }
+        i {
+          margin: 0;
+        }
+      }
+    }
     .dropdown-content {
+      min-width: 130px;
       a {
         position: relative;
         i {

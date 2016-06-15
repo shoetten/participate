@@ -7,6 +7,7 @@ class Navigation extends React.Component {
   componentDidMount() {
     $('.dropdown-button').dropdown({
       belowOrigin: true,
+      alignment: 'right',
     });
 
     this.setTitle(this.props);
@@ -46,7 +47,7 @@ class Navigation extends React.Component {
                   <li className="user">
                     <a className="dropdown-button" href="#" data-activates="user-dropdown">
                       <i className="material-icons left">person</i>
-                      {currentUser.username}
+                      <span>{currentUser.username}</span>
                       <i className="material-icons right">arrow_drop_down</i>
                     </a>
                     <ul id="user-dropdown" className="dropdown-content">
