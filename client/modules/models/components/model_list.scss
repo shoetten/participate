@@ -1,5 +1,7 @@
 @import "{}/client/modules/core/components/main_layout.scss";
 
+$card-height: 250px;
+
 .modellist {
   padding-top: 1rem;
 
@@ -8,9 +10,11 @@
       margin-bottom: 2rem;
 
       .model {
-        height: 250px;
+        height: $card-height;
         margin: 0;
         background-color: #fff;
+
+        p { margin: 0.5em 0; }
         .card-content {
           padding: 0.5rem 0.7rem 0;
           .card-title {
@@ -28,6 +32,37 @@
           i.material-icons {
             line-height: 1;
             vertical-align: bottom;
+          }
+        }
+        .card-reveal {
+          padding: 0;
+          overflow: hidden;
+          .content {
+            padding: 1rem;
+            height: $card-height - 50px;
+            overflow-y: auto;
+          }
+          .card-title {
+            margin-top: 0;
+          }
+          .card-action {
+            height: 50px;
+            padding: 1rem;
+          }
+        }
+        .member {
+          height: 27px;
+          line-height: 27px;
+          padding: 0 9px;
+          margin-right: 4px;
+          @media (min-width: $medium-screen-up) {
+            height: 30px;
+            line-height: 30px;
+            padding: 0 11px;
+            margin-right: 5px;
+          }
+          &:last-child {
+            margin-right: 0;
           }
         }
       }

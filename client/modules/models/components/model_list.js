@@ -51,11 +51,22 @@ class ModelList extends React.Component {
                     </div>
                   </div>
                   <div className="card-reveal">
-                    <h2 className="card-title">
-                      {model.title}
-                      <i className="material-icons right">close</i>
-                    </h2>
-                    <p>{model.description}</p>
+                    <div className="content">
+                      <h2 className="card-title">
+                        {model.title}
+                        <i className="material-icons right">close</i>
+                      </h2>
+                      <p>{model.description}</p>
+                      <p>
+                        {model.members.map(member => (
+                          // XXX: Link to public profile
+                          // and display some additional info on hover
+                          <a key={member.userId} href="#" className="chip member">
+                            {member.username}
+                          </a>
+                        ))}
+                      </p>
+                    </div>
                     <div className="card-action">
                       <a href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}>
                         Go to model

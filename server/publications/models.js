@@ -1,23 +1,43 @@
-import {Models, Variables, Links} from '/lib/collections';
+import {Models, Users, Variables, Links} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {Match, check} from 'meteor/check';
 
 export default function () {
-  Meteor.publish('models.list', function () {
+  Meteor.publishComposite('models.list', function () {
     // Ensure that the user is logged in. If not, return an empty array
     // to tell the client to remove the previously published docs.
     if (!Match.test(this.userId, String)) {
       return [];
     }
 
-    const selector = {
-      'members.userId': this.userId,
-    };
-    const options = {
-      sort: ['modifiedAt', 'desc'],
-    };
+    return {
+      find() {
+        const selector = {
+          'members.userId': this.userId,
+        };
+        const options = {
+          sort: ['modifiedAt', 'desc'],
+        };
+        return Models.find(selector, options);
+      },
 
-    return Models.find(selector, options);
+      children: [
+        {
+          find(model) {
+            // publish all users attached to model
+            const memberIds = model.members.map((member) => (member.userId));
+            const selector = {
+              _id: {$in: memberIds},
+            };
+            const options = {
+              // publish only username for now
+              fields: {username: 1},
+            };
+            return Users.find(selector, options);
+          },
+        },
+      ],
+    };
   });
 
   Meteor.publishComposite('models.single', function (modelId) {
