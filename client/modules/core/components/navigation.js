@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import {DocHead} from 'meteor/kadira:dochead';
-import {pathFor} from '../../core/libs/helpers';
+import {pathFor} from '/lib/utils';
 
 class Navigation extends React.Component {
   componentDidMount() {

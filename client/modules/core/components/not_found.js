@@ -1,5 +1,5 @@
 import React from 'react';
-import {pathFor} from '../../core/libs/helpers';
+import {pathFor} from '/lib/utils';
 
 const NotFound = () => (
   <div>
