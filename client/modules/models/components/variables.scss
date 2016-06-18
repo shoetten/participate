@@ -1,0 +1,16 @@
+@import "{}/client/modules/core/components/main_layout.scss";
+
+.variable {
+  .rect {
+    fill: #fff;
+    fill-opacity: 0.8;
+    stroke: $secondary-color;
+    stroke-width: 4px;
+    cursor: pointer;
+  }
+  .text {
+    fill: $text-color;
+    font-weight: bold;
+    font-size: 15px;
+  }
+}

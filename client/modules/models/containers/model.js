@@ -20,6 +20,8 @@ export const composer = ({context, modelId, setPageTitle}, onData) => {
 
 export const depsMapper = (context, actions) => ({
   setPageTitle: actions.coreActions.setPageTitle,
+  createVariable: actions.variables.create,
+  changeVariableName: actions.variables.changeName,
   context: () => context,
 });
 

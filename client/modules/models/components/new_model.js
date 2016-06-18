@@ -61,7 +61,7 @@ class NewModel extends React.Component {
   }
 
   createModel(event) {
-    // Becaus the test cannot get event argument
+    // Because the test cannot get event argument
     // so call preventDefault() on undefined cause an error
     if (event && event.preventDefault) {
       event.preventDefault();

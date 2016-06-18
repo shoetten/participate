@@ -1,6 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
-import {pathFor} from '../../core/libs/helpers';
+import {pathFor} from '/lib/utils';
 import NewModel from '../containers/new_model';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
