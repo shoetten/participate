@@ -11,7 +11,7 @@ class Model extends React.Component {
     this.zoomTo = this.zoomTo.bind(this);
 
     // these won't change
-    this.scaleExtent = [0.02, 5];
+    this.scaleExtent = [0.02, 10];
     this.zoomScale = scaleLinear()
       .domain([1, 100])   // 1 to 100 percent
       .range(this.scaleExtent);
@@ -75,10 +75,12 @@ class Model extends React.Component {
     }
     const pt = (event.changedTouches && event.changedTouches[0]) || event;
     const {createVariable, model} = this.props;
+    const {xScale, yScale} = this.state;
+
     createVariable(
       'New variable',
-      pt.clientX + offset.x,
-      pt.clientY + offset.y,
+      xScale.invert(pt.clientX + offset.x),
+      yScale.invert(pt.clientY + offset.y),
       model._id
     );
   }
@@ -113,20 +115,22 @@ class Model extends React.Component {
             ))}
           </svg>
 
-          <div className="zoomer range-field">
-            <input
-              ref="zoomerRef"
-              type="range"
-              step="0.1"
-              min="1" max="100"
-              value={this.zoomScale.invert(scale)}
-              onChange={() => this.zoomTo(this.zoomScale(this.refs.zoomerRef.value))}
-            />
+          <div className="zoomer">
+            <div className="range-field">
+              <input
+                ref="zoomerRef"
+                type="range"
+                step="0.1"
+                min="1" max="100"
+                value={this.zoomScale.invert(scale)}
+                onChange={() => this.zoomTo(this.zoomScale(this.refs.zoomerRef.value))}
+              />
+            </div>
           </div>
 
           <button
             className="btn-floating btn-large waves-effect waves-light new"
-            onClick={(e) => this.createVariable(e, {x: -100, y: -100})}
+            onClick={(e) => this.createVariable(e, {x: -130, y: -130})}
           >
             <i className="material-icons">add</i>
           </button>

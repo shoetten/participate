@@ -10,8 +10,12 @@ export default function () {
 
       check(_id, String);
       check(name, String);
-      check(x, Number);
-      check(y, Number);
+      check(x, Match.Where((num) => (
+        !isNaN(parseFloat(num)) && isFinite(num)
+      )));
+      check(y, Match.Where((num) => (
+        !isNaN(parseFloat(num)) && isFinite(num)
+      )));
       check(modelId, String);
       const model = Models.findOne(modelId);
       check(model, Match.Where((m) => (
