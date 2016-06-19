@@ -4,13 +4,30 @@
   .rect {
     fill: #fff;
     fill-opacity: 0.8;
-    stroke: $secondary-color;
-    stroke-width: 4px;
+    stroke: none;
     cursor: pointer;
+    &.hover {
+      fill-opacity: 1;
+    }
+  }
+  .outline {
+    fill: none;
+    stroke: $secondary-color;
+    stroke-width: 7px;
+    stroke-opacity: 0.9;
+    cursor: crosshair;
+    &.hover {
+      stroke-opacity: 1;
+      stroke: $link-color;
+    }
   }
   .text {
     fill: $text-color;
     font-weight: bold;
     font-size: 15px;
+    cursor: pointer;
+    pointer-events: none;
+    text-anchor: middle;          // horizontal center
+    dominant-baseline: central;   // vertical center
   }
 }

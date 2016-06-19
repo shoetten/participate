@@ -61,7 +61,7 @@ class Model extends React.Component {
           yScale: currentEvent.transform.rescaleY(yScale),
         });
       });
-    this.canvas.call(this.zoom);
+    this.canvas.call(this.zoom).on('dblclick.zoom', null);
   }
 
   componentWillReceiveProps(nextProps) {

@@ -4,12 +4,12 @@
 
 // Colors
 @import "{poetic:materialize-scss}/sass/components/_color.scss";
-$primary-color: color("orange", "lighten-1") !default;
 
+$primary-color: color("orange", "lighten-1") !default;
 $secondary-color: color("cyan", "lighten-1") !default;
 $success-color: color("green", "base") !default;
 $error-color: color("red", "base") !default;
-$link-color: color("deep-orange", "darken-1") !default;
+$link-color: color("purple", "lighten-1") !default;
 
 $off-black: rgba(0, 0, 0, 0.87) !default;
 $text-color: $off-black;
