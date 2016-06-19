@@ -64,6 +64,13 @@ class Model extends React.Component {
     this.canvas.call(this.zoom);
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.error !== this.props.error) {
+      // XXX Use with proper import
+      Materialize.toast(nextProps.error, 5000, 'toast-error');
+    }
+  }
+
   select(id) {
     this.setState({
       selected: id,
@@ -147,6 +154,9 @@ class Model extends React.Component {
             </div>
           </div>
 
+          {/* container for materialize css toasts */}
+          <div id="toast-container"></div>
+
           <button
             className="btn-floating btn-large waves-effect waves-light new"
             onClick={(e) => this.createVariable(e, {x: -130, y: -130})}
@@ -168,6 +178,8 @@ Model.propTypes = {
   model: React.PropTypes.object.isRequired,
   variables: React.PropTypes.array.isRequired,
   links: React.PropTypes.array.isRequired,
+  // aux
+  error: React.PropTypes.string,
 };
 
 export default Model;
