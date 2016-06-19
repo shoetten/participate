@@ -11,4 +11,7 @@ export default function (context) {
     name: 'viewport',
     content: 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no',
   });
+  DocHead.addLink({
+    rel: 'shortcut icon', href: '/favicon.ico',
+  });
 }
