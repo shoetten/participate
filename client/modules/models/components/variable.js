@@ -42,7 +42,7 @@ class Variable extends React.Component {
   }
 
   render() {
-    const {id, name, x, y, selected} = this.props;
+    const {id, name, x, y, selected, selectionCallback} = this.props;
     const {dimensions, hoverOuter, hoverInner} = this.state;
     const transformer = `translate(${x},${y})`;
     const rectTransformer = `translate(${dimensions.x},${dimensions.y})`;
@@ -54,7 +54,6 @@ class Variable extends React.Component {
             rx="10" ry="10"
             x={-this.strokeWidth / 2} y={-this.strokeWidth / 2}
             width={dimensions.w + this.strokeWidth} height={dimensions.h + this.strokeWidth}
-            onClick={() => console.log(`Clicked on border of variable ${id}`)}
             onMouseEnter={() => this.setState({hoverOuter: true})}
             onMouseLeave={() => this.setState({hoverOuter: false})}
           />
@@ -62,7 +61,7 @@ class Variable extends React.Component {
             className={`rect${hoverInner ? ' hover' : ''}`}
             rx="10" ry="10"
             width={dimensions.w} height={dimensions.h}
-            onClick={() => console.log(`Clicked variable ${id}`)}
+            onClick={(event) => selectionCallback(event, id)}
             onMouseEnter={() => this.setState({hoverInner: true})}
             onMouseLeave={() => this.setState({hoverInner: false})}
           />
@@ -74,12 +73,15 @@ class Variable extends React.Component {
 }
 
 Variable.propTypes = {
+  // data
   model: React.PropTypes.object.isRequired,
   id: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
   x: React.PropTypes.number.isRequired,
   y: React.PropTypes.number.isRequired,
   selected: React.PropTypes.bool,
+  // callbacks
+  selectionCallback: React.PropTypes.func,
 };
 
 export default clickDrag(Variable, {touch: true});

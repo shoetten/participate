@@ -115,12 +115,15 @@ class Model extends React.Component {
 
   render() {
     const {model, variables, links} = this.props;
-    const {scale, xScale, yScale} = this.state;
+    const {scale, xScale, yScale, selected} = this.state;
 
     return (
       <EnsureLoggedIn>
         <div className="single-model">
-          <svg className="canvas">
+          <svg
+            className="canvas"
+            onClick={() => this.setState({selected: false})}
+          >
             {variables.map(variable => (
               <Variable
                 model={model}
@@ -129,6 +132,11 @@ class Model extends React.Component {
                 name={variable.name}
                 x={xScale(variable.position.x)}
                 y={yScale(variable.position.y)}
+                selected={selected === variable._id}
+                selectionCallback={(event, id) => {
+                  event.stopPropagation();
+                  this.setState({selected: id});
+                }}
               />
             ))}
           </svg>
