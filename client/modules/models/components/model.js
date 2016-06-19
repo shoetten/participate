@@ -8,6 +8,13 @@ class Model extends React.Component {
   constructor(props) {
     super(props);
     this.createVariable = this.createVariable.bind(this);
+    this.zoomTo = this.zoomTo.bind(this);
+
+    // these won't change
+    this.scaleExtent = [0.02, 5];
+    this.zoomScale = scaleLinear()
+      .domain([1, 100])   // 1 to 100 percent
+      .range(this.scaleExtent);
 
     // set scales for semantic zooming
     const xScale = scaleLinear()
@@ -18,6 +25,7 @@ class Model extends React.Component {
       .range([0, 800]);
 
     this.state = {
+      scale: 1,
       xScale,
       yScale,
       selected: false,
@@ -34,26 +42,31 @@ class Model extends React.Component {
     const {xScale, yScale} = this.state;
 
     // get main d3 selector
-    const canvas = select('svg.canvas');
+    this.canvas = select('svg.canvas');
     // init the pan & zoom behaviour
-    canvas.call(zoom()
-      .scaleExtent([1, 10])
+    this.zoom = zoom()
+      .scaleExtent(this.scaleExtent)
       .on('zoom', () => {
         // XXX: This should be possible through es6 immutable
         // bindings, but somehow it's not..
         const currentEvent = require('d3').event;
         this.setState({
+          scale: currentEvent.transform.k,
           xScale: currentEvent.transform.rescaleX(xScale),
           yScale: currentEvent.transform.rescaleY(yScale),
         });
-      })
-    );
+      });
+    this.canvas.call(this.zoom);
   }
 
   select(id) {
     this.setState({
       selected: id,
     });
+  }
+
+  zoomTo(newScale) {
+    this.zoom.scaleTo(this.canvas, newScale);
   }
 
   createVariable(event, offset) {
@@ -82,7 +95,7 @@ class Model extends React.Component {
 
   render() {
     const {model, variables, links} = this.props;
-    const {xScale, yScale} = this.state;
+    const {scale, xScale, yScale} = this.state;
 
     return (
       <EnsureLoggedIn>
@@ -99,6 +112,17 @@ class Model extends React.Component {
               />
             ))}
           </svg>
+
+          <div className="zoomer range-field">
+            <input
+              ref="zoomerRef"
+              type="range"
+              step="0.1"
+              min="1" max="100"
+              value={this.zoomScale.invert(scale)}
+              onChange={() => this.zoomTo(this.zoomScale(this.refs.zoomerRef.value))}
+            />
+          </div>
 
           <button
             className="btn-floating btn-large waves-effect waves-light new"
