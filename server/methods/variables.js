@@ -1,7 +1,7 @@
 import {Variables, Models} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {check, Match} from 'meteor/check';
-import {isModelMember} from '../lib/utils';
+import {isModelMember, markModelModified} from '../lib/utils';
 
 export default function () {
   Meteor.methods({
@@ -32,6 +32,7 @@ export default function () {
         position: {x, y},
       };
 
+      markModelModified(modelId);
       Variables.insert(variable);
     },
 
@@ -46,6 +47,7 @@ export default function () {
       check(id, String);
       check(name, String);
 
+      markModelModified(modelId);
       Variables.insert({
         _id: id,
       }, {
