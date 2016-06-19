@@ -1,5 +1,6 @@
 import React from 'react';
-import {scaleLinear, zoom, select} from 'd3';
+import $ from 'jquery';
+import {scaleLinear, zoom, zoomIdentity, select} from 'd3';
 // import {event as currentEvent} from 'd3';
 import Variable from '../components/variable';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
@@ -8,6 +9,7 @@ class Model extends React.Component {
   constructor(props) {
     super(props);
     this.createVariable = this.createVariable.bind(this);
+    this.resetZoom = this.resetZoom.bind(this);
     this.zoomTo = this.zoomTo.bind(this);
 
     // these won't change
@@ -39,6 +41,9 @@ class Model extends React.Component {
   }
 
   componentDidMount() {
+    // init materialize tooltips
+    $('.tooltipped').tooltip({delay: 20});
+
     const {xScale, yScale} = this.state;
 
     // get main d3 selector
@@ -65,8 +70,14 @@ class Model extends React.Component {
     });
   }
 
-  zoomTo(newScale) {
-    this.zoom.scaleTo(this.canvas, newScale);
+  resetZoom() {
+    this.canvas.transition().duration(750)
+      .call(this.zoom.transform, zoomIdentity);
+  }
+
+  zoomTo(newScale, smooth = false) {
+    const selection = smooth ? this.canvas.transition().duration(500) : this.canvas;
+    this.zoom.scaleTo(selection, newScale);
   }
 
   createVariable(event, offset) {
@@ -116,6 +127,14 @@ class Model extends React.Component {
           </svg>
 
           <div className="zoomer">
+            <i
+              className="reset-zoom material-icons tooltipped"
+              data-position="right"
+              data-tooltip="Reset zoom"
+              onClick={this.resetZoom}
+            >
+              zoom_out_map
+            </i>
             <div className="range-field">
               <input
                 ref="zoomerRef"

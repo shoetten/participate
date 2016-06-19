@@ -34,9 +34,18 @@ body {
     width: 10%;
     min-width: 150px;
     max-width: 350px;
+    display: flex;
+    align-items: center;
     @media (min-width: $large-screen-up) {
       bottom: 2rem;
       left: 2.5rem;
+    }
+    .reset-zoom {
+      cursor: pointer;
+      flex: 0 0 30px;
+    }
+    .range-field {
+      flex: 1 0 120px;
     }
   }
 }
