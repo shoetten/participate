@@ -1,11 +1,11 @@
 import Variable from '../components/variable';
 import {useDeps, composeAll} from 'mantra-core';
 
-// no data fetching here, because the model container
-// handles all the data stuff
+// All data is handled in the model container, so
+// we are just injecting actions here
 
 export const depsMapper = (context, actions) => ({
-  changeName: actions.variables.changeName,
+  changePosition: actions.variables.changePosition,
   context: () => context,
 });
 

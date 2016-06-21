@@ -1,8 +1,19 @@
 import React from 'react';
 import $ from 'jquery';
-import {scaleLinear, zoom, zoomIdentity, select} from 'd3';
-// import {event as currentEvent} from 'd3';
-import Variable from '../components/variable';
+import Materialize from 'meteor/poetic:materialize-scss';
+// weird export of Materialize
+const Material = Materialize.Materialize;
+// XXX: Once meteor supports es6 live bindings with objects,
+// we can start using real imports again. Tracked here:
+// https://github.com/benjamn/reify/issues/29
+// import {
+//   scaleLinear,
+//   zoom, zoomIdentity,
+//   select,
+//   event as currentEvent,
+// } from 'd3';
+const d3 = require('d3');
+import Variable from '../containers/variable';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
 class Model extends React.Component {
@@ -14,15 +25,15 @@ class Model extends React.Component {
 
     // these won't change
     this.scaleExtent = [0.02, 10];
-    this.zoomScale = scaleLinear()
+    this.zoomScale = d3.scaleLinear()
       .domain([1, 100])   // 1 to 100 percent
       .range(this.scaleExtent);
 
     // set scales for semantic zooming
-    const xScale = scaleLinear()
+    const xScale = d3.scaleLinear()
       .domain([0, 1000])
       .range([0, 1000]);
-    const yScale = scaleLinear()
+    const yScale = d3.scaleLinear()
       .domain([0, 800])
       .range([0, 800]);
 
@@ -47,18 +58,15 @@ class Model extends React.Component {
     const {xScale, yScale} = this.state;
 
     // get main d3 selector
-    this.canvas = select('svg.canvas');
+    this.canvas = d3.select('svg.canvas');
     // init the pan & zoom behaviour
-    this.zoom = zoom()
+    this.zoom = d3.zoom()
       .scaleExtent(this.scaleExtent)
       .on('zoom', () => {
-        // XXX: This should be possible through es6 immutable
-        // bindings, but somehow it's not..
-        const currentEvent = require('d3').event;
         this.setState({
-          scale: currentEvent.transform.k,
-          xScale: currentEvent.transform.rescaleX(xScale),
-          yScale: currentEvent.transform.rescaleY(yScale),
+          scale: d3.event.transform.k,
+          xScale: d3.event.transform.rescaleX(xScale),
+          yScale: d3.event.transform.rescaleY(yScale),
         });
       });
     this.canvas.call(this.zoom).on('dblclick.zoom', null);
@@ -66,8 +74,7 @@ class Model extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error !== this.props.error) {
-      // XXX Use with proper import
-      Materialize.toast(nextProps.error, 5000, 'toast-error');
+      Material.toast(nextProps.error, 5000, 'toast-error');
     }
   }
 
@@ -79,7 +86,7 @@ class Model extends React.Component {
 
   resetZoom() {
     this.canvas.transition().duration(750)
-      .call(this.zoom.transform, zoomIdentity);
+      .call(this.zoom.transform, d3.zoomIdentity);
   }
 
   zoomTo(newScale, smooth = false) {
@@ -124,17 +131,16 @@ class Model extends React.Component {
             className="canvas"
             onClick={() => this.setState({selected: false})}
           >
-            {variables.map(variable => (
+            {variables.map((variable) => (
               <Variable
-                model={model}
+                modelId={model._id}
                 key={variable._id}
                 id={variable._id}
                 name={variable.name}
                 x={xScale(variable.position.x)}
                 y={yScale(variable.position.y)}
                 selected={selected === variable._id}
-                selectionCallback={(event, id) => {
-                  event.stopPropagation();
+                selectionCallback={id => {
                   this.setState({selected: id});
                 }}
               />

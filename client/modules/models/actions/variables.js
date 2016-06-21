@@ -15,8 +15,18 @@ export default {
   },
 
   changeName({Meteor, LocalState}, id, name, modelId) {
-    // XXX: method stub
     Meteor.call('variables.changeName', id, name, modelId, (err) => {
+      if (err) {
+        return LocalState.set('SAVING_ERROR', err.message);
+      }
+      return LocalState.set('SAVING_ERROR', null);
+    });
+
+    return LocalState.set('SAVING_ERROR', null);
+  },
+
+  changePosition({Meteor, LocalState}, id, x, y, modelId) {
+    Meteor.call('variables.changePosition', id, x, y, modelId, (err) => {
       if (err) {
         return LocalState.set('SAVING_ERROR', err.message);
       }
