@@ -37,6 +37,7 @@
       "error",
       { "allow": ["_id", "_qs", "_current", "_action", "_publishCursor"] }
     ],
-    "max-len": ["warn", 100]
+    "max-len": ["warn", 100],
+    "new-cap": ["error", { "capIsNewExceptions": ["Where"] }]
   }
 }
