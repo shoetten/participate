@@ -148,7 +148,7 @@ class Variable extends React.Component {
         deltaX: currentDeltaX,
         deltaY: currentDeltaY,
       });
-      console.log(`Changing position to ${x}, ${y}..`);
+      // console.log(`Changing position to ${x}, ${y}..`);
       changePosition(id, x, y, modelId);
     }
     this.setState({dragging: false});

@@ -24,7 +24,7 @@ class Model extends React.Component {
     this.zoomTo = this.zoomTo.bind(this);
 
     // these won't change
-    this.scaleExtent = [0.02, 10];
+    this.scaleExtent = [0.1, 10];
     this.zoomScale = d3.scaleLinear()
       .domain([1, 100])   // 1 to 100 percent
       .range(this.scaleExtent);
@@ -42,6 +42,7 @@ class Model extends React.Component {
       xScale,
       yScale,
       selected: false,
+      zoomTransform: d3.zoomIdentity.toString(),
     };
 
     const {setPageTitle, model} = this.props;
@@ -67,6 +68,7 @@ class Model extends React.Component {
           scale: d3.event.transform.k,
           xScale: d3.event.transform.rescaleX(xScale),
           yScale: d3.event.transform.rescaleY(yScale),
+          zoomTransform: d3.event.transform.toString(),
         });
       });
     this.canvas.call(this.zoom).on('dblclick.zoom', null);
@@ -122,7 +124,7 @@ class Model extends React.Component {
 
   render() {
     const {model, variables, links} = this.props;
-    const {scale, xScale, yScale, selected} = this.state;
+    const {scale, selected, zoomTransform} = this.state;
 
     return (
       <EnsureLoggedIn>
@@ -131,20 +133,22 @@ class Model extends React.Component {
             className="canvas"
             onClick={() => this.setState({selected: false})}
           >
-            {variables.map((variable) => (
-              <Variable
-                modelId={model._id}
-                key={variable._id}
-                id={variable._id}
-                name={variable.name}
-                x={xScale(variable.position.x)}
-                y={yScale(variable.position.y)}
-                selected={selected === variable._id}
-                selectionCallback={id => {
-                  this.setState({selected: id});
-                }}
-              />
-            ))}
+            <g transform={zoomTransform}>
+              {variables.map((variable) => (
+                <Variable
+                  modelId={model._id}
+                  key={variable._id}
+                  id={variable._id}
+                  name={variable.name}
+                  x={variable.position.x}
+                  y={variable.position.y}
+                  selected={selected === variable._id}
+                  selectionCallback={id => {
+                    this.setState({selected: id});
+                  }}
+                />
+              ))}
+            </g>
           </svg>
 
           <div className="zoomer">
