@@ -1,5 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
+import Materialize from 'meteor/poetic:materialize-scss';
+// weird export of Materialize
+const Material = Materialize.Materialize;
 import getSlug from 'speakingurl';
 
 import InputAutocompleteUsers from '../containers/input_autocomplete_users';
@@ -24,7 +27,7 @@ class NewModel extends React.Component {
   componentDidMount() {
     $('.tooltipped').tooltip({delay: 50});
     // XXX: HTML in materialize tooltips. This hack should be removed, once
-    // materialize css comes up with something better, here
+    // materialize css comes up with something better, see
     // https://github.com/Dogfalo/materialize/issues/1537
     $('.tooltipped').each((index, element) => {
       const span = $(`#${$(element).attr('data-tooltip-id')} > span:first-child`);
@@ -48,8 +51,7 @@ class NewModel extends React.Component {
       this.setState({
         slugValue: slug,
       }, () => {
-        // XXX: Use with a proper import..
-        Materialize.updateTextFields();
+        Material.updateTextFields();
       });
     }
   }

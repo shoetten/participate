@@ -15,10 +15,7 @@ export default function () {
         const selector = {
           'members.userId': this.userId,
         };
-        const options = {
-          sort: ['modifiedAt', 'desc'],
-        };
-        return Models.find(selector, options);
+        return Models.find(selector);
       },
 
       children: [

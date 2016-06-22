@@ -2,7 +2,10 @@ import React from 'react';
 
 const Home = () => (
   <div className="home">
-    <h1>Welcome to Participate!</h1>
+    <div className="brand">
+      <h1>Welcome to Participate!</h1>
+      <p>Online participatory modelling made easy..</p>
+    </div>
   </div>
 );
 

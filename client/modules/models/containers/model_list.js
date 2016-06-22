@@ -7,8 +7,11 @@ export const composer = ({context}, onData) => {
     const selector = {
       'members.userId': Meteor.userId(),
     };
+    const options = {
+      sort: {modifiedAt: 'desc'},
+    };
 
-    const models = Collections.Models.find(selector).fetch();
+    const models = Collections.Models.find(selector, options).fetch();
     // add usernames to members
     models.map((model) => {
       model.members.map((member) => {

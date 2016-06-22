@@ -1,0 +1,20 @@
+@import "{}/client/modules/core/components/main_layout.scss";
+
+.home {
+  .brand {
+    position: absolute;
+    top: 35%;
+    transform: translateY(-50%);
+    width: 100%;
+    color: rgba($text-color, 0.8);
+    text-align: center;
+    h1 { margin-bottom: 0.7rem; }
+    p {
+      font-size: 1.2rem;
+      transform: rotate(1deg);
+    }
+    @media (min-width: $small-screen-up) {
+      p { font-size: 1.4rem; }
+    }
+  }
+}
