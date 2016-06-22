@@ -2,18 +2,23 @@
 
 .home {
   .brand {
-    position: absolute;
-    top: 35%;
+    position: fixed;
+    top: 48%;
     transform: translateY(-50%);
-    width: 100%;
+    left: 1%;
+    width: 98%;
     color: rgba($text-color, 0.8);
     text-align: center;
-    h1 { margin-bottom: 0.7rem; }
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 0.7rem;
+    }
     p {
       font-size: 1.2rem;
       transform: rotate(1deg);
     }
     @media (min-width: $small-screen-up) {
+      h1 { font-size: 4.2rem; }
       p { font-size: 1.4rem; }
     }
   }

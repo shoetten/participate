@@ -1,22 +1,17 @@
 @import "{}/client/modules/core/components/main_layout.scss";
 
-// set height to 100% all the way down
-html, body, #react-root, #react-root > div, main, main > div {
-  height: 100%;
-}
-body {
-  // overflow is handled by d3 panning
-  overflow: hidden;
-}
-
 .single-model {
   height: 100%;
   svg {
+    position: fixed;
+    // XXX: Find a better way, to get the height of the navbar
+    top: 56px;
+    @media (min-width: $small-screen-up) {
+      top: 64px;
+    }
+    left: 0;
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
   }
   .new {
     position: fixed;
