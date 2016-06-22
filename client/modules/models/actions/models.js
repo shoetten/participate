@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {Match} from 'meteor/check';
 
 export default {
@@ -17,7 +18,9 @@ export default {
       if (err) {
         return LocalState.set('SAVING_ERROR', err.message);
       }
-      FlowRouter.go(`/models/${id}`);
+      // XXX: find a way to close the modal without jquery
+      $('#new-model').closeModal();
+      FlowRouter.go('models.single', {modelId: id, modelSlug: slug});
       return LocalState.set('SAVING_ERROR', null);
     });
 
