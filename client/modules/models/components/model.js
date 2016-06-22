@@ -76,6 +76,7 @@ class Model extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.error !== this.props.error) {
+      // display error for 5 seconds
       Material.toast(nextProps.error, 5000, 'toast-error');
     }
   }

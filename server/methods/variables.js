@@ -49,8 +49,8 @@ export default function () {
       check(id, String);
       check(name, String);
 
-      markModelModified(modelId);
       Variables.update({_id: id}, {$set: {name}});
+      markModelModified(modelId);
     },
 
     'variables.changePosition'(id, x, y, modelId) {
@@ -66,10 +66,10 @@ export default function () {
         !isNaN(parseFloat(num)) && isFinite(num)
       )));
 
-      markModelModified(modelId);
       Variables.update({_id: id}, {$set: {
         position: {x, y},
       }});
+      markModelModified(modelId);
     },
   });
 }
