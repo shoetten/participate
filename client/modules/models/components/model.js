@@ -24,7 +24,7 @@ class Model extends React.Component {
     this.zoomTo = this.zoomTo.bind(this);
 
     // these won't change
-    this.scaleExtent = [0.1, 10];
+    this.scaleExtent = [0.5, 5];
     this.zoomScale = d3.scaleLinear()
       .domain([1, 100])   // 1 to 100 percent
       .range(this.scaleExtent);
@@ -142,6 +142,7 @@ class Model extends React.Component {
                   name={variable.name}
                   x={variable.position.x}
                   y={variable.position.y}
+                  scale={scale}
                   selected={selected === variable._id}
                   selectionCallback={id => {
                     this.setState({selected: id});

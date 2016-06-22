@@ -120,14 +120,17 @@ class Variable extends React.Component {
   dragMove(event) {
     if (this.state.dragging) {
       event.stopPropagation();
+      const {scale} = this.props;
       const {mouseDownPositionX, mouseDownPositionY, deltaX, deltaY} = this.state;
 
+      // Add the old delta to the original position,
+      // in case the drag before was not saved, yet.
       const x = this.props.x + deltaX;
       const y = this.props.y + deltaY;
       const pt = (event.changedTouches && event.changedTouches[0]) || event;
       this.setState({
-        x: x + pt.clientX - mouseDownPositionX,
-        y: y + pt.clientY - mouseDownPositionY,
+        x: x + (pt.clientX - mouseDownPositionX) / scale,
+        y: y + (pt.clientY - mouseDownPositionY) / scale,
       });
     }
   }
@@ -202,6 +205,8 @@ class Variable extends React.Component {
           />
         </g>
         <text className="text" ref="textRef" x="0" y="0">{name}</text>
+        <text x="-50" y="35">x: {Math.round(x)}</text>
+        <text x="0" y="35">y: {Math.round(y)}</text>
       </g>
     );
   }
@@ -214,6 +219,7 @@ Variable.propTypes = {
   name: React.PropTypes.string.isRequired,
   x: React.PropTypes.number.isRequired,
   y: React.PropTypes.number.isRequired,
+  scale: React.PropTypes.number.isRequired,
   selected: React.PropTypes.bool,
   // actions
   changePosition: React.PropTypes.func.isRequired,
