@@ -22,6 +22,7 @@ class Model extends React.Component {
     this.createVariable = this.createVariable.bind(this);
     this.resetZoom = this.resetZoom.bind(this);
     this.zoomTo = this.zoomTo.bind(this);
+    this.onCanvasDown = this.onCanvasDown.bind(this);
 
     // these won't change
     this.scaleExtent = [0.5, 5];
@@ -63,6 +64,9 @@ class Model extends React.Component {
     // init the pan & zoom behaviour
     this.zoom = d3.zoom()
       .scaleExtent(this.scaleExtent)
+      // attach onMouseDown handler here, because
+      // everything else is consumed by d3
+      .on('start', this.onCanvasDown)
       .on('zoom', () => {
         this.setState({
           scale: d3.event.transform.k,
@@ -81,10 +85,8 @@ class Model extends React.Component {
     }
   }
 
-  select(id) {
-    this.setState({
-      selected: id,
-    });
+  onCanvasDown() {
+    this.setState({selected: false});
   }
 
   resetZoom() {
@@ -132,8 +134,15 @@ class Model extends React.Component {
         <div className="single-model">
           <svg
             className="canvas"
-            onClick={() => this.setState({selected: false})}
+            ref="canvasRef"
           >
+            <rect
+              x="0" y="0"
+              // just make it huge, so it will cover every screen
+              width="8000" height="5000"
+              fill="none"
+              onClick={() => console.log("i was just clicked!")}
+            />
             <g transform={zoomTransform}>
               {variables.map((variable) => (
                 <Variable

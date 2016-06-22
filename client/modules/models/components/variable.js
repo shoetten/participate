@@ -137,6 +137,7 @@ class Variable extends React.Component {
 
   dragEnd(event) {
     event.stopPropagation();
+    event.preventDefault();
     // XXX: Eventually clients should be updated more frequently,
     // through something like rocketchat:streamer, but for now
     // we only update once, when the dragging is finished
@@ -153,21 +154,21 @@ class Variable extends React.Component {
       });
       // console.log(`Changing position to ${x}, ${y}..`);
       changePosition(id, x, y, modelId);
+    } else {
+      // if there is no delta, this is not a drag at all,
+      // but a click!
+      this.props.selectionCallback(id);
     }
     this.setState({dragging: false});
   }
 
   render() {
-    const {
-      id, name,
-      selected, selectionCallback,
-    } = this.props;
+    const {id, name, selected} = this.props;
     const {
       dimensions,
       hoverOuter, hoverInner,
       x, y,
       dragging,
-      // deltaX, deltaY,
     } = this.state;
     const transformer = `translate(${x},${y})`;
     const rectTransformer = `translate(${dimensions.x},${dimensions.y})`;
@@ -195,11 +196,8 @@ class Variable extends React.Component {
           <rect
             ref="innerRectRef"
             className={`rect${hoverInner ? ' hover' : ''}`}
-            rx="10" ry="10"
+            rx="7" ry="7"
             width={dimensions.w} height={dimensions.h}
-            // onMouseDown={this.dragStart}
-            // onTouchStart={this.dragStart}
-            onClick={(event) => selectionCallback(event, id)}
             onMouseEnter={() => this.setState({hoverInner: true})}
             onMouseLeave={() => this.setState({hoverInner: false})}
           />
