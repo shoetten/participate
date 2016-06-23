@@ -18,6 +18,21 @@
       pointer-events: all;
     }
   }
+
+  .edit-variable {
+    position: absolute;
+    z-index: 99;
+    // same padding as in variable.js
+    padding: 5px 10px;
+    transform-origin: left top;
+    input {
+      margin: 0;
+      border: none !important;
+      box-shadow: none !important;
+      height: auto;
+    }
+  }
+
   .new {
     position: fixed;
     bottom: 4%;

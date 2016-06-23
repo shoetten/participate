@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import {findIndex} from 'lodash/fp';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
@@ -23,6 +24,8 @@ class Model extends React.Component {
     this.resetZoom = this.resetZoom.bind(this);
     this.scaleTo = this.scaleTo.bind(this);
     this.onCanvasDown = this.onCanvasDown.bind(this);
+    this.onVariableEdit = this.onVariableEdit.bind(this);
+    this.changeVariableName = this.changeVariableName.bind(this);
 
     // these won't change
     this.scaleExtent = [0.5, 5];
@@ -43,7 +46,10 @@ class Model extends React.Component {
       xScale,
       yScale,
       selected: false,
+      editingVariable: false,
+      editBoxPos: {},
       zoomTransform: d3.zoomIdentity.toString(),
+      justAdded: '',
     };
 
     const {setPageTitle, model} = this.props;
@@ -62,9 +68,6 @@ class Model extends React.Component {
     // init the pan & zoom behaviour
     this.zoom = d3.zoom()
       .scaleExtent(this.scaleExtent)
-      // attach onMouseDown handler here, because
-      // everything else is consumed by d3
-      .on('start', this.onCanvasDown)
       .on('zoom', () => {
         this.setState({
           scale: d3.event.transform.k,
@@ -74,7 +77,10 @@ class Model extends React.Component {
         });
       });
 
-    this.eventCatcher = d3.select('svg.canvas .event-catcher');
+    this.eventCatcher = d3.select('svg.canvas .event-catcher')
+      // attach click handler here, because
+      // everything else is consumed by d3
+      .on('click', this.onCanvasDown);
     this.eventCatcher.call(this.zoom).on('dblclick.zoom', null);
 
     // XXX: dirty fix to get the zoom range slider thumb
@@ -95,6 +101,20 @@ class Model extends React.Component {
       // display error for 5 seconds
       Material.toast(nextProps.error, 5000, 'toast-error');
     }
+
+    // XXX: This is a bad way of checking if a new
+    // variable was inserted..
+    const index = nextProps.variables.length - 1;   // get last index
+    if (this.state.justAdded === nextProps.variables[index]._id) {
+      // XXX: This should be calculated dynamically.
+      const dimensions = {
+        h: 30,
+        w: 112,
+        x: -56,
+        y: -15,
+      };
+      this.onVariableEdit(null, index, dimensions);
+    }
   }
 
   onCanvasDown() {
@@ -113,18 +133,46 @@ class Model extends React.Component {
       'New variable',
       xScale.invert(pt.clientX + offset.x),
       yScale.invert(pt.clientY + offset.y),
-      model._id
+      model._id,
+      // execute callback when method stub is done
+      (id) => this.setState({justAdded: id})
     );
+  }
+
+  onVariableEdit(event, index, dimensions) {
+    if (event && event.preventDefault) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    const {xScale, yScale} = this.state;
+    const x = this.props.variables[index].position.x;
+    const y = this.props.variables[index].position.y;
+    this.setState({
+      editingVariable: true,
+      selected: index,
+      editBoxPos: {
+        left: xScale(x + dimensions.x),
+        top: yScale(y + dimensions.y),
+        width: dimensions.w,
+        height: dimensions.h,
+      },
+    }, () => this.refs.variableName.focus());
   }
 
   changeVariableName(event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    const {changeVariableName, model} = this.props;
-    const {nameRef} = this.refs.variableName;
-    const name = nameRef.value.trim();
-    changeVariableName(this.state.selected, name, model._id);
+    const {changeVariableName, model, variables} = this.props;
+    const {selected} = this.state;
+    const {variableName} = this.refs;
+    changeVariableName(variables[selected]._id, variableName.value.trim(), model._id);
+
+    this.setState({
+      editingVariable: false,
+      justAdded: '',
+    });
   }
 
   resetZoom(smooth = true) {
@@ -139,7 +187,12 @@ class Model extends React.Component {
 
   render() {
     const {model, variables, links} = this.props;
-    const {scale, selected, zoomTransform} = this.state;
+    const {
+      scale, zoomTransform,
+      selected,
+      editingVariable, editBoxPos,
+      justAdded,
+    } = this.state;
 
     return (
       <EnsureLoggedIn>
@@ -148,42 +201,52 @@ class Model extends React.Component {
             <rect
               className="event-catcher"
               x="0" y="0"
+              // just make it huge, so it will cover every screen
               width="8000" height="8000"
             />
             <g transform={zoomTransform}>
-              {variables.map((variable) => (
+              {variables.map((variable, index) => (
                 <Variable
                   modelId={model._id}
                   key={variable._id}
                   id={variable._id}
+                  index={index}
                   name={variable.name}
                   x={variable.position.x}
                   y={variable.position.y}
                   scale={scale}
-                  selected={selected === variable._id}
-                  selectionCallback={id => {
-                    this.setState({selected: id});
+                  selected={selected === index}
+                  editing={selected === index && editingVariable}
+                  selectionCallback={selectedIndex => {
+                    this.setState({selected: selectedIndex});
                   }}
                   editCallback={this.onVariableEdit}
                 />
               ))}
             </g>
-
-            <defs>
-              {/* define drop shadow filter for alter use */}
-              <filter id="dropshadow" height="130%" width="130%">
-                <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
-                <feOffset dx="0" dy="2" result="offsetblur" />
-                <feComponentTransfer>
-                  <feFuncA type="linear" slope="0.3" />
-                </feComponentTransfer>
-                <feMerge>
-                  <feMergeNode />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-            </defs>
           </svg>
+
+          {editingVariable !== false ?
+            <form
+              onSubmit={this.changeVariableName}
+              className="edit-variable"
+              style={{
+                top: editBoxPos.top,
+                left: editBoxPos.left,
+                width: editBoxPos.width,
+                height: editBoxPos.height,
+                transform: `scale(${scale})`,
+              }}
+            >
+              <input
+                type="text"
+                ref="variableName"
+                defaultValue={justAdded ? '' : variables[selected].name}
+                placeholder="Variable name.."
+                onBlur={this.changeVariableName}
+              />
+            </form>
+          : null}
 
           <div className="zoomer">
             <i

@@ -1,13 +1,13 @@
 
 export default {
-  create({Meteor, LocalState}, name, x, y, modelId) {
+  create({Meteor, LocalState}, name, x, y, modelId, callback) {
     const id = Meteor.uuid();
 
-    // XXX: method stub
     Meteor.call('variables.create', id, name, x, y, modelId, (err) => {
       if (err) {
         return LocalState.set('SAVING_ERROR', err.message);
       }
+      callback(id);
       return LocalState.set('SAVING_ERROR', null);
     });
 
