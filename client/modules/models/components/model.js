@@ -19,9 +19,9 @@ import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 class Model extends React.Component {
   constructor(props) {
     super(props);
-    this.createVariable = this.createVariable.bind(this);
+    this.onCreateVariable = this.onCreateVariable.bind(this);
     this.resetZoom = this.resetZoom.bind(this);
-    this.zoomTo = this.zoomTo.bind(this);
+    this.scaleTo = this.scaleTo.bind(this);
     this.onCanvasDown = this.onCanvasDown.bind(this);
 
     // these won't change
@@ -59,8 +59,6 @@ class Model extends React.Component {
 
     const {xScale, yScale} = this.state;
 
-    // get main d3 selector
-    this.canvas = d3.select('svg.canvas');
     // init the pan & zoom behaviour
     this.zoom = d3.zoom()
       .scaleExtent(this.scaleExtent)
@@ -75,7 +73,21 @@ class Model extends React.Component {
           zoomTransform: d3.event.transform.toString(),
         });
       });
-    this.canvas.call(this.zoom).on('dblclick.zoom', null);
+
+    this.eventCatcher = d3.select('svg.canvas .event-catcher');
+    this.eventCatcher.call(this.zoom).on('dblclick.zoom', null);
+
+    // XXX: dirty fix to get the zoom range slider thumb
+    // hidden again in firefox. until this is resolved:
+    // https://github.com/Dogfalo/materialize/issues/2183
+    $('.range-field > input[type="range"]').on('mouseup', function () {
+      const thumbElm = $(this).parent().find('.thumb.active');
+      if ($(this).parent().find('.thumb.active').length) {
+        setTimeout(() => {
+          thumbElm.remove();
+        }, 50);
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -89,17 +101,7 @@ class Model extends React.Component {
     this.setState({selected: false});
   }
 
-  resetZoom() {
-    this.canvas.transition().duration(750)
-      .call(this.zoom.transform, d3.zoomIdentity);
-  }
-
-  zoomTo(newScale, smooth = false) {
-    const selection = smooth ? this.canvas.transition().duration(500) : this.canvas;
-    this.zoom.scaleTo(selection, newScale);
-  }
-
-  createVariable(event, offset) {
+  onCreateVariable(event, offset) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -125,6 +127,16 @@ class Model extends React.Component {
     changeVariableName(this.state.selected, name, model._id);
   }
 
+  resetZoom(smooth = true) {
+    const selection = smooth ? this.eventCatcher.transition().duration(750) : this.eventCatcher;
+    selection.call(this.zoom.transform, d3.zoomIdentity);
+  }
+
+  scaleTo(newScale, smooth = false) {
+    const selection = smooth ? this.eventCatcher.transition().duration(500) : this.eventCatcher;
+    selection.call(this.zoom.scaleTo, newScale);
+  }
+
   render() {
     const {model, variables, links} = this.props;
     const {scale, selected, zoomTransform} = this.state;
@@ -132,16 +144,11 @@ class Model extends React.Component {
     return (
       <EnsureLoggedIn>
         <div className="single-model">
-          <svg
-            className="canvas"
-            ref="canvasRef"
-          >
+          <svg className="canvas" ref="canvasRef">
             <rect
+              className="event-catcher"
               x="0" y="0"
-              // just make it huge, so it will cover every screen
-              width="8000" height="5000"
-              fill="none"
-              onClick={() => console.log("i was just clicked!")}
+              width="8000" height="8000"
             />
             <g transform={zoomTransform}>
               {variables.map((variable) => (
@@ -157,9 +164,25 @@ class Model extends React.Component {
                   selectionCallback={id => {
                     this.setState({selected: id});
                   }}
+                  editCallback={this.onVariableEdit}
                 />
               ))}
             </g>
+
+            <defs>
+              {/* define drop shadow filter for alter use */}
+              <filter id="dropshadow" height="130%" width="130%">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="4" />
+                <feOffset dx="0" dy="2" result="offsetblur" />
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="0.3" />
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
           </svg>
 
           <div className="zoomer">
@@ -178,7 +201,7 @@ class Model extends React.Component {
                 step="0.1"
                 min="1" max="100"
                 value={this.zoomScale.invert(scale)}
-                onChange={() => this.zoomTo(this.zoomScale(this.refs.zoomerRef.value))}
+                onChange={() => this.scaleTo(this.zoomScale(this.refs.zoomerRef.value))}
               />
             </div>
           </div>
@@ -188,7 +211,7 @@ class Model extends React.Component {
 
           <button
             className="btn-floating btn-large waves-effect waves-light new"
-            onClick={(e) => this.createVariable(e, {x: -130, y: -130})}
+            onClick={(e) => this.onCreateVariable(e, {x: -130, y: -130})}
           >
             <i className="material-icons">add</i>
           </button>

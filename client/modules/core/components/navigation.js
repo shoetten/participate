@@ -30,7 +30,7 @@ class Navigation extends React.Component {
             {
               pageTitle ?
                 <span className="brand-logo left">
-                  <a title="Go back to dashboard" href={pathFor('home')} className="back">
+                  <a title="Go back to models" href={pathFor('models.list')} className="back">
                     <i className="material-icons">chevron_left</i>
                   </a>
                   <span>{pageTitle}</span>
