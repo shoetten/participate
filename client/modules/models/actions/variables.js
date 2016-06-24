@@ -35,4 +35,15 @@ export default {
 
     return LocalState.set('SAVING_ERROR', null);
   },
+
+  remove({Meteor, LocalState}, id, modelId) {
+    Meteor.call('variables.remove', id, modelId, (err) => {
+      if (err) {
+        return LocalState.set('SAVING_ERROR', err.message);
+      }
+      return LocalState.set('SAVING_ERROR', null);
+    });
+
+    return LocalState.set('SAVING_ERROR', null);
+  },
 };

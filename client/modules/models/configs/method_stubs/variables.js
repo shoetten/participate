@@ -43,5 +43,15 @@ export default function ({Meteor, Collections}) {
 
       Variables.update({_id: id}, {$set: {name}});
     },
+
+    'variables.remove'(id, modelId) {
+      // only check if user logged in on client
+      check(Meteor.userId(), String);
+      check(modelId, String);
+      // check given data
+      check(id, String);
+
+      Variables.update({_id: id}, {$set: {removed: true}});
+    },
   });
 }

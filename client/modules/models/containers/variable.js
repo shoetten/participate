@@ -6,6 +6,7 @@ import {useDeps, composeAll} from 'mantra-core';
 
 export const depsMapper = (context, actions) => ({
   changePosition: actions.variables.changePosition,
+  remove: actions.variables.remove,
   context: () => context,
 });
 

@@ -6,6 +6,7 @@ class Variable extends React.Component {
     this.dragStart = this.dragStart.bind(this);
     this.dragMove = this.dragMove.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
+    this.onRemoveClick = this.onRemoveClick.bind(this);
 
     this.strokeWidth = 7;     // in px
     this.state = {
@@ -78,6 +79,15 @@ class Variable extends React.Component {
   componentWillUnmount() {
     this.refs.innerRectRef.removeEventListener('mousedown', this.dragStart);
     this.refs.innerRectRef.removeEventListener('touchstart', this.dragStart);
+  }
+
+  onRemoveClick(event) {
+    if (event && event.preventDefault) {
+      event.preventDefault();
+    }
+    const {remove, id, modelId, selectionCallback} = this.props;
+    remove(id, modelId);
+    selectionCallback(false);   // deselect variable
   }
 
   calcDimensions() {
@@ -179,7 +189,6 @@ class Variable extends React.Component {
     const stroke = this.strokeWidth;
 
     const rectTransformer = `translate(${dimensions.x},${dimensions.y})`;
-    const editTransformer = `translate(${dimensions.w / 2 + stroke + 18},${-(dimensions.h / 2 + stroke) - 10})`;
     const classes = `variable${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 
     return (
@@ -206,25 +215,32 @@ class Variable extends React.Component {
           <text className="text" ref="textRef" x="0" y="0">{name}</text>
         : null}
 
-        <g className={`edit${editing ? ' active' : ''}`} transform={editTransformer}>
+        <g
+          className={`edit${editing ? ' active' : ''}`}
+          transform={`translate(${dimensions.w / 2 + stroke + 16},${-(dimensions.h / 2 + stroke) - 11})`}
+        >
           <circle
             ref="editBtnRef"
             className={`${hoverEdit ? 'hover' : ''}`}
-            cx="11" cy="12" r="18"
+            cx="12" cy="12" r="18"
             onMouseEnter={() => this.setState({hoverEdit: true})}
             onMouseLeave={() => this.setState({hoverEdit: false})}
             onClick={(e) => editCallback(e, index, dimensions)}
           />
           {/* Material pencil icon */}
-          <path
-            d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-            fill="#fff"
-          />
-          <path d="M0 0h24v24H0z" fill="none" />
+          <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
         </g>
-
-        <text x="-50" y="35">x: {Math.round(x)}</text>
-        <text x="0" y="35">y: {Math.round(y)}</text>
+        <g
+          className={`remove${editing ? ' active' : ''}`}
+          transform={`translate(${dimensions.w / 2 + stroke + 16},${-(dimensions.h / 2 + stroke) + 31})`}
+        >
+          <circle
+            cx="12" cy="12" r="18"
+            onClick={this.onRemoveClick}
+          />
+          {/* Material clear icon */}
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+        </g>
       </g>
     );
   }
@@ -243,6 +259,7 @@ Variable.propTypes = {
   index: React.PropTypes.number.isRequired,
   // actions
   changePosition: React.PropTypes.func.isRequired,
+  remove: React.PropTypes.func.isRequired,
   // callbacks
   selectionCallback: React.PropTypes.func,
   editCallback: React.PropTypes.func,

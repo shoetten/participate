@@ -8,8 +8,13 @@ export const composer = ({context, modelId, setPageTitle, clearErrors}, onData) 
 
   if (Meteor.subscribe('models.single', modelId).ready()) {
     const model = Collections.Models.findOne(modelId);
-    const variables = Collections.Variables.find({modelId: model._id}).fetch();
-    const links = Collections.Links.find({modelId: model._id}).fetch();
+
+    const selector = {
+      modelId: model._id,
+      removed: {$ne: true},
+    };
+    const variables = Collections.Variables.find(selector).fetch();
+    const links = Collections.Links.find(selector).fetch();
 
     onData(null, {model, variables, links, error});
   } else {

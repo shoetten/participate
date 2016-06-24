@@ -71,5 +71,16 @@ export default function () {
       }});
       markModelModified(modelId);
     },
+
+    'variables.remove'(id, modelId) {
+      check(this.userId, String);
+      check(modelId, String);
+      checkUserPermissions(this.userId, modelId);
+      // check given data
+      check(id, String);
+
+      Variables.update({_id: id}, {$set: {removed: true}});
+      markModelModified(modelId);
+    },
   });
 }
