@@ -58,6 +58,7 @@
     .reset-zoom {
       cursor: pointer;
       flex: 0 0 30px;
+      user-select: none;
     }
     .range-field {
       flex: 1 0 120px;

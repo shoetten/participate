@@ -105,14 +105,7 @@ class Model extends React.Component {
     // variable was inserted..
     const index = nextProps.variables.length - 1;   // get last index
     if (this.state.justAdded === nextProps.variables[index]._id) {
-      // XXX: This should be calculated dynamically.
-      const dimensions = {
-        h: 30,
-        w: 112,
-        x: -56,
-        y: -15,
-      };
-      this.onVariableEdit(null, index, dimensions);
+      this.onVariableEdit(null, index);
     }
   }
 
@@ -132,29 +125,32 @@ class Model extends React.Component {
       'New variable',
       xScale.invert(pt.clientX + offset.x),
       yScale.invert(pt.clientY + offset.y),
+      {width: 150, height: 30},
       model._id,
       // execute callback when method stub is done
       (id) => this.setState({justAdded: id})
     );
   }
 
-  onVariableEdit(event, index, dimensions) {
+  onVariableEdit(event, index) {
     if (event && event.preventDefault) {
       event.stopPropagation();
       event.preventDefault();
     }
 
     const {xScale, yScale} = this.state;
-    const x = this.props.variables[index].position.x;
-    const y = this.props.variables[index].position.y;
+    const {variables} = this.props;
+    const x = variables[index].position.x;
+    const y = variables[index].position.y;
+    const dimensions = variables[index].dimensions;
     this.setState({
       editingVariable: true,
       selected: index,
       editBoxPos: {
-        left: xScale(x + dimensions.x),
-        top: yScale(y + dimensions.y),
-        width: dimensions.w,
-        height: dimensions.h,
+        left: xScale(x - dimensions.width / 2),
+        top: yScale(y - dimensions.height / 2),
+        width: dimensions.width,
+        height: dimensions.height,
       },
     }, () => this.refs.variableName.focus());
   }
@@ -211,8 +207,8 @@ class Model extends React.Component {
                   id={variable._id}
                   index={index}
                   name={variable.name}
-                  x={variable.position.x}
-                  y={variable.position.y}
+                  position={variable.position}
+                  dimensions={variable.dimensions}
                   scale={scale}
                   selected={selected === index}
                   editing={selected === index && editingVariable}

@@ -1,15 +1,22 @@
 
 export default {
-  create({Meteor, LocalState}, name, x, y, modelId, callback) {
+  create({Meteor, LocalState}, name, x, y, dimensions, modelId, callback) {
     const id = Meteor.uuid();
 
-    Meteor.call('variables.create', id, name, x, y, modelId, (err) => {
-      if (err) {
-        return LocalState.set('SAVING_ERROR', err.message);
+    Meteor.call(
+      'variables.create',
+      id, name,
+      x, y,
+      Math.round(dimensions.width), Math.round(dimensions.height),
+      modelId,
+      (err) => {
+        if (err) {
+          return LocalState.set('SAVING_ERROR', err.message);
+        }
+        callback(id);
+        return LocalState.set('SAVING_ERROR', null);
       }
-      callback(id);
-      return LocalState.set('SAVING_ERROR', null);
-    });
+    );
 
     return LocalState.set('SAVING_ERROR', null);
   },
@@ -32,6 +39,23 @@ export default {
       }
       return LocalState.set('SAVING_ERROR', null);
     });
+
+    return LocalState.set('SAVING_ERROR', null);
+  },
+
+  changeDimensions({Meteor, LocalState}, id, dimensions, modelId) {
+    Meteor.call(
+      'variables.changeDimensions',
+      id,
+      Math.round(dimensions.width), Math.round(dimensions.height),
+      modelId,
+      (err) => {
+        if (err) {
+          return LocalState.set('SAVING_ERROR', err.message);
+        }
+        return LocalState.set('SAVING_ERROR', null);
+      }
+    );
 
     return LocalState.set('SAVING_ERROR', null);
   },

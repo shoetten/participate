@@ -10,9 +10,8 @@ class Variable extends React.Component {
 
     this.strokeWidth = 7;     // in px
     this.state = {
-      x: props.x,
-      y: props.y,
-      dimensions: {x: -50, y: -15, w: 100, h: 30},
+      x: props.position.x,
+      y: props.position.y,
       hoverOuter: false,
       hoverInner: false,
       hoverEdit: false,
@@ -28,8 +27,6 @@ class Variable extends React.Component {
   }
 
   componentDidMount() {
-    this.calcDimensions();
-
     // XXX: This should be attached via react, but is currently
     // not possible, due to a conflict between d3 zoom and react's
     // event system
@@ -38,9 +35,9 @@ class Variable extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {x, y} = this.props;
-    if (x !== nextProps.x || y !== nextProps.y) {
-      // console.log(`old pos: ${x}, ${y} | new pos: ${nextProps.x}, ${nextProps.y}`);
+    const {x, y} = this.props.position;
+    const {x: newX, y: newY} = nextProps.position;
+    if (x !== newX || y !== newY) {
       const newState = {
         deltaX: 0,
         deltaY: 0,
@@ -48,8 +45,8 @@ class Variable extends React.Component {
       if (!this.state.dragging) {
         // console.log('Update state with new position..');
         Object.assign(newState, {
-          x: nextProps.x,
-          y: nextProps.y,
+          x: newX,
+          y: newY,
         });
       }
       this.setState(newState);
@@ -58,8 +55,13 @@ class Variable extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.name !== this.props.name) {
-      this.calcDimensions();
+      // It's not ideal, to call this here, because it
+      // causes react to render twice on every name change.
+      // But since we need the actual size of the text dom
+      // element, this is the only way, without simulating.
+      this.updateDimensions();
     }
+
     if (this.state.dragging && !prevState.dragging) {
       // attach mouse event listeners to window instead of dom element,
       // so we can continue dragging, even if we loose focus, e.g.
@@ -90,20 +92,21 @@ class Variable extends React.Component {
     selectionCallback(false);   // deselect variable
   }
 
-  calcDimensions() {
-    // Calculate dimensions of text field
-    // and adjust rectangle accordingly
+  /**
+   * Calculate dimensions of text field, save them
+   * and adjust the rectangle accordingly.
+   */
+  updateDimensions() {
     const padding = 10;
     const {textRef} = this.refs;
     const bbox = textRef.getBBox();
-    this.setState({
-      dimensions: {
-        x: - (bbox.width / 2 + padding),
-        y: -15,
-        w: Math.max(bbox.width, 10) + 2 * padding,
-        h: 30,
-      },
-    });
+    const dimensions = {
+      width: Math.max(bbox.width, 10) + 2 * padding,
+      height: 30,  // height is fixed for now
+    };
+
+    const {changeDimensions, id, modelId} = this.props;
+    changeDimensions(id, dimensions, modelId);
   }
 
   dragStart(event) {
@@ -132,13 +135,13 @@ class Variable extends React.Component {
   dragMove(event) {
     if (this.state.dragging) {
       event.stopPropagation();
-      const {scale} = this.props;
+      const {scale, position} = this.props;
       const {mouseDownPositionX, mouseDownPositionY, deltaX, deltaY} = this.state;
 
       // Add the old delta to the original position,
       // in case the drag before was not saved, yet.
-      const x = this.props.x + deltaX;
-      const y = this.props.y + deltaY;
+      const x = position.x + deltaX;
+      const y = position.y + deltaY;
       const pt = (event.changedTouches && event.changedTouches[0]) || event;
       this.setState({
         x: x + (pt.clientX - mouseDownPositionX) / scale,
@@ -155,11 +158,11 @@ class Variable extends React.Component {
     // we only update once, when the dragging is finished
 
     const {x, y} = this.state;
-    const {changePosition, id, modelId} = this.props;
+    const {changePosition, id, modelId, position} = this.props;
 
     // only execute if variable was moved by more than a pixel
-    const currentDeltaX = x - this.props.x;
-    const currentDeltaY = y - this.props.y;
+    const currentDeltaX = x - position.x;
+    const currentDeltaY = y - position.y;
     if ((currentDeltaX >= 1 || currentDeltaY >= 1) ||
         (currentDeltaX <= -1 || currentDeltaY <= -1)) {
       this.setState({
@@ -171,34 +174,38 @@ class Variable extends React.Component {
     } else {
       // if there is no delta, this is not a drag
       // at all, but a click!
-      if (!this.props.selected) {
-        this.props.selectionCallback(this.props.index);
+      const {selected, selectionCallback, index} = this.props;
+      if (!selected) {
+        selectionCallback(index);
       }
     }
     this.setState({dragging: false});
   }
 
   render() {
-    const {index, name, selected, editing, editCallback} = this.props;
     const {
+      index,
+      name,
+      selected,
+      editing, editCallback,
       dimensions,
+    } = this.props;
+    const {
       hoverOuter, hoverInner, hoverEdit,
       x, y,
       dragging,
     } = this.state;
     const stroke = this.strokeWidth;
-
-    const rectTransformer = `translate(${dimensions.x},${dimensions.y})`;
     const classes = `variable${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 
     return (
       <g className={classes} transform={`translate(${x},${y})`}>
-        <g transform={rectTransformer}>
+        <g transform={`translate(${-dimensions.width / 2},${-dimensions.height / 2})`}>
           <rect
             className={`outline${hoverOuter ? ' hover' : ''}`}
             rx="10" ry="10"
             x={-stroke / 2} y={-stroke / 2}
-            width={dimensions.w + stroke} height={dimensions.h + stroke}
+            width={dimensions.width + stroke} height={dimensions.height + stroke}
             onMouseEnter={() => this.setState({hoverOuter: true})}
             onMouseLeave={() => this.setState({hoverOuter: false})}
           />
@@ -206,7 +213,7 @@ class Variable extends React.Component {
             ref="innerRectRef"
             className={`rect${hoverInner ? ' hover' : ''}`}
             rx="7" ry="7"
-            width={dimensions.w} height={dimensions.h}
+            width={dimensions.width} height={dimensions.height}
             onMouseEnter={() => this.setState({hoverInner: true})}
             onMouseLeave={() => this.setState({hoverInner: false})}
           />
@@ -217,7 +224,7 @@ class Variable extends React.Component {
 
         <g
           className={`edit${editing ? ' active' : ''}`}
-          transform={`translate(${dimensions.w / 2 + stroke + 16},${-(dimensions.h / 2 + stroke) - 11})`}
+          transform={`translate(${dimensions.width / 2 + stroke + 16},${-(dimensions.height / 2 + stroke) - 11})`}
         >
           <circle
             ref="editBtnRef"
@@ -225,14 +232,14 @@ class Variable extends React.Component {
             cx="12" cy="12" r="18"
             onMouseEnter={() => this.setState({hoverEdit: true})}
             onMouseLeave={() => this.setState({hoverEdit: false})}
-            onClick={(e) => editCallback(e, index, dimensions)}
+            onClick={(e) => editCallback(e, index)}
           />
           {/* Material pencil icon */}
           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
         </g>
         <g
           className={`remove${editing ? ' active' : ''}`}
-          transform={`translate(${dimensions.w / 2 + stroke + 16},${-(dimensions.h / 2 + stroke) + 31})`}
+          transform={`translate(${dimensions.width / 2 + stroke + 16},${-(dimensions.height / 2 + stroke) + 31})`}
         >
           <circle
             cx="12" cy="12" r="18"
@@ -251,14 +258,15 @@ Variable.propTypes = {
   modelId: React.PropTypes.string.isRequired,
   id: React.PropTypes.string.isRequired,
   name: React.PropTypes.string.isRequired,
-  x: React.PropTypes.number.isRequired,
-  y: React.PropTypes.number.isRequired,
+  position: React.PropTypes.object.isRequired,
+  dimensions: React.PropTypes.object.isRequired,
   scale: React.PropTypes.number.isRequired,
   selected: React.PropTypes.bool,
   editing: React.PropTypes.bool,
   index: React.PropTypes.number.isRequired,
   // actions
   changePosition: React.PropTypes.func.isRequired,
+  changeDimensions: React.PropTypes.func.isRequired,
   remove: React.PropTypes.func.isRequired,
   // callbacks
   selectionCallback: React.PropTypes.func,
