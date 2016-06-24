@@ -1,5 +1,6 @@
 import Model from '../components/model';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
+import LoadingComponent from '/client/modules/core/components/loading';
 
 export const composer = ({context, modelId, setPageTitle, clearErrors}, onData) => {
   const {Meteor, Collections, LocalState} = context();
@@ -31,6 +32,6 @@ export const depsMapper = (context, actions) => ({
 });
 
 export default composeAll(
-  composeWithTracker(composer),
+  composeWithTracker(composer, LoadingComponent),
   useDeps(depsMapper)
 )(Model);

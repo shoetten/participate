@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import {findIndex} from 'lodash/fp';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;

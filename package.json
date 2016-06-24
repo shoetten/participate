@@ -25,7 +25,8 @@
     "moment": "^2.13.0",
     "react": "^15.1.0",
     "react-dom": "^15.1.0",
-    "react-komposer": "^1.9.0",
+    "react-komposer": "^1.11.0",
+    "react-loading": "0.0.9",
     "react-mounter": "^1.2.0",
     "react-tap-event-plugin": "^1.0.0",
     "speakingurl": "^9.0.0"

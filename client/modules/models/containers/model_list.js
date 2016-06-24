@@ -1,5 +1,6 @@
 import ModelList from '../components/model_list';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
+import LoadingComponent from '/client/modules/core/components/loading';
 
 export const composer = ({context}, onData) => {
   const {Meteor, Collections} = context();
@@ -29,6 +30,6 @@ export const composer = ({context}, onData) => {
 };
 
 export default composeAll(
-  composeWithTracker(composer),
+  composeWithTracker(composer, LoadingComponent),
   useDeps()
 )(ModelList);

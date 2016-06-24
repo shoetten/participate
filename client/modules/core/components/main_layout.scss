@@ -20,6 +20,11 @@ main {
 /* Global aux styles
  ***********************************************/
 
+.loading {
+  fill: #333;
+  > div { margin: 0 auto; }
+}
+
 .help {
   font-size: 22px;
   width: 22px;
@@ -38,7 +43,7 @@ main {
   text-align: left;
 }
 
-// remove dotted outline in firefox
+// remove dotted outline of html5 range inputs in firefox
 input[type=range]::-moz-focus-outer {
   border: 0;
 }
