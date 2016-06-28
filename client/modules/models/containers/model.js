@@ -33,6 +33,7 @@ export const depsMapper = (context, actions) => ({
   clearErrors: actions.models.clearErrors,
   createVariable: actions.variables.create,
   changeVariableName: actions.variables.changeName,
+  createLink: actions.links.create,
   context: () => context,
 });
 

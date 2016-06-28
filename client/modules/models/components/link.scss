@@ -1,0 +1,41 @@
+@import "{}/client/modules/core/components/_variables.scss";
+
+.link {
+  path {
+    fill: none;
+    stroke: rgba(#333, 0.8);
+    stroke-width: 4px;
+    marker-end: url("#end-arrow");
+  }
+
+  .control-point {
+    fill: #ccc;
+    stroke: #222;
+    stroke-width: 1px;
+    cursor: grab;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  &.selected {
+    path {
+      stroke: #333;
+      stroke-width: 5px;
+    }
+    .control-point {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  &.dragging {
+    .control-point {
+      fill: #666;
+      cursor: grabbing;
+    }
+  }
+}
+
+.arrow-head {
+  fill: #333;
+}

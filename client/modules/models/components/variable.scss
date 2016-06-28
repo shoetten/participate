@@ -1,14 +1,11 @@
 @import "{}/client/modules/core/components/_variables.scss";
 
 .variable {
-  .rect {
+  .inner-rect {
     fill: #fff;
     fill-opacity: 0.8;
     stroke: none;
     cursor: grab;
-    &.hover {
-      fill-opacity: 1;
-    }
   }
   .outline {
     fill: none;
@@ -16,10 +13,8 @@
     stroke-width: 7px;
     stroke-opacity: 0.9;
     cursor: crosshair;
-    &.hover {
-      stroke-opacity: 1;
-    }
   }
+
   .text {
     fill: $text-color;
     font-weight: bold;
@@ -28,6 +23,7 @@
     pointer-events: none;
     text-anchor: middle;          // horizontal center
     dominant-baseline: central;   // vertical center
+    user-select: none;
   }
   .edit, .remove {
     cursor: pointer;
@@ -52,7 +48,7 @@
   .remove circle { fill: $error-color; }
 
   &.selected {
-    .rect {
+    .inner-rect {
       fill-opacity: 1;
     }
     .outline {
@@ -65,14 +61,31 @@
     }
   }
 
+  &.hover {
+    .inner-rect { fill-opacity: 1; }
+    .outline { stroke-opacity: 1; }
+  }
+
   &.dragging {
-    .rect {
+    .inner-rect {
       fill-opacity: 1;
       cursor: grabbing;
     }
     .outline {
       cursor: grabbing;
-      stroke-opacity: 0.9;
+      stroke-opacity: 1;
+    }
+  }
+}
+
+.canvas.creating-link .variable {
+  pointer-events: all;
+  &.hover {
+    .inner-rect {
+      cursor: crosshair;
+    }
+    .outline {
+    stroke-width: 9px;
     }
   }
 }

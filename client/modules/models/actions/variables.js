@@ -13,11 +13,11 @@ export default {
         if (err) {
           return LocalState.set('SAVING_ERROR', err.message);
         }
-        callback(id);
         return LocalState.set('SAVING_ERROR', null);
       }
     );
 
+    callback(id);
     return LocalState.set('SAVING_ERROR', null);
   },
 

@@ -1,16 +1,8 @@
-import {Variables, Models} from '/lib/collections';
+import {Variables} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {check, Match} from 'meteor/check';
-import {isModelMember, markModelModified} from '../lib/utils';
+import {checkUserPermissions, markModelModified} from '../lib/utils';
 import {isFloat} from '/lib/utils';
-
-function checkUserPermissions(userId, modelId) {
-  // Is user allowed to edit this model?
-  const model = Models.findOne(modelId);
-  check(model, Match.Where((m) => (
-    isModelMember(userId, m)
-  )));
-}
 
 export default function () {
   Meteor.methods({
@@ -41,55 +33,55 @@ export default function () {
       Variables.insert(variable);
     },
 
-    'variables.changeName'(id, name, modelId) {
+    'variables.changeName'(_id, name, modelId) {
       check(this.userId, String);
       check(modelId, String);
       checkUserPermissions(this.userId, modelId);
       // check given data
-      check(id, String);
+      check(_id, String);
       check(name, String);
 
-      Variables.update({_id: id}, {$set: {name}});
+      Variables.update({_id}, {$set: {name}});
       markModelModified(modelId);
     },
 
-    'variables.changePosition'(id, x, y, modelId) {
+    'variables.changePosition'(_id, x, y, modelId) {
       check(this.userId, String);
       check(modelId, String);
       checkUserPermissions(this.userId, modelId);
       // check given data
-      check(id, String);
+      check(_id, String);
       check(x, Match.Where(isFloat));
       check(y, Match.Where(isFloat));
 
-      Variables.update({_id: id}, {$set: {
+      Variables.update({_id}, {$set: {
         position: {x, y},
       }});
       markModelModified(modelId);
     },
 
-    'variables.changeDimensions'(id, width, height, modelId) {
+    'variables.changeDimensions'(_id, width, height, modelId) {
       check(this.userId, String);
       check(modelId, String);
       checkUserPermissions(this.userId, modelId);
       // check given data
-      check(id, String);
+      check(_id, String);
       check(width, Match.Where(isFloat));
       check(height, Match.Where(isFloat));
 
-      Variables.update({_id: id}, {$set: {
+      Variables.update({_id}, {$set: {
         dimensions: {width, height},
       }});
     },
 
-    'variables.remove'(id, modelId) {
+    'variables.remove'(_id, modelId) {
       check(this.userId, String);
       check(modelId, String);
       checkUserPermissions(this.userId, modelId);
       // check given data
-      check(id, String);
+      check(_id, String);
 
-      Variables.update({_id: id}, {$set: {removed: true}});
+      Variables.update({_id}, {$set: {removed: true}});
       markModelModified(modelId);
     },
   });

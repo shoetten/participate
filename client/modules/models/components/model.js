@@ -1,5 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
+import {debounce} from 'lodash/fp';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
@@ -14,6 +15,7 @@ const Material = Materialize.Materialize;
 // } from 'd3';
 const d3 = require('d3');
 import Variable from '../containers/variable';
+import Link from '../containers/link';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
 class Model extends React.Component {
@@ -23,8 +25,12 @@ class Model extends React.Component {
     this.resetZoom = this.resetZoom.bind(this);
     this.scaleTo = this.scaleTo.bind(this);
     this.onCanvasDown = this.onCanvasDown.bind(this);
+    this.onCanvasUp = this.onCanvasUp.bind(this);
     this.onVariableEdit = this.onVariableEdit.bind(this);
     this.changeVariableName = this.changeVariableName.bind(this);
+    this.onNewLinkStart = this.onNewLinkStart.bind(this);
+    this.onNewLinkMove = this.onNewLinkMove.bind(this);
+    this.onNewLinkEnd = this.onNewLinkEnd.bind(this);
 
     // these won't change
     this.scaleExtent = [0.5, 5];
@@ -41,14 +47,19 @@ class Model extends React.Component {
       .range([0, 800]);
 
     this.state = {
-      scale: 1,
-      xScale,
-      yScale,
-      selected: false,
-      editingVariable: false,
-      editBoxPos: {},
-      zoomTransform: d3.zoomIdentity.toString(),
-      justAdded: '',
+      canvasSize: {},                             // size and dimensions of svg dom element
+      scale: 1,                                   // zoom scale
+      xScale,                                     // transforms coordinates in x direction
+      yScale,                                     // transforms coordinates in y direction
+      selected: false,                            // id of the selected variable, false if none
+      editingVariable: false,                     // is a variable name currently beeing edited?
+      editBoxPos: {},                             // where the text input field is positioned
+      zoomTransform: d3.zoomIdentity.toString(),  // the current css transform
+      justAdded: '',                              // id of a just added variable
+      varMapper: this.mapVarIds(),                // used for easy access of variables
+      creatingLink: false,                        // is a new link is in the making?
+      newLinkStartPos: {},
+      newLinkPos: {},
     };
 
     const {setPageTitle, model} = this.props;
@@ -59,6 +70,17 @@ class Model extends React.Component {
   }
 
   componentDidMount() {
+    // get svg dom size
+    this.setState({
+      canvasSize: this.refs.canvasRef.getBoundingClientRect(),
+    });
+
+    window.addEventListener('resize', debounce(600, () => {
+      this.setState({
+        canvasSize: this.refs.canvasRef.getBoundingClientRect(),
+      });
+    }));
+
     // init materialize tooltips
     $('.tooltipped').tooltip({delay: 20});
 
@@ -77,13 +99,13 @@ class Model extends React.Component {
       });
 
     this.eventCatcher = d3.select('svg.canvas .event-catcher')
-      // attach click handler here, because
-      // everything else is consumed by d3
+      // Attach click handler here, because
+      // everything else is consumed by d3.
       .on('click', this.onCanvasDown);
     this.eventCatcher.call(this.zoom).on('dblclick.zoom', null);
 
-    // XXX: dirty fix to get the zoom range slider thumb
-    // hidden again in firefox. until this is resolved:
+    // XXX: Dirty fix to get the zoom range slider thumb
+    // hidden again in Firefox. Until this is resolved:
     // https://github.com/Dogfalo/materialize/issues/2183
     $('.range-field > input[type="range"]').on('mouseup', function () {
       const thumbElm = $(this).parent().find('.thumb.active');
@@ -101,16 +123,88 @@ class Model extends React.Component {
       Material.toast(nextProps.error, 5000, 'toast-error');
     }
 
-    // XXX: This is a bad way of checking if a new
-    // variable was inserted..
-    const index = nextProps.variables.length - 1;   // get last index
-    if (this.state.justAdded === nextProps.variables[index]._id) {
-      this.onVariableEdit(null, index);
+    // Remap variables, when one is added / removed
+    if (this.props.variables.length !== nextProps.variables.length) {
+      this.setState({varMapper: this.mapVarIds(nextProps)}, () => {
+        // Once the state is updated, check if a new variable was
+        // just added and jump to editing mode, if that's the case.
+
+        // XXX: This is a bad way of checking if a new
+        // variable was inserted..
+        const newId = nextProps.variables[nextProps.variables.length - 1]._id;
+        if (this.state.justAdded === newId) {
+          this.onVariableEdit(null, newId);
+        }
+      });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.creatingLink && !prevState.creatingLink) {
+      document.addEventListener('mousemove', this.onNewLinkMove);
+      document.addEventListener('touchmove', this.onNewLinkMove);
+    } else if (!this.state.creatingLink && prevState.creatingLink) {
+      document.removeEventListener('mousemove', this.onNewLinkMove);
+      document.removeEventListener('touchmove', this.onNewLinkMove);
+    }
+  }
+
+  onNewLinkStart(event, id) {
+    const pt = (event.changedTouches && event.changedTouches[0]) || event;
+    const {canvasSize, xScale, yScale} = this.state;
+
+    this.setState({
+      creatingLink: id,
+      newLinkStartPos: {
+        x: xScale.invert(pt.clientX),
+        y: yScale.invert(pt.clientY - canvasSize.top),
+      },
+      newLinkPos: {
+        x: xScale.invert(pt.clientX),
+        y: yScale.invert(pt.clientY - canvasSize.top),
+      },
+    });
+  }
+
+  onNewLinkMove(event) {
+    const pt = (event.changedTouches && event.changedTouches[0]) || event;
+    const {canvasSize, xScale, yScale} = this.state;
+
+    this.setState({newLinkPos: {
+      x: xScale.invert(pt.clientX),
+      y: yScale.invert(pt.clientY - canvasSize.top),
+    }});
+  }
+
+  onNewLinkEnd(event, id) {
+    const {creatingLink} = this.state;
+    if (creatingLink) {
+      if (event && event.preventDefault) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      this.setState({creatingLink: false});
+
+      // prevent self links
+      if (creatingLink !== id) {
+        const {createLink, variables, model} = this.props;
+        const {varMapper} = this.state;
+        const fromVar = variables[varMapper[creatingLink]];
+        const toVar = variables[varMapper[id]];
+        createLink(fromVar, toVar, -1, model._id);
+      }
     }
   }
 
   onCanvasDown() {
     this.setState({selected: false});
+  }
+
+  onCanvasUp() {
+    if (this.state.creatingLink) {
+      this.setState({creatingLink: false});
+    }
   }
 
   onCreateVariable(event, offset) {
@@ -127,25 +221,25 @@ class Model extends React.Component {
       yScale.invert(pt.clientY + offset.y),
       {width: 150, height: 30},
       model._id,
-      // execute callback when method stub is done
       (id) => this.setState({justAdded: id})
     );
   }
 
-  onVariableEdit(event, index) {
+  onVariableEdit(event, id) {
     if (event && event.preventDefault) {
       event.stopPropagation();
       event.preventDefault();
     }
 
-    const {xScale, yScale} = this.state;
     const {variables} = this.props;
-    const x = variables[index].position.x;
-    const y = variables[index].position.y;
-    const dimensions = variables[index].dimensions;
+    const {xScale, yScale, varMapper} = this.state;
+    const variable = variables[varMapper[id]];
+    const x = variable.position.x;
+    const y = variable.position.y;
+    const dimensions = variable.dimensions;
     this.setState({
       editingVariable: true,
-      selected: index,
+      selected: id,
       editBoxPos: {
         left: xScale(x - dimensions.width / 2),
         top: yScale(y - dimensions.height / 2),
@@ -159,15 +253,25 @@ class Model extends React.Component {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    const {changeVariableName, model, variables} = this.props;
-    const {selected} = this.state;
+    const {changeVariableName, variables, model} = this.props;
+    const {selected, varMapper} = this.state;
     const {variableName} = this.refs;
-    changeVariableName(variables[selected]._id, variableName.value.trim(), model._id);
+    changeVariableName(variables[varMapper[selected]]._id, variableName.value.trim(), model._id);
 
     this.setState({
       editingVariable: false,
       justAdded: '',
     });
+  }
+
+  // This function maps the indices of the variables
+  // array to their id's, for faster access.
+  mapVarIds(props = this.props) {
+    const varMapper = {};
+    props.variables.forEach((variable, index) => {
+      varMapper[variable._id] = index;
+    });
+    return varMapper;
   }
 
   resetZoom(smooth = true) {
@@ -187,37 +291,76 @@ class Model extends React.Component {
       selected,
       editingVariable, editBoxPos,
       justAdded,
+      varMapper,
+      creatingLink,
+      newLinkStartPos,
+      newLinkPos,
     } = this.state;
 
     return (
       <EnsureLoggedIn>
         <div className="single-model">
-          <svg className="canvas" ref="canvasRef">
+          <svg className={`canvas${creatingLink ? ' creating-link' : ''}`} ref="canvasRef">
+            <defs>
+              <marker id="end-arrow" viewBox="0 -5 10 10" refX="6" markerWidth="5" markerHeight="5" orient="auto">
+                <path d="M0,-5L10,0L0,5" className="arrow-head"></path>
+              </marker>
+            </defs>
+
             <rect
               className="event-catcher"
               x="0" y="0"
               // just make it huge, so it will cover every screen
               width="8000" height="8000"
+              onMouseUp={this.onCanvasUp}
             />
             <g transform={zoomTransform}>
-              {variables.map((variable, index) => (
-                <Variable
-                  modelId={model._id}
-                  key={variable._id}
-                  id={variable._id}
-                  index={index}
-                  name={variable.name}
-                  position={variable.position}
-                  dimensions={variable.dimensions}
-                  scale={scale}
-                  selected={selected === index}
-                  editing={selected === index && editingVariable}
-                  selectionCallback={selectedIndex => {
-                    this.setState({selected: selectedIndex});
-                  }}
-                  editCallback={this.onVariableEdit}
-                />
-              ))}
+              <g className="links">
+                {links.map((link) => (
+                  <Link
+                    modelId={model._id}
+                    key={link._id}
+                    id={link._id}
+                    fromVar={variables[varMapper[link.fromId]]}
+                    toVar={variables[varMapper[link.toId]]}
+                    controlPointPos={link.controlPointPos}
+                    scale={scale}
+                    selected={selected === link._id}
+                    selectionCallback={id => {
+                      this.setState({selected: id});
+                    }}
+                  />
+                ))}
+                {creatingLink ?
+                  <line
+                    x1={newLinkStartPos.x} y1={newLinkStartPos.y}
+                    x2={newLinkPos.x} y2={newLinkPos.y}
+                    className="new-link"
+                  />
+                : null}
+              </g>
+
+              <g className="variables">
+                {variables.map((variable) => (
+                  <Variable
+                    modelId={model._id}
+                    key={variable._id}
+                    id={variable._id}
+                    name={variable.name}
+                    position={variable.position}
+                    dimensions={variable.dimensions}
+                    scale={scale}
+                    selected={selected === variable._id}
+                    editing={selected === variable._id && editingVariable}
+                    selectionCallback={id => {
+                      this.setState({selected: id});
+                    }}
+                    editCallback={this.onVariableEdit}
+                    newLinkStartCallback={this.onNewLinkStart}
+                    newLinkEndCallback={this.onNewLinkEnd}
+                  />
+                ))}
+              </g>
             </g>
           </svg>
 
@@ -236,7 +379,7 @@ class Model extends React.Component {
               <input
                 type="text"
                 ref="variableName"
-                defaultValue={justAdded ? '' : variables[selected].name}
+                defaultValue={justAdded ? '' : variables[varMapper[selected]].name}
                 placeholder="Variable name.."
                 onBlur={this.changeVariableName}
               />
@@ -280,14 +423,15 @@ class Model extends React.Component {
 }
 
 Model.propTypes = {
-  // actions
-  setPageTitle: React.PropTypes.func.isRequired,
-  createVariable: React.PropTypes.func.isRequired,
-  changeVariableName: React.PropTypes.func.isRequired,
   // data
   model: React.PropTypes.object.isRequired,
   variables: React.PropTypes.array.isRequired,
   links: React.PropTypes.array.isRequired,
+  // actions
+  setPageTitle: React.PropTypes.func.isRequired,
+  createVariable: React.PropTypes.func.isRequired,
+  changeVariableName: React.PropTypes.func.isRequired,
+  createLink: React.PropTypes.func.isRequired,
   // aux
   error: React.PropTypes.string,
 };

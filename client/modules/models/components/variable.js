@@ -12,26 +12,13 @@ class Variable extends React.Component {
     this.state = {
       x: props.position.x,
       y: props.position.y,
-      hoverOuter: false,
-      hoverInner: false,
-      hoverEdit: false,
+      hover: false,
       dragging: false,
       mouseDownPositionX: 0,
       mouseDownPositionY: 0,
       deltaX: 0,
       deltaY: 0,
     };
-
-    this.props.selected = this.props.selected || false;
-    this.props.editing = this.props.editing || false;
-  }
-
-  componentDidMount() {
-    // XXX: This should be attached via react, but is currently
-    // not possible, due to a conflict between d3 zoom and react's
-    // event system
-    this.refs.innerRectRef.addEventListener('mousedown', this.dragStart);
-    this.refs.innerRectRef.addEventListener('touchstart', this.dragStart);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -78,11 +65,6 @@ class Variable extends React.Component {
     }
   }
 
-  componentWillUnmount() {
-    this.refs.innerRectRef.removeEventListener('mousedown', this.dragStart);
-    this.refs.innerRectRef.removeEventListener('touchstart', this.dragStart);
-  }
-
   onRemoveClick(event) {
     if (event && event.preventDefault) {
       event.preventDefault();
@@ -122,13 +104,6 @@ class Variable extends React.Component {
         mouseDownPositionX: pt.clientX,
         mouseDownPositionY: pt.clientY,
       });
-
-      // const {deltaX, deltaY} = this.state;
-      // if (deltaX !== 0 || deltaY !== 0) {
-      //   console.log("drag started before old drag was saved");
-      // } else {
-      //   console.log("drag started");
-      // }
     }
   }
 
@@ -174,9 +149,9 @@ class Variable extends React.Component {
     } else {
       // if there is no delta, this is not a drag
       // at all, but a click!
-      const {selected, selectionCallback, index} = this.props;
+      const {selected, selectionCallback} = this.props;
       if (!selected) {
-        selectionCallback(index);
+        selectionCallback(id);
       }
     }
     this.setState({dragging: false});
@@ -184,38 +159,44 @@ class Variable extends React.Component {
 
   render() {
     const {
-      index,
+      id,
       name,
       selected,
       editing, editCallback,
+      newLinkStartCallback, newLinkEndCallback,
       dimensions,
     } = this.props;
     const {
-      hoverOuter, hoverInner, hoverEdit,
+      hover,
       x, y,
       dragging,
     } = this.state;
     const stroke = this.strokeWidth;
-    const classes = `variable${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
+
+    const classes = `variable${hover ? ' hover' : ''}${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 
     return (
       <g className={classes} transform={`translate(${x},${y})`}>
-        <g transform={`translate(${-dimensions.width / 2},${-dimensions.height / 2})`}>
+        <g
+          transform={`translate(${-dimensions.width / 2},${-dimensions.height / 2})`}
+          onMouseEnter={() => this.setState({hover: true})}
+          onMouseLeave={() => this.setState({hover: false})}
+          onMouseUp={(e) => newLinkEndCallback(e, id)}
+        >
           <rect
-            className={`outline${hoverOuter ? ' hover' : ''}`}
+            className="outline"
             rx="10" ry="10"
             x={-stroke / 2} y={-stroke / 2}
             width={dimensions.width + stroke} height={dimensions.height + stroke}
-            onMouseEnter={() => this.setState({hoverOuter: true})}
-            onMouseLeave={() => this.setState({hoverOuter: false})}
+            onMouseDown={(e) => newLinkStartCallback(e, id)}
           />
           <rect
             ref="innerRectRef"
-            className={`rect${hoverInner ? ' hover' : ''}`}
+            className="inner-rect"
             rx="7" ry="7"
             width={dimensions.width} height={dimensions.height}
-            onMouseEnter={() => this.setState({hoverInner: true})}
-            onMouseLeave={() => this.setState({hoverInner: false})}
+            onMouseDown={this.dragStart}
+            onTouchStart={this.dragStart}
           />
         </g>
         {!editing ?
@@ -228,11 +209,8 @@ class Variable extends React.Component {
         >
           <circle
             ref="editBtnRef"
-            className={`${hoverEdit ? 'hover' : ''}`}
             cx="12" cy="12" r="18"
-            onMouseEnter={() => this.setState({hoverEdit: true})}
-            onMouseLeave={() => this.setState({hoverEdit: false})}
-            onClick={(e) => editCallback(e, index)}
+            onClick={(e) => editCallback(e, id)}
           />
           {/* Material pencil icon */}
           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
@@ -263,14 +241,20 @@ Variable.propTypes = {
   scale: React.PropTypes.number.isRequired,
   selected: React.PropTypes.bool,
   editing: React.PropTypes.bool,
-  index: React.PropTypes.number.isRequired,
+  // callbacks
+  selectionCallback: React.PropTypes.func,
+  editCallback: React.PropTypes.func,
+  newLinkStartCallback: React.PropTypes.func,
+  newLinkEndCallback: React.PropTypes.func,
   // actions
   changePosition: React.PropTypes.func.isRequired,
   changeDimensions: React.PropTypes.func.isRequired,
   remove: React.PropTypes.func.isRequired,
-  // callbacks
-  selectionCallback: React.PropTypes.func,
-  editCallback: React.PropTypes.func,
+};
+
+Variable.defaultProps = {
+  editing: false,
+  selected: false,
 };
 
 export default Variable;
