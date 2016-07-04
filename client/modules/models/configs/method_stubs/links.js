@@ -21,6 +21,17 @@ export default function ({Meteor, Collections}) {
       Links.insert(link);
     },
 
+    'links.changePolarity'(_id, polarity, modelId) {
+      // On client-side, only check if user is logged in
+      check(Meteor.userId(), String);
+      check(modelId, String);
+      // check given data
+      check(_id, String);
+      check(polarity, Number);
+
+      Links.update({_id}, {$set: {polarity}});
+    },
+
     'links.remove'(_id, modelId) {
       // On client-side, only check if user is logged in
       check(Meteor.userId(), String);

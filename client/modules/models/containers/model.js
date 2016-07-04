@@ -5,6 +5,7 @@ import LoadingComponent from '/client/modules/core/components/loading';
 export const composer = ({context, modelId, setPageTitle, clearErrors}, onData) => {
   const {Meteor, Collections, LocalState} = context();
   const error = LocalState.get('SAVING_ERROR');
+  const selected = LocalState.get('SELECTED');
 
   if (Meteor.subscribe('models.single', modelId).ready()) {
     const model = Collections.Models.findOne(modelId);
@@ -16,7 +17,7 @@ export const composer = ({context, modelId, setPageTitle, clearErrors}, onData) 
     const variables = Collections.Variables.find(selector).fetch();
     const links = Collections.Links.find(selector).fetch();
 
-    onData(null, {model, variables, links, error});
+    onData(null, {model, variables, links, selected, error});
   } else {
     onData();
   }
@@ -30,6 +31,7 @@ export const composer = ({context, modelId, setPageTitle, clearErrors}, onData) 
 
 export const depsMapper = (context, actions) => ({
   setPageTitle: actions.coreActions.setPageTitle,
+  select: actions.models.select,
   clearErrors: actions.models.clearErrors,
   createVariable: actions.variables.create,
   changeVariableName: actions.variables.changeName,

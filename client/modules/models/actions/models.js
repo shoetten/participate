@@ -27,6 +27,10 @@ export default {
     return LocalState.set('SAVING_ERROR', null);
   },
 
+  select({LocalState}, id) {
+    return LocalState.set('SELECTED', id);
+  },
+
   clearErrors({LocalState}) {
     return LocalState.set('SAVING_ERROR', null);
   },

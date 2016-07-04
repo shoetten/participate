@@ -69,9 +69,9 @@ class Variable extends React.Component {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    const {remove, id, modelId, selectionCallback} = this.props;
+    const {remove, select, id, modelId} = this.props;
     remove(id, modelId);
-    selectionCallback(false);   // deselect variable
+    select('');   // deselect variable
   }
 
   /**
@@ -149,9 +149,9 @@ class Variable extends React.Component {
     } else {
       // if there is no delta, this is not a drag
       // at all, but a click!
-      const {selected, selectionCallback} = this.props;
+      const {selected, select} = this.props;
       if (!selected) {
-        selectionCallback(id);
+        select(id);
       }
     }
     this.setState({dragging: false});
@@ -242,7 +242,6 @@ Variable.propTypes = {
   selected: React.PropTypes.bool,
   editing: React.PropTypes.bool,
   // callbacks
-  selectionCallback: React.PropTypes.func,
   editCallback: React.PropTypes.func,
   newLinkStartCallback: React.PropTypes.func,
   newLinkEndCallback: React.PropTypes.func,
@@ -250,6 +249,7 @@ Variable.propTypes = {
   changePosition: React.PropTypes.func.isRequired,
   changeDimensions: React.PropTypes.func.isRequired,
   remove: React.PropTypes.func.isRequired,
+  select: React.PropTypes.func.isRequired,
 };
 
 Variable.defaultProps = {

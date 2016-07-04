@@ -46,6 +46,17 @@ export default function () {
       markModelModified(modelId);
     },
 
+    'links.changePolarity'(_id, polarity, modelId) {
+      check(this.userId, String);
+      check(modelId, String);
+      checkUserPermissions(this.userId, modelId);
+      // check given data
+      check(_id, String);
+      check(polarity, Number);
+
+      Links.update({_id}, {$set: {polarity}});
+    },
+
     'links.remove'(_id, modelId) {
       check(this.userId, String);
       check(modelId, String);

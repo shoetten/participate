@@ -7,6 +7,8 @@ class Link extends React.Component {
     this.dragStart = this.dragStart.bind(this);
     this.dragMove = this.dragMove.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
+    this.onPolarityEdit = this.onPolarityEdit.bind(this);
+    this.onChangePolarity = this.onChangePolarity.bind(this);
     this.onRemoveClick = this.onRemoveClick.bind(this);
 
     const controlPointPos = props.controlPointPos;
@@ -20,6 +22,7 @@ class Link extends React.Component {
       mouseDownPositionY: 0,
       deltaX: 0,
       deltaY: 0,
+      editing: false,
     };
   }
 
@@ -51,6 +54,10 @@ class Link extends React.Component {
       }
       this.setState(newState);
     }
+
+    if (this.props.selected && !nextProps.selected) {
+      this.setState({editing: false});
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -70,13 +77,33 @@ class Link extends React.Component {
     }
   }
 
+  onPolarityEdit(event) {
+    if (event && event.preventDefault) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    const {select, id} = this.props;
+    select(id);
+
+    this.setState({editing: true});
+  }
+
+  onChangePolarity(polarity) {
+    const {changePolarity, select, id, modelId} = this.props;
+    changePolarity(id, polarity, modelId);
+
+    this.setState({editing: false});
+    select('');   // deselect link
+  }
+
   onRemoveClick(event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    const {remove, id, modelId, selectionCallback} = this.props;
+    const {remove, select, id, modelId} = this.props;
     remove(id, modelId);
-    selectionCallback(false);   // deselect link
+    select('');   // deselect link
   }
 
   calculatePath(props = this.props, control = this.state.controlPointPos) {
@@ -291,12 +318,13 @@ class Link extends React.Component {
   }
 
   render() {
-    const {selected, selectionCallback, id, polarity} = this.props;
+    const {selected, select, id, polarity} = this.props;
     const {
       path,
       controlPointPos: control,
       polarityPointPos: polarityPos,
       dragging,
+      editing
     } = this.state;
 
     const classes = `link${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
@@ -306,16 +334,44 @@ class Link extends React.Component {
         <path
           d={path}
           style={{markerEnd: 'url("#end-arrow")'}}
-          onClick={() => selectionCallback(id)}
+          onClick={() => select(id)}
         />
-        <g className="polarity" transform={`translate(${polarityPos.x},${polarityPos.y})`}>
+
+        <g
+          className={`polarity${editing ? ' editing' : ''}`}
+          transform={`translate(${polarityPos.x},${polarityPos.y})`}
+        >
           <rect
             rx="5" ry="5"
             x={-(30 / 2)} y={-(25 / 2)}
             width={30} height={25}
-            onClick={() => console.log('clicked polarity!')}
+            className={polarity < 0 ? 'negative' : 'positive'}
+            onClick={this.onPolarityEdit}
           />
           <text x="0" y="0">{polarity < 0 ? '-' : '+'}</text>
+
+          <g className="edit-polarity" transform="translate(40, 0)">
+            <g transform="translate(0, -15)">
+              <rect
+                rx="5" ry="5"
+                x={-(30 / 2)} y={-(25 / 2)}
+                width={30} height={25}
+                className="negative"
+                onClick={() => this.onChangePolarity(-1)}
+              />
+              <text x="0" y="0">-</text>
+            </g>
+            <g transform="translate(0, 15)">
+              <rect
+                rx="5" ry="5"
+                x={-(30 / 2)} y={-(25 / 2)}
+                width={30} height={25}
+                className="positive"
+                onClick={() => this.onChangePolarity(1)}
+              />
+              <text x="0" y="0">+</text>
+            </g>
+          </g>
         </g>
         <circle
           cx={control.x} cy={control.y}
@@ -340,11 +396,11 @@ Link.propTypes = {
   polarity: React.PropTypes.number.isRequired,
   scale: React.PropTypes.number.isRequired,
   selected: React.PropTypes.bool,
-  // callbacks
-  selectionCallback: React.PropTypes.func,
   // actions
   changeControlPosition: React.PropTypes.func.isRequired,
+  changePolarity: React.PropTypes.func.isRequired,
   remove: React.PropTypes.func.isRequired,
+  select: React.PropTypes.func.isRequired,
 };
 
 Link.defaultProps = {

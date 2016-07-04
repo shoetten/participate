@@ -6,7 +6,9 @@ import {useDeps, composeAll} from 'mantra-core';
 
 export const depsMapper = (context, actions) => ({
   changeControlPosition: actions.links.changeControlPosition,
+  changePolarity: actions.links.changePolarity,
   remove: actions.links.remove,
+  select: actions.models.select,
   context: () => context,
 });
 

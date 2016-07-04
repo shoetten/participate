@@ -45,6 +45,17 @@ export default {
     return LocalState.set('SAVING_ERROR', null);
   },
 
+  changePolarity({Meteor, LocalState}, id, polarity, modelId) {
+    Meteor.call('links.changePolarity', id, polarity, modelId, (err) => {
+      if (err) {
+        return LocalState.set('SAVING_ERROR', err.message);
+      }
+      return LocalState.set('SAVING_ERROR', null);
+    });
+
+    return LocalState.set('SAVING_ERROR', null);
+  },
+
   remove({Meteor, LocalState}, id, modelId) {
     Meteor.call('links.remove', id, modelId, (err) => {
       if (err) {

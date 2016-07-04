@@ -1,9 +1,11 @@
 @import "{}/client/modules/core/components/_variables.scss";
 
 .link {
+  opacity: 0.9;
+
   path {
     fill: none;
-    stroke: rgba(#444, 0.8);
+    stroke: #444;
     stroke-width: 4px;
     cursor: pointer;
   }
@@ -19,9 +21,16 @@
 
   .polarity {
     rect {
-      fill: #666;
       stroke: none;
       cursor: pointer;
+
+      &.negative {
+        fill: lighten($error-color, 20%);
+      }
+
+      &.positive {
+        fill: lighten($success-color, 20%);
+      }
     }
     text {
       fill: #fff;
@@ -30,9 +39,28 @@
       pointer-events: none;
       user-select: none;
     }
+
+    .edit-polarity {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    &.editing {
+      > rect {
+        fill: $link-color;
+        stroke: #fff;
+        stroke-width: 2px;
+      }
+      .edit-polarity {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
   }
 
   &.selected {
+    opacity: 1;
+
     path {
       stroke: #333;
       stroke-width: 5px;
@@ -41,9 +69,6 @@
     .control-point {
       opacity: 1;
       visibility: visible;
-    }
-    .polarity {
-      rect { fill: #333; }
     }
   }
 

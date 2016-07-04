@@ -8,6 +8,7 @@ export const depsMapper = (context, actions) => ({
   changePosition: actions.variables.changePosition,
   changeDimensions: actions.variables.changeDimensions,
   remove: actions.variables.remove,
+  select: actions.models.select,
   context: () => context,
 });
 

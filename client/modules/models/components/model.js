@@ -75,11 +75,12 @@ class Model extends React.Component {
       canvasSize: this.refs.canvasRef.getBoundingClientRect(),
     });
 
-    window.addEventListener('resize', debounce(600, () => {
+    this.onResize = debounce(600, () => {
       this.setState({
         canvasSize: this.refs.canvasRef.getBoundingClientRect(),
       });
-    }));
+    });
+    window.addEventListener('resize', this.onResize);
 
     // init materialize tooltips
     $('.tooltipped').tooltip({delay: 20});
@@ -149,6 +150,10 @@ class Model extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+  }
+
   onNewLinkStart(event, id) {
     const pt = (event.changedTouches && event.changedTouches[0]) || event;
     const {canvasSize, xScale, yScale} = this.state;
@@ -198,7 +203,8 @@ class Model extends React.Component {
   }
 
   onCanvasDown() {
-    this.setState({selected: false});
+    const {select} = this.props;
+    select('');
   }
 
   onCanvasUp() {
@@ -285,10 +291,9 @@ class Model extends React.Component {
   }
 
   render() {
-    const {model, variables, links} = this.props;
+    const {model, variables, links, selected} = this.props;
     const {
       scale, zoomTransform,
-      selected,
       editingVariable, editBoxPos,
       justAdded,
       varMapper,
@@ -327,9 +332,6 @@ class Model extends React.Component {
                     polarity={link.polarity}
                     scale={scale}
                     selected={selected === link._id}
-                    selectionCallback={id => {
-                      this.setState({selected: id});
-                    }}
                   />
                 ))}
                 {creatingLink ?
@@ -354,9 +356,6 @@ class Model extends React.Component {
                     scale={scale}
                     selected={selected === variable._id}
                     editing={selected === variable._id && editingVariable}
-                    selectionCallback={id => {
-                      this.setState({selected: id});
-                    }}
                     editCallback={this.onVariableEdit}
                     newLinkStartCallback={this.onNewLinkStart}
                     newLinkEndCallback={this.onNewLinkEnd}
@@ -434,8 +433,10 @@ Model.propTypes = {
   createVariable: React.PropTypes.func.isRequired,
   changeVariableName: React.PropTypes.func.isRequired,
   createLink: React.PropTypes.func.isRequired,
+  select: React.PropTypes.func.isRequired,
   // aux
   error: React.PropTypes.string,
+  selected: React.PropTypes.string,
 };
 
 export default Model;
