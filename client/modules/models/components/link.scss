@@ -3,28 +3,47 @@
 .link {
   path {
     fill: none;
-    stroke: rgba(#333, 0.8);
+    stroke: rgba(#444, 0.8);
     stroke-width: 4px;
-    marker-end: url("#end-arrow");
+    cursor: pointer;
   }
 
   .control-point {
-    fill: #ccc;
-    stroke: #222;
-    stroke-width: 1px;
+    fill: #444;
+    stroke: #fff;
+    stroke-width: 3px;
     cursor: grab;
     opacity: 0;
     visibility: hidden;
+  }
+
+  .polarity {
+    rect {
+      fill: #666;
+      stroke: none;
+      cursor: pointer;
+    }
+    text {
+      fill: #fff;
+      text-anchor: middle;          // horizontal center
+      dominant-baseline: central;   // vertical center
+      pointer-events: none;
+      user-select: none;
+    }
   }
 
   &.selected {
     path {
       stroke: #333;
       stroke-width: 5px;
+      cursor: auto;
     }
     .control-point {
       opacity: 1;
       visibility: visible;
+    }
+    .polarity {
+      rect { fill: #333; }
     }
   }
 

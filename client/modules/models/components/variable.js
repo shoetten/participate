@@ -8,7 +8,7 @@ class Variable extends React.Component {
     this.dragEnd = this.dragEnd.bind(this);
     this.onRemoveClick = this.onRemoveClick.bind(this);
 
-    this.strokeWidth = 7;     // in px
+    this.strokeWidth = 8;     // in px
     this.state = {
       x: props.position.x,
       y: props.position.y,
@@ -193,7 +193,7 @@ class Variable extends React.Component {
           <rect
             ref="innerRectRef"
             className="inner-rect"
-            rx="7" ry="7"
+            rx="6" ry="6"
             width={dimensions.width} height={dimensions.height}
             onMouseDown={this.dragStart}
             onTouchStart={this.dragStart}

@@ -324,6 +324,7 @@ class Model extends React.Component {
                     fromVar={variables[varMapper[link.fromId]]}
                     toVar={variables[varMapper[link.toId]]}
                     controlPointPos={link.controlPointPos}
+                    polarity={link.polarity}
                     scale={scale}
                     selected={selected === link._id}
                     selectionCallback={id => {
@@ -336,6 +337,7 @@ class Model extends React.Component {
                     x1={newLinkStartPos.x} y1={newLinkStartPos.y}
                     x2={newLinkPos.x} y2={newLinkPos.y}
                     className="new-link"
+                    style={{markerEnd: 'url("#end-arrow")'}}
                   />
                 : null}
               </g>
