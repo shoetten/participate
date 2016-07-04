@@ -56,5 +56,24 @@ export default function () {
       Links.update({_id}, {$set: {removed: true}});
       markModelModified(modelId);
     },
+
+    // Used to remove all attached links, when a variable
+    // is deleted.
+    'links.removeAttached'(varId, modelId) {
+      check(this.userId, String);
+      check(modelId, String);
+      checkUserPermissions(this.userId, modelId);
+      // check given data
+      check(varId, String);
+
+      const selector = {
+        $or: [
+          { fromId: varId },
+          { toId: varId },
+        ],
+      };
+
+      Links.update(selector, {$set: {removed: true}}, {multi: true});
+    },
   });
 }

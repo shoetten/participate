@@ -30,5 +30,24 @@ export default function ({Meteor, Collections}) {
 
       Links.update({_id}, {$set: {removed: true}});
     },
+
+    // Used to remove all attached links, when a variable
+    // is deleted.
+    'links.removeAttached'(varId, modelId) {
+      // On client-side, only check if user is logged in
+      check(Meteor.userId(), String);
+      check(modelId, String);
+      // check given data
+      check(varId, String);
+
+      const selector = {
+        $or: [
+          { fromId: varId },
+          { toId: varId },
+        ],
+      };
+
+      Links.update(selector, {$set: {removed: true}}, {multi: true});
+    },
   });
 }
