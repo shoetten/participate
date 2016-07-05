@@ -1,6 +1,6 @@
 import React from 'react';
 import $ from 'jquery';
-import {debounce} from 'lodash/fp';
+import {debounce, find} from 'lodash/fp';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
@@ -17,6 +17,7 @@ const d3 = require('d3');
 import Variable from '../containers/variable';
 import Link from '../containers/link';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
+import {Keys} from '/client/lib/utils';
 
 class Model extends React.Component {
   constructor(props) {
@@ -31,6 +32,7 @@ class Model extends React.Component {
     this.onNewLinkStart = this.onNewLinkStart.bind(this);
     this.onNewLinkMove = this.onNewLinkMove.bind(this);
     this.onNewLinkEnd = this.onNewLinkEnd.bind(this);
+    this.onKeyUp = this.onKeyUp.bind(this);
 
     // these won't change
     this.scaleExtent = [0.5, 5];
@@ -81,11 +83,13 @@ class Model extends React.Component {
     });
     window.addEventListener('resize', this.onResize);
 
+    // Add global key event listener for keyboard shortcuts.
+    document.addEventListener('keyup', this.onKeyUp);
+
     // init materialize tooltips
     $('.tooltipped').tooltip({delay: 20});
 
     const {xScale, yScale} = this.state;
-
     // init the pan & zoom behaviour
     this.zoom = d3.zoom()
       .scaleExtent(this.scaleExtent)
@@ -151,7 +155,44 @@ class Model extends React.Component {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
+    document.removeEventListener('keyup', this.onKeyUp);
   }
+
+  // Keyboard shortcuts.
+  onKeyUp(event) {
+    const {editingVariable} = this.state;
+    const {selected, select} = this.props;
+    if (event.keyCode === Keys.ESCAPE) {
+      if (editingVariable) {      // When a variable name is beeing edited
+        // Abort editing on escape.
+        this.setState({
+          editingVariable: false,
+          justAdded: '',
+        });
+      }
+      if (selected) {
+        // Deselect on escape.
+        select('');
+      }
+    } else if (event.keyCode === Keys.DELETE || event.keyCode === Keys.BACKSPACE) {
+      // When either a variable or a link is selected.
+      if (selected && !editingVariable) {
+        event.preventDefault();
+        const {variables, removeVariable, links, removeLink, model} = this.props;
+        const {varMapper} = this.state;
+        const variable = variables[varMapper[selected]];
+        const link = find({_id: selected}, links);
+        // if a variable is selected
+        if (variable) {
+          removeVariable(variable._id, model._id);
+        } else if (link) {
+          removeLink(link._id, model._id);
+        }
+        select('');
+      }
+    }
+  }
+
 
   onNewLinkStart(event, id) {
     const pt = (event.changedTouches && event.changedTouches[0]) || event;
@@ -430,8 +471,10 @@ Model.propTypes = {
   // actions
   setPageTitle: React.PropTypes.func.isRequired,
   createVariable: React.PropTypes.func.isRequired,
+  removeVariable: React.PropTypes.func.isRequired,
   changeVariableName: React.PropTypes.func.isRequired,
   createLink: React.PropTypes.func.isRequired,
+  removeLink: React.PropTypes.func.isRequired,
   select: React.PropTypes.func.isRequired,
   // aux
   error: React.PropTypes.string,

@@ -101,7 +101,6 @@ class Link extends React.Component {
     changePolarity(id, polarity, modelId);
 
     this.setState({editing: false});
-    select('');   // deselect link
   }
 
   onRemoveClick(event) {
@@ -231,8 +230,8 @@ class Link extends React.Component {
         vector[1] / length * distance,
       ];
       point = {
-        x: Math.round(this.end.x + translationVector[0]),
-        y: Math.round(this.end.y + translationVector[1]),
+        x: Math.round(this.end.x - translationVector[0]),
+        y: Math.round(this.end.y - translationVector[1]),
       };
     }
 
@@ -331,7 +330,7 @@ class Link extends React.Component {
       controlPointPos: control,
       polarityPointPos: polarityPos,
       dragging,
-      editing
+      editing,
     } = this.state;
 
     const classes = `link${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
