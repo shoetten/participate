@@ -86,5 +86,27 @@ export default function () {
 
       Links.update(selector, {$set: {removed: true}}, {multi: true});
     },
+
+    'links.translateAttached'(varId, deltaX, deltaY, modelId) {
+      check(this.userId, String);
+      check(modelId, String);
+      checkUserPermissions(this.userId, modelId);
+      // check given data
+      check(varId, String);
+      check(deltaX, Number);
+      check(deltaY, Number);
+
+      const selector = {
+        $or: [
+          { fromId: varId },
+          { toId: varId },
+        ],
+      };
+
+      Links.update(selector, {$inc: {
+        'controlPointPos.x': deltaX,
+        'controlPointPos.y': deltaY,
+      }}, {multi: true});
+    },
   });
 }

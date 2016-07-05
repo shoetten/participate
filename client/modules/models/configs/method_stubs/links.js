@@ -60,5 +60,27 @@ export default function ({Meteor, Collections}) {
 
       Links.update(selector, {$set: {removed: true}}, {multi: true});
     },
+
+    'links.translateAttached'(varId, deltaX, deltaY, modelId) {
+      // On client-side, only check if user is logged in
+      check(Meteor.userId(), String);
+      check(modelId, String);
+      // check given data
+      check(varId, String);
+      check(deltaX, Number);
+      check(deltaY, Number);
+
+      const selector = {
+        $or: [
+          { fromId: varId },
+          { toId: varId },
+        ],
+      };
+
+      Links.update(selector, {$inc: {
+        'controlPointPos.x': deltaX,
+        'controlPointPos.y': deltaY,
+      }}, {multi: true});
+    },
   });
 }
