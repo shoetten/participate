@@ -1,3 +1,0 @@
-[submodule "packages/std-accounts-material"]
-	path = packages/std-accounts-material
-	url = git@github.com:shoetten/accounts-material.git
