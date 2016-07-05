@@ -25,11 +25,11 @@
       cursor: pointer;
 
       &.negative {
-        fill: lighten($error-color, 20%);
+        fill: lighten($error-color, 15%);
       }
 
       &.positive {
-        fill: lighten($success-color, 20%);
+        fill: lighten($success-color, 15%);
       }
     }
     text {

@@ -51,7 +51,6 @@ class Model extends React.Component {
       scale: 1,                                   // zoom scale
       xScale,                                     // transforms coordinates in x direction
       yScale,                                     // transforms coordinates in y direction
-      selected: false,                            // id of the selected variable, false if none
       editingVariable: false,                     // is a variable name currently beeing edited?
       editBoxPos: {},                             // where the text input field is positioned
       zoomTransform: d3.zoomIdentity.toString(),  // the current css transform
@@ -237,18 +236,18 @@ class Model extends React.Component {
       event.preventDefault();
     }
 
-    const {variables} = this.props;
-    const {xScale, yScale, varMapper} = this.state;
+    const {variables, select} = this.props;
+    const {varMapper} = this.state;
+    select(id);
     const variable = variables[varMapper[id]];
     const x = variable.position.x;
     const y = variable.position.y;
     const dimensions = variable.dimensions;
     this.setState({
       editingVariable: true,
-      selected: id,
       editBoxPos: {
-        left: xScale(x - dimensions.width / 2),
-        top: yScale(y - dimensions.height / 2),
+        left: x - dimensions.width / 2,
+        top: y - dimensions.height / 2,
         width: dimensions.width,
         height: dimensions.height,
       },
@@ -259,8 +258,8 @@ class Model extends React.Component {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
-    const {changeVariableName, variables, model} = this.props;
-    const {selected, varMapper} = this.state;
+    const {changeVariableName, variables, model, selected} = this.props;
+    const {varMapper} = this.state;
     const {variableName} = this.refs;
     changeVariableName(variables[varMapper[selected]]._id, variableName.value.trim(), model._id);
 
@@ -293,7 +292,7 @@ class Model extends React.Component {
   render() {
     const {model, variables, links, selected} = this.props;
     const {
-      scale, zoomTransform,
+      xScale, yScale, scale, zoomTransform,
       editingVariable, editBoxPos,
       justAdded,
       varMapper,
@@ -370,8 +369,8 @@ class Model extends React.Component {
               onSubmit={this.changeVariableName}
               className="edit-variable"
               style={{
-                top: editBoxPos.top,
-                left: editBoxPos.left,
+                top: yScale(editBoxPos.top),
+                left: xScale(editBoxPos.left),
                 width: editBoxPos.width,
                 height: editBoxPos.height,
                 transform: `scale(${scale})`,
