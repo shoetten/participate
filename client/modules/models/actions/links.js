@@ -1,6 +1,6 @@
 
 export default {
-  create({Meteor, LocalState}, fromVar, toVar, polarity, modelId) {
+  create({Meteor, LocalState}, fromVar, toVar, polarity, modelId, callback) {
     const id = Meteor.uuid();
 
     // Set the initial control point position to the mid point
@@ -25,6 +25,7 @@ export default {
       }
     );
 
+    callback(id);
     return LocalState.set('SAVING_ERROR', null);
   },
 

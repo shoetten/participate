@@ -26,6 +26,13 @@ class Link extends React.Component {
     };
   }
 
+  componentWillMount() {
+    const {selected} = this.props;
+    if (selected) {
+      this.setState({editing: true});
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     const {fromVar, toVar, controlPointPos: control} = this.props;
     const {fromVar: newFromVar, toVar: newToVar, controlPointPos: newControl} = nextProps;
@@ -351,7 +358,7 @@ class Link extends React.Component {
           <text x="0" y="0">{polarity < 0 ? '-' : '+'}</text>
 
           <g className="edit-polarity" transform="translate(40, 0)">
-            <g transform="translate(0, -15)">
+            <g transform="translate(0, -13)">
               <rect
                 rx="5" ry="5"
                 x={-(30 / 2)} y={-(25 / 2)}
@@ -361,7 +368,7 @@ class Link extends React.Component {
               />
               <text x="0" y="0">-</text>
             </g>
-            <g transform="translate(0, 15)">
+            <g transform="translate(0, 13)">
               <rect
                 rx="5" ry="5"
                 x={-(30 / 2)} y={-(25 / 2)}

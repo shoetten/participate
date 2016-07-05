@@ -192,11 +192,11 @@ class Model extends React.Component {
 
       // prevent self links
       if (creatingLink !== id) {
-        const {createLink, variables, model} = this.props;
+        const {createLink, variables, model, select} = this.props;
         const {varMapper} = this.state;
         const fromVar = variables[varMapper[creatingLink]];
         const toVar = variables[varMapper[id]];
-        createLink(fromVar, toVar, -1, model._id);
+        createLink(fromVar, toVar, -1, model._id, select);
       }
     }
   }

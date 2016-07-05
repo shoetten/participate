@@ -48,6 +48,8 @@
     &.editing {
       > rect {
         fill: $link-color;
+      }
+      rect {
         stroke: #fff;
         stroke-width: 2px;
       }
