@@ -71,24 +71,6 @@ class Model extends React.Component {
   }
 
   componentDidMount() {
-    // get svg dom size
-    this.setState({
-      canvasSize: this.refs.canvasRef.getBoundingClientRect(),
-    });
-
-    this.onResize = debounce(600, () => {
-      this.setState({
-        canvasSize: this.refs.canvasRef.getBoundingClientRect(),
-      });
-    });
-    window.addEventListener('resize', this.onResize);
-
-    // Add global key event listener for keyboard shortcuts.
-    document.addEventListener('keyup', this.onKeyUp);
-
-    // init materialize tooltips
-    $('.tooltipped').tooltip({delay: 20});
-
     const {xScale, yScale} = this.state;
     // init the pan & zoom behaviour
     this.zoom = d3.zoom()
@@ -107,6 +89,26 @@ class Model extends React.Component {
       // everything else is consumed by d3.
       .on('click', this.onCanvasDown);
     this.eventCatcher.call(this.zoom).on('dblclick.zoom', null);
+
+
+    // get svg dom size & reset zoom to center when finished
+    this.setState({
+      canvasSize: this.refs.canvasRef.getBoundingClientRect(),
+    }, () => this.resetZoom(false));
+
+    this.onResize = debounce(600, () => {
+      this.setState({
+        canvasSize: this.refs.canvasRef.getBoundingClientRect(),
+      });
+    });
+    window.addEventListener('resize', this.onResize);
+
+    // Add global key event listener for keyboard shortcuts.
+    document.addEventListener('keyup', this.onKeyUp);
+
+
+    // init materialize tooltips
+    $('.tooltipped').tooltip({delay: 20});
 
     // XXX: Dirty fix to get the zoom range slider thumb
     // hidden again in Firefox. Until this is resolved:
@@ -322,7 +324,9 @@ class Model extends React.Component {
 
   resetZoom(smooth = true) {
     const selection = smooth ? this.eventCatcher.transition().duration(750) : this.eventCatcher;
-    selection.call(this.zoom.transform, d3.zoomIdentity);
+    const {canvasSize} = this.state;
+    const transform = d3.zoomIdentity.translate(canvasSize.width / 2, canvasSize.height / 2);
+    selection.call(this.zoom.transform, transform);
   }
 
   scaleTo(newScale, smooth = false) {
