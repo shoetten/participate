@@ -9,5 +9,6 @@ export default function () {
     profilePath: '/profile',
     onSignedInHook: () => FlowRouter.go('models.list'),
     onSignedOutHook: () => FlowRouter.go('users.bye'),
+    onPostSignUpHook: () => FlowRouter.go('models.list'),
   });
 }
