@@ -352,7 +352,7 @@ class Model extends React.Component {
         <div className="single-model">
           <svg className={`canvas${creatingLink ? ' creating-link' : ''}`} ref="canvasRef">
             <defs>
-              <marker id="end-arrow" viewBox="0 -5 10 10" refX="6" markerWidth="5" markerHeight="5" orient="auto">
+              <marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
                 <path d="M0,-5L10,0L0,5" className="arrow-head"></path>
               </marker>
             </defs>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {varStrokeWidth} from '../configs/constants';
 
 class Variable extends React.Component {
   constructor(props) {
@@ -9,7 +10,6 @@ class Variable extends React.Component {
     this.onRemoveClick = this.onRemoveClick.bind(this);
     this.onClick = this.onClick.bind(this);
 
-    this.strokeWidth = 8;     // in px
     this.state = {
       x: props.position.x,
       y: props.position.y,
@@ -178,7 +178,7 @@ class Variable extends React.Component {
       x, y,
       dragging,
     } = this.state;
-    const stroke = this.strokeWidth;
+    const stroke = varStrokeWidth;
 
     const classes = `variable${hover ? ' hover' : ''}${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 

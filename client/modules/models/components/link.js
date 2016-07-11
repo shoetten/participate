@@ -1,5 +1,6 @@
 import React from 'react';
-import {isEqual, clone} from 'lodash/fp';
+import {isEqual, clone, sortBy} from 'lodash/fp';
+import {varStrokeWidth} from '../configs/constants';
 
 class Link extends React.Component {
   constructor(props) {
@@ -39,7 +40,9 @@ class Link extends React.Component {
     const {fromVar: newFromVar, toVar: newToVar, controlPointPos: newControl} = nextProps;
 
     if (!isEqual(fromVar.position, newFromVar.position) ||
-        !isEqual(toVar.position, newToVar.position)) {
+        !isEqual(toVar.position, newToVar.position) ||
+        !isEqual(fromVar.dimensions, newFromVar.dimensions) ||
+        !isEqual(toVar.dimensions, newToVar.dimensions)) {
       const path = this.calculatePath(nextProps);
       const polarityPointPos = this.calculatePolarityPoint(nextProps);
       this.setState({path, polarityPointPos});
@@ -154,9 +157,8 @@ class Link extends React.Component {
       this.sweepFlag = '0';
     }
 
-    // XXX: set start and end points to central points for now
-    this.start = fromVar.position;
-    this.end = toVar.position;
+    this.start = this.calculateBorderPoint(fromVar, center, control, 4);
+    this.end = this.calculateBorderPoint(toVar, center, control, 7);
 
     return `M ${this.start.x},${this.start.y} A ${this.radius},${this.radius} 0 ${this.largeFlag},${this.sweepFlag} ${this.end.x},${this.end.y}`;
   }
@@ -208,8 +210,84 @@ class Link extends React.Component {
     return {center, radius};
   }
 
-  calculateBorderPoint(var1, var2) {
+  /**
+   * Calculate the intersection of the border of the given variable rectangle
+   * and the circular arc drawn by this link.
+   * For a better understanding of what is going on here, see:
+   * http://stackoverflow.com/questions/38029109/draw-non-overlapping-arc-between-two-rectangles
+   * @param  {Object} variable     Variable that defines the rectangle border
+   * @param  {Object} circleCenter Center point of the circle that defines the arc
+   * @param  {Object} controlPoint Position of the control point
+   * @param  {Number} padding      Space between the rectangle and the link
+   * @return {Object}              Object containing the intersection point.
+   */
+  calculateBorderPoint(variable, circleCenter, controlPoint, padding) {
+    const a = clone(variable.position);
+    const control = clone(controlPoint);
 
+    // Treat center of circle as coordinate origin.
+    a.x -= circleCenter.x;
+    a.y -= circleCenter.y;
+    control.x -= circleCenter.x;
+    control.y -= circleCenter.y;
+
+
+    let points = [];
+
+    // Check east & west with possible x values
+    const possibleX = [
+      a.x - variable.dimensions.width / 2 - varStrokeWidth - padding,
+      a.x + variable.dimensions.width / 2 + varStrokeWidth + padding,
+    ];
+    possibleX.forEach((x) => {
+      const ySquared = [
+        Math.sqrt(Math.pow(this.radius, 2) - Math.pow(x, 2)),
+        -Math.sqrt(Math.pow(this.radius, 2) - Math.pow(x, 2)),
+      ];
+      // Check if the derived y value is in range of rectangle
+      ySquared.forEach((y) => {
+        if (y >= a.y - variable.dimensions.height / 2 - varStrokeWidth - padding &&
+            y <= a.y + variable.dimensions.height / 2 + varStrokeWidth + padding) {
+          points.push({x, y});
+        }
+      });
+    });
+
+    // Check north & south with possible y values
+    const possibleY = [
+      a.y - variable.dimensions.height / 2 - varStrokeWidth - padding,
+      a.y + variable.dimensions.height / 2 + varStrokeWidth + padding,
+    ];
+    possibleY.forEach((y) => {
+      const xSquared = [
+        Math.sqrt(Math.pow(this.radius, 2) - Math.pow(y, 2)),
+        -Math.sqrt(Math.pow(this.radius, 2) - Math.pow(y, 2)),
+      ];
+      // Check if the derived x value is in range of rectangle
+      xSquared.forEach((x) => {
+        if (x >= a.x - variable.dimensions.width / 2 - varStrokeWidth - padding &&
+            x <= a.x + variable.dimensions.width / 2 + varStrokeWidth + padding) {
+          points.push({x, y});
+        }
+      });
+    });
+
+    // Get the point closest to the control point.
+    points = sortBy((point => (
+      Math.sqrt(Math.pow(control.x - point.x, 2) + Math.pow(control.y - point.y, 2))
+    )), points);
+
+    // Fallback if no point was found
+    // XXX: Remove this.
+    if (points.length === 0) {
+      points.push({x: a.x, y: a.y});
+    }
+
+    // Translate it back.
+    points[0].x += circleCenter.x;
+    points[0].y += circleCenter.y;
+
+    return points[0];
   }
 
   calculatePolarityPoint() {
