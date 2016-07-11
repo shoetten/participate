@@ -344,6 +344,7 @@ class Model extends React.Component {
       creatingLink,
       newLinkStartPos,
       newLinkPos,
+      canvasSize,
     } = this.state;
 
     return (
@@ -359,53 +360,48 @@ class Model extends React.Component {
             <rect
               className="event-catcher"
               x="0" y="0"
-              // just make it huge, so it will cover every screen
-              width="8000" height="8000"
+              width={canvasSize.width} height={canvasSize.height}
               onMouseUp={this.onCanvasUp}
             />
             <g transform={zoomTransform}>
-              <g className="links">
-                {links.map((link) => (
-                  <Link
-                    modelId={model._id}
-                    key={link._id}
-                    id={link._id}
-                    fromVar={variables[varMapper[link.fromId]]}
-                    toVar={variables[varMapper[link.toId]]}
-                    controlPointPos={link.controlPointPos}
-                    polarity={link.polarity}
-                    scale={scale}
-                    selected={selected === link._id}
-                  />
-                ))}
-                {creatingLink ?
-                  <line
-                    x1={newLinkStartPos.x} y1={newLinkStartPos.y}
-                    x2={newLinkPos.x} y2={newLinkPos.y}
-                    className="new-link"
-                    style={{markerEnd: 'url("#end-arrow")'}}
-                  />
-                : null}
-              </g>
+              {links.map((link) => (
+                <Link
+                  modelId={model._id}
+                  key={link._id}
+                  id={link._id}
+                  fromVar={variables[varMapper[link.fromId]]}
+                  toVar={variables[varMapper[link.toId]]}
+                  controlPointPos={link.controlPointPos}
+                  polarity={link.polarity}
+                  scale={scale}
+                  selected={selected === link._id}
+                />
+              ))}
+              {creatingLink ?
+                <line
+                  x1={newLinkStartPos.x} y1={newLinkStartPos.y}
+                  x2={newLinkPos.x} y2={newLinkPos.y}
+                  className="new-link"
+                  style={{markerEnd: 'url("#end-arrow")'}}
+                />
+              : null}
 
-              <g className="variables">
-                {variables.map((variable) => (
-                  <Variable
-                    modelId={model._id}
-                    key={variable._id}
-                    id={variable._id}
-                    name={variable.name}
-                    position={variable.position}
-                    dimensions={variable.dimensions}
-                    scale={scale}
-                    selected={selected === variable._id}
-                    editing={selected === variable._id && editingVariable}
-                    editCallback={this.onVariableEdit}
-                    newLinkStartCallback={this.onNewLinkStart}
-                    newLinkEndCallback={this.onNewLinkEnd}
-                  />
-                ))}
-              </g>
+              {variables.map((variable) => (
+                <Variable
+                  modelId={model._id}
+                  key={variable._id}
+                  id={variable._id}
+                  name={variable.name}
+                  position={variable.position}
+                  dimensions={variable.dimensions}
+                  scale={scale}
+                  selected={selected === variable._id}
+                  editing={selected === variable._id && editingVariable}
+                  editCallback={this.onVariableEdit}
+                  newLinkStartCallback={this.onNewLinkStart}
+                  newLinkEndCallback={this.onNewLinkEnd}
+                />
+              ))}
             </g>
           </svg>
 

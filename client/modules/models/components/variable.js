@@ -7,6 +7,7 @@ class Variable extends React.Component {
     this.dragMove = this.dragMove.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
     this.onRemoveClick = this.onRemoveClick.bind(this);
+    this.onClick = this.onClick.bind(this);
 
     this.strokeWidth = 8;     // in px
     this.state = {
@@ -62,6 +63,15 @@ class Variable extends React.Component {
       document.removeEventListener('mouseup', this.dragEnd);
       this.refs.innerRectRef.removeEventListener('touchmove', this.dragMove);
       this.refs.innerRectRef.removeEventListener('touchend', this.dragEnd);
+    }
+  }
+
+  onClick() {
+    const {id, select, selected} = this.props;
+    if (!selected) {
+      // Show this variable on top
+      this.node.parentElement.appendChild(this.node);
+      select(id);
     }
   }
 
@@ -149,10 +159,7 @@ class Variable extends React.Component {
     } else {
       // if there is no delta, this is not a drag
       // at all, but a click!
-      const {selected, select} = this.props;
-      if (!selected) {
-        select(id);
-      }
+      this.onClick();
     }
     this.setState({dragging: false});
   }
@@ -176,7 +183,7 @@ class Variable extends React.Component {
     const classes = `variable${hover ? ' hover' : ''}${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 
     return (
-      <g className={classes} transform={`translate(${x},${y})`}>
+      <g className={classes} transform={`translate(${x},${y})`} ref={(c) => (this.node = c)}>
         <g
           transform={`translate(${-dimensions.width / 2},${-dimensions.height / 2})`}
           onMouseEnter={() => this.setState({hover: true})}

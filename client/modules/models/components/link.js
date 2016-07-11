@@ -7,6 +7,7 @@ class Link extends React.Component {
     this.dragStart = this.dragStart.bind(this);
     this.dragMove = this.dragMove.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
+    this.onClick = this.onClick.bind(this);
     this.onPolarityEdit = this.onPolarityEdit.bind(this);
     this.onChangePolarity = this.onChangePolarity.bind(this);
     this.onRemoveClick = this.onRemoveClick.bind(this);
@@ -84,20 +85,27 @@ class Link extends React.Component {
     }
   }
 
+  onClick() {
+    const {id, select, selected} = this.props;
+    if (!selected) {
+      // Show this link on top
+      this.node.parentElement.appendChild(this.node);
+      select(id);
+    }
+  }
+
   onPolarityEdit(event) {
     if (event && event.preventDefault) {
       event.stopPropagation();
       event.preventDefault();
     }
 
-    const {select, id} = this.props;
-    select(id);
-
+    this.onClick();
     this.setState({editing: true});
   }
 
   onChangePolarity(polarity) {
-    const {changePolarity, select, id, modelId} = this.props;
+    const {changePolarity, id, modelId} = this.props;
     changePolarity(id, polarity, modelId);
 
     this.setState({editing: false});
@@ -324,7 +332,7 @@ class Link extends React.Component {
   }
 
   render() {
-    const {selected, select, id, polarity} = this.props;
+    const {selected, polarity} = this.props;
     const {
       path,
       controlPointPos: control,
@@ -336,11 +344,11 @@ class Link extends React.Component {
     const classes = `link${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 
     return (
-      <g className={classes}>
+      <g className={classes} ref={(c) => (this.node = c)}>
         <path
           d={path}
           style={{markerEnd: 'url("#end-arrow")'}}
-          onClick={() => select(id)}
+          onClick={this.onClick}
         />
 
         <g
