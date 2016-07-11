@@ -17,13 +17,13 @@ export default function () {
         $or: [
           {
             username: {
-              $regex: new RegExp(`^${query}`),
+              $regex: new RegExp(`^${query}`, 'i'),
             },
           },
           {
             emails: {
               // XXX: Matching by email doesn't work yet.
-              $in: [new RegExp(`^${query}`)],
+              $in: [new RegExp(`^${query}`, 'i')],
             },
           },
         ],
