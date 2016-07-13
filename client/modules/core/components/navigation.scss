@@ -6,6 +6,7 @@ nav .nav-wrapper {
 
     .back {
       margin-right: 0.8rem;
+      vertical-align: top;
       i {
         display: inline;
         vertical-align: top;
@@ -13,8 +14,23 @@ nav .nav-wrapper {
     }
   }
 
-  a.active {
-    background-color: rgba(0, 0, 0, 0.1);
+  // Because materialize navbar doesn't work with buttons by default
+  button {
+    display: inline-block;
+    transition: background-color .3s;
+    font-size: 1rem;
+    color: #fff;
+    background-color: transparent;
+    border: none;
+  }
+
+  ul {
+    button {
+      padding: 0 15px;
+      &.active, &:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+      }
+    }
   }
 
   .btn i {
@@ -26,11 +42,10 @@ nav .nav-wrapper {
     @media (min-width: $small-screen-up) {
       min-width: 155px;
     }
-    a {
-      min-width: 100%;
-    }
 
     .dropdown-button {
+      min-width: 100%;
+
       @media (max-width: $small-screen) {
         span { display: none; }
         i {
@@ -57,6 +72,12 @@ nav .nav-wrapper {
       i.material-icons {
         transform: translateY(-50%) rotate(180deg);
       }
+    }
+  }
+
+  .nav-actions {
+    .dropdown-content {
+      min-width: 160px;
     }
   }
 }

@@ -30,9 +30,12 @@ class Navigation extends React.Component {
             {
               pageTitle ?
                 <span className="brand-logo left">
-                  <a title="Go back to models" href={pathFor('models.list')} className="back">
+                  <button
+                    title="Go back" className="back"
+                    onClick={() => window.history.back()}
+                  >
                     <i className="material-icons">chevron_left</i>
-                  </a>
+                  </button>
                   <span>{pageTitle}</span>
                 </span>
               :
@@ -45,11 +48,11 @@ class Navigation extends React.Component {
               currentUser ?
                 <ul className="right" key="loggedInControls">
                   <li className="user">
-                    <a className="dropdown-button" href="#" data-activates="user-dropdown">
+                    <button className="dropdown-button" href="#" data-activates="user-dropdown">
                       <i className="material-icons left">person</i>
                       <span>{currentUser.username}</span>
                       <i className="material-icons right">arrow_drop_down</i>
-                    </a>
+                    </button>
                     <ul id="user-dropdown" className="dropdown-content">
                       <li><a href={pathFor('models.list')}>
                         {/* XXX: A clearer icon would be nice */}
@@ -66,7 +69,7 @@ class Navigation extends React.Component {
                       </a></li>
                     </ul>
                   </li>
-                  <li>{children}</li>
+                  <li className="nav-actions">{children}</li>
                 </ul>
               :
                 <ul className="right" key="loggedOutControls">
