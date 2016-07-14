@@ -3,9 +3,7 @@ import {STATES} from 'meteor/std:accounts-ui';
 import AuthForms from './auth_forms';
 
 const EnsureLoggedIn = ({loggedIn, children}) => (
-  <div>
-    {loggedIn ? children : <NotLoggedInMessage />}
-  </div>
+  loggedIn ? children : <NotLoggedInMessage />
 );
 
 EnsureLoggedIn.propTypes = {
