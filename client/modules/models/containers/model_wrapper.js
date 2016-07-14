@@ -8,14 +8,16 @@ export const composer = ({context, modelId, setPageTitle}, onData) => {
   if (Meteor.subscribe('models.single', modelId).ready()) {
     const model = Collections.Models.findOne(modelId);
 
-    // Add usernames to members.
-    model.members.map((member) => {
-      const user = Collections.Users.findOne(member.userId);
-      if (user) {
-        member.username = user.username;
-      }
-      return member;
-    });
+    if (model) {
+      // Add usernames to members.
+      model.members.map((member) => {
+        const user = Collections.Users.findOne(member.userId);
+        if (user) {
+          member.username = user.username;
+        }
+        return member;
+      });
+    }
 
     onData(null, {model});
   } else {

@@ -1,4 +1,5 @@
 import React from 'react';
+import EnsureUserRights from '../../users/containers/ensure_user_rights';
 
 class ModelWrapper extends React.Component {
   constructor(props) {
@@ -14,14 +15,18 @@ class ModelWrapper extends React.Component {
   render() {
     const {content, model} = this.props;
 
-    return content(model);
+    return (
+      <EnsureUserRights model={model} action="view">
+        {content(model)}
+      </EnsureUserRights>
+    );
   }
 }
 
 ModelWrapper.propTypes = {
   content: React.PropTypes.func.isRequired,
   // data
-  model: React.PropTypes.object.isRequired,
+  model: React.PropTypes.object,
   // actions
   setPageTitle: React.PropTypes.func.isRequired,
 };

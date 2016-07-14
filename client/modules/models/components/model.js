@@ -16,7 +16,6 @@ const Material = Materialize.Materialize;
 const d3 = require('d3');
 import Variable from '../containers/variable';
 import Link from '../containers/link';
-import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 import {Keys} from '/client/lib/utils';
 
 class Model extends React.Component {
@@ -351,114 +350,112 @@ class Model extends React.Component {
     } = this.state;
 
     return (
-      <EnsureLoggedIn>
-        <div className="single-model">
-          <svg className={`canvas${creatingLink ? ' creating-link' : ''}`} ref="canvasRef">
-            <defs>
-              <marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
-                <path d="M0,-5L10,0L0,5" className="arrow-head"></path>
-              </marker>
-            </defs>
+      <div className="single-model">
+        <svg className={`canvas${creatingLink ? ' creating-link' : ''}`} ref="canvasRef">
+          <defs>
+            <marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M0,-5L10,0L0,5" className="arrow-head"></path>
+            </marker>
+          </defs>
 
-            <rect
-              className="event-catcher"
-              x="0" y="0"
-              width={canvasSize.width} height={canvasSize.height}
-              onMouseUp={this.onCanvasUp}
-            />
-            <g transform={zoomTransform}>
-              {links.map((link) => (
-                <Link
-                  modelId={model._id}
-                  key={link._id}
-                  id={link._id}
-                  fromVar={variables[varMapper[link.fromId]]}
-                  toVar={variables[varMapper[link.toId]]}
-                  controlPointPos={link.controlPointPos}
-                  polarity={link.polarity}
-                  scale={scale}
-                  selected={selected === link._id}
-                />
-              ))}
-              {creatingLink ?
-                <line
-                  x1={newLinkStartPos.x} y1={newLinkStartPos.y}
-                  x2={newLinkPos.x} y2={newLinkPos.y}
-                  className="new-link"
-                  style={{markerEnd: 'url("#end-arrow")'}}
-                />
-              : null}
-
-              {variables.map((variable) => (
-                <Variable
-                  modelId={model._id}
-                  key={variable._id}
-                  id={variable._id}
-                  name={variable.name}
-                  position={variable.position}
-                  dimensions={variable.dimensions}
-                  scale={scale}
-                  selected={selected === variable._id}
-                  editing={selected === variable._id && editingVariable}
-                  editCallback={this.onVariableEdit}
-                  newLinkStartCallback={this.onNewLinkStart}
-                  newLinkEndCallback={this.onNewLinkEnd}
-                />
-              ))}
-            </g>
-          </svg>
-
-          {editingVariable !== false ?
-            <form
-              onSubmit={this.changeVariableName}
-              className="edit-variable"
-              style={{
-                top: yScale(editBoxPos.top),
-                left: xScale(editBoxPos.left),
-                width: editBoxPos.width,
-                height: editBoxPos.height,
-                transform: `scale(${scale})`,
-              }}
-            >
-              <input
-                type="text"
-                ref="variableName"
-                defaultValue={justAdded ? '' : variables[varMapper[selected]].name}
-                placeholder="Variable name.."
-                onBlur={this.changeVariableName}
+          <rect
+            className="event-catcher"
+            x="0" y="0"
+            width={canvasSize.width} height={canvasSize.height}
+            onMouseUp={this.onCanvasUp}
+          />
+          <g transform={zoomTransform}>
+            {links.map((link) => (
+              <Link
+                modelId={model._id}
+                key={link._id}
+                id={link._id}
+                fromVar={variables[varMapper[link.fromId]]}
+                toVar={variables[varMapper[link.toId]]}
+                controlPointPos={link.controlPointPos}
+                polarity={link.polarity}
+                scale={scale}
+                selected={selected === link._id}
               />
-            </form>
-          : null}
-
-          <div className="zoomer">
-            <i
-              className="reset-zoom material-icons tooltipped"
-              data-position="right"
-              data-tooltip="Reset zoom"
-              onClick={this.resetZoom}
-            >
-              zoom_out_map
-            </i>
-            <div className="range-field">
-              <input
-                ref="zoomerRef"
-                type="range"
-                step="0.1"
-                min="1" max="100"
-                value={this.zoomScale.invert(scale)}
-                onChange={() => this.scaleTo(this.zoomScale(this.refs.zoomerRef.value))}
+            ))}
+            {creatingLink ?
+              <line
+                x1={newLinkStartPos.x} y1={newLinkStartPos.y}
+                x2={newLinkPos.x} y2={newLinkPos.y}
+                className="new-link"
+                style={{markerEnd: 'url("#end-arrow")'}}
               />
-            </div>
-          </div>
+            : null}
 
-          <button
-            className="btn-floating btn-large waves-effect waves-light new"
-            onClick={(e) => this.onCreateVariable(e, {x: -130, y: -130})}
+            {variables.map((variable) => (
+              <Variable
+                modelId={model._id}
+                key={variable._id}
+                id={variable._id}
+                name={variable.name}
+                position={variable.position}
+                dimensions={variable.dimensions}
+                scale={scale}
+                selected={selected === variable._id}
+                editing={selected === variable._id && editingVariable}
+                editCallback={this.onVariableEdit}
+                newLinkStartCallback={this.onNewLinkStart}
+                newLinkEndCallback={this.onNewLinkEnd}
+              />
+            ))}
+          </g>
+        </svg>
+
+        {editingVariable !== false ?
+          <form
+            onSubmit={this.changeVariableName}
+            className="edit-variable"
+            style={{
+              top: yScale(editBoxPos.top),
+              left: xScale(editBoxPos.left),
+              width: editBoxPos.width,
+              height: editBoxPos.height,
+              transform: `scale(${scale})`,
+            }}
           >
-            <i className="material-icons">add</i>
-          </button>
+            <input
+              type="text"
+              ref="variableName"
+              defaultValue={justAdded ? '' : variables[varMapper[selected]].name}
+              placeholder="Variable name.."
+              onBlur={this.changeVariableName}
+            />
+          </form>
+        : null}
+
+        <div className="zoomer">
+          <i
+            className="reset-zoom material-icons tooltipped"
+            data-position="right"
+            data-tooltip="Reset zoom"
+            onClick={this.resetZoom}
+          >
+            zoom_out_map
+          </i>
+          <div className="range-field">
+            <input
+              ref="zoomerRef"
+              type="range"
+              step="0.1"
+              min="1" max="100"
+              value={this.zoomScale.invert(scale)}
+              onChange={() => this.scaleTo(this.zoomScale(this.refs.zoomerRef.value))}
+            />
+          </div>
         </div>
-      </EnsureLoggedIn>
+
+        <button
+          className="btn-floating btn-large waves-effect waves-light new"
+          onClick={(e) => this.onCreateVariable(e, {x: -130, y: -130})}
+        >
+          <i className="material-icons">add</i>
+        </button>
+      </div>
     );
   }
 }

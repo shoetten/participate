@@ -6,7 +6,6 @@ const Material = Materialize.Materialize;
 import getSlug from 'speakingurl';
 
 import InputAutocompleteUsers from '../containers/input_autocomplete_users';
-import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
 class EditModel extends React.Component {
   constructor(props) {
@@ -121,145 +120,143 @@ class EditModel extends React.Component {
     } = this.props;
 
     return (
-      <EnsureLoggedIn>
-        <div id={!model ? 'new-model' : 'edit-model'} className={modal ? 'modal bottom-sheet' : ''}>
-          <form ref="formRef" className="edit-model modal-content" onSubmit={this.createModel}>
-            <div className="row">
-              {!model ?
-                <h4>New model</h4>
-              :
-                <h4>
-                  Edit model
-                  <i
-                    className="material-icons tooltipped help"
-                    data-tooltip="Changes are saved automagically."
-                    data-position="right"
-                  >
-                    help
-                  </i>
-                </h4>
-              }
-
-              {error && modal ? <p className="error">
-                <i className="material-icons left">error_outline</i>
-                {error}
-              </p> : null}
-            </div>
-
-            <div className="row">
-              <div className="input-field col s12 m8 l6">
-                <input
-                  id="title" ref="titleRef" type="text" className="validate"
-                  defaultValue={model ? model.title : ''}
-                  onChange={this.updateSlug}
-                />
-                <label htmlFor="title">Title</label>
-              </div>
-              <div className="input-field col s12 m8 l6">
-                <input
-                  id="slug" ref="slugRef" type="text" className="validate"
-                  value={this.state.slugValue} onChange={this.onSlugChange}
-                />
-                <label htmlFor="slug">Slug</label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="input-field col s12">
-                <textarea
-                  id="description" ref="descRef"
-                  className="materialize-textarea validate"
-                  defaultValue={model ? model.description : ''}
-                />
-                <label htmlFor="description">Description</label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col">
-                <div className="switch left">
-                  <label>
-                    Private
-                    <input
-                      type="checkbox" ref="permissionRef"
-                      defaultChecked={model && model.permission === 'public'}
-                    />
-                    <span className="lever"></span>
-                    Public
-                  </label>
-                </div>
-                <i className="material-icons tooltipped help" data-position="right">
-                  help
-                  <div className="tooltipped-content">
-                    Private models are visible only to members.<br />
-                    Public models can be accessed by everybody with the link.
-                  </div>
-                </i>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="col s12">
-                {model ?
-                  <ul className="collection">
-                    {model.members.map((member) => (
-                      <li
-                        key={member.userId}
-                        className={`collection-item avatar${member.isAdmin ? ' admin' : ''}`}
-                      >
-                        <i className="material-icons circle">person</i>
-                        <span className="title">{member.username}</span>
-                        <p>Joined on {member.joined.toLocaleString()}</p>
-
-                        <div className="secondary-content">
-                          <button
-                            className="waves-effect waves-light btn admin tooltipped"
-                            data-tooltip={member.isAdmin ? 'Revoke admin' : 'Make admin'}
-                          >
-                            Admin
-                          </button>
-                          <button
-                            className="waves-effect waves-light btn remove tooltipped"
-                            data-tooltip="Remove member"
-                          >
-                            <i className="material-icons">delete</i>
-                          </button>
-                        </div>
-                      </li>
-                    ))}
-                    <li className="collection-item avatar">
-                      <InputAutocompleteUsers
-                        exposeApiCallback={this.handleMembersApiCallback}
-                        onChange={(newMembers) => this.setState({newMembers})}
-                      />
-                    </li>
-                  </ul>
-                :
-                  <InputAutocompleteUsers
-                    exposeApiCallback={this.handleMembersApiCallback}
-                    onChange={(newMembers) => this.setState({newMembers})}
-                  />
-                }
-              </div>
-            </div>
-
+      <div id={!model ? 'new-model' : 'edit-model'} className={modal ? 'modal bottom-sheet' : ''}>
+        <form ref="formRef" className="edit-model modal-content" onSubmit={this.createModel}>
+          <div className="row">
             {!model ?
-              <div className="modal-footer">
-                <button type="submit" className="btn waves-effect waves-light">
-                  <i className="material-icons left">add</i>
-                  Add Model
-                </button>
-                <button
-                  type="reset" onClick={this.reset}
-                  className="btn-flat modal-action modal-close waves-effect waves-light"
+              <h4>New model</h4>
+            :
+              <h4>
+                Edit model
+                <i
+                  className="material-icons tooltipped help"
+                  data-tooltip="Changes are saved automagically."
+                  data-position="right"
                 >
-                  {modal ? 'Cancel' : 'Reset'}
-                </button>
-              </div>
-              : null
+                  help
+                </i>
+              </h4>
             }
 
-          </form>
-        </div>
-      </EnsureLoggedIn>
+            {error && modal ? <p className="error">
+              <i className="material-icons left">error_outline</i>
+              {error}
+            </p> : null}
+          </div>
+
+          <div className="row">
+            <div className="input-field col s12 m8 l6">
+              <input
+                id="title" ref="titleRef" type="text" className="validate"
+                defaultValue={model ? model.title : ''}
+                onChange={this.updateSlug}
+              />
+              <label htmlFor="title">Title</label>
+            </div>
+            <div className="input-field col s12 m8 l6">
+              <input
+                id="slug" ref="slugRef" type="text" className="validate"
+                value={this.state.slugValue} onChange={this.onSlugChange}
+              />
+              <label htmlFor="slug">Slug</label>
+            </div>
+          </div>
+          <div className="row">
+            <div className="input-field col s12">
+              <textarea
+                id="description" ref="descRef"
+                className="materialize-textarea validate"
+                defaultValue={model ? model.description : ''}
+              />
+              <label htmlFor="description">Description</label>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <div className="switch left">
+                <label>
+                  Private
+                  <input
+                    type="checkbox" ref="permissionRef"
+                    defaultChecked={model && model.permission === 'public'}
+                  />
+                  <span className="lever"></span>
+                  Public
+                </label>
+              </div>
+              <i className="material-icons tooltipped help" data-position="right">
+                help
+                <div className="tooltipped-content">
+                  Private models are visible only to members.<br />
+                  Public models can be accessed by everybody with the link.
+                </div>
+              </i>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col s12">
+              {model ?
+                <ul className="collection">
+                  {model.members.map((member) => (
+                    <li
+                      key={member.userId}
+                      className={`collection-item avatar${member.isAdmin ? ' admin' : ''}`}
+                    >
+                      <i className="material-icons circle">person</i>
+                      <span className="title">{member.username}</span>
+                      <p>Joined on {member.joined.toLocaleString()}</p>
+
+                      <div className="secondary-content">
+                        <button
+                          className="waves-effect waves-light btn admin tooltipped"
+                          data-tooltip={member.isAdmin ? 'Revoke admin' : 'Make admin'}
+                        >
+                          Admin
+                        </button>
+                        <button
+                          className="waves-effect waves-light btn remove tooltipped"
+                          data-tooltip="Remove member"
+                        >
+                          <i className="material-icons">delete</i>
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                  <li className="collection-item avatar">
+                    <InputAutocompleteUsers
+                      exposeApiCallback={this.handleMembersApiCallback}
+                      onChange={(newMembers) => this.setState({newMembers})}
+                    />
+                  </li>
+                </ul>
+              :
+                <InputAutocompleteUsers
+                  exposeApiCallback={this.handleMembersApiCallback}
+                  onChange={(newMembers) => this.setState({newMembers})}
+                />
+              }
+            </div>
+          </div>
+
+          {!model ?
+            <div className="modal-footer">
+              <button type="submit" className="btn waves-effect waves-light">
+                <i className="material-icons left">add</i>
+                Add Model
+              </button>
+              <button
+                type="reset" onClick={this.reset}
+                className="btn-flat modal-action modal-close waves-effect waves-light"
+              >
+                {modal ? 'Cancel' : 'Reset'}
+              </button>
+            </div>
+            : null
+          }
+
+        </form>
+      </div>
     );
   }
 }
