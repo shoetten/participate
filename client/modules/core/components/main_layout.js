@@ -2,7 +2,7 @@ import React from 'react';
 
 import Navigation from '../containers/navigation';
 
-class Layout extends React.Component {
+class MainLayout extends React.Component {
   render() {
     const {content, NavActions} = this.props;
 
@@ -15,6 +15,9 @@ class Layout extends React.Component {
         </header>
 
         <main>
+          {/* container for materialize css toasts */}
+          <div id="toast-container"></div>
+          {/* main content renders here */}
           {content()}
         </main>
 
@@ -26,9 +29,9 @@ class Layout extends React.Component {
   }
 }
 
-Layout.propTypes = {
+MainLayout.propTypes = {
   content: React.PropTypes.func.isRequired,
   NavActions: React.PropTypes.func,
 };
 
-export default Layout;
+export default MainLayout;

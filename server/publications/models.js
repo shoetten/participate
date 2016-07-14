@@ -13,7 +13,7 @@ export default function () {
     return {
       find() {
         const selector = {
-          'members.userId': this.userId,
+          members: {$elemMatch: {userId: this.userId, removed: {$ne: true}}},
         };
         return Models.find(selector);
       },
@@ -44,10 +44,10 @@ export default function () {
       find() {
         const selector = {
           _id: modelId,
-          // If the model is not public the user has to be a member of it to see it.
+          // If the model is not public, the user has to be a member of it to see it.
           $or: [
             { permission: 'public' },
-            { 'members.userId': this.userId },
+            { members: {$elemMatch: {userId: this.userId, removed: {$ne: true}}} },
           ],
         };
         return Models.find(selector);
@@ -62,6 +62,20 @@ export default function () {
         {
           find(model) {
             return Links.find({modelId: model._id});
+          },
+        },
+        {
+          find(model) {
+            // publish all users attached to model
+            const memberIds = model.members.map((member) => (member.userId));
+            const selector = {
+              _id: {$in: memberIds},
+            };
+            const options = {
+              // publish only username for now
+              fields: {username: 1},
+            };
+            return Users.find(selector, options);
           },
         },
       ],

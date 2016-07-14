@@ -15,6 +15,22 @@
 main {
   position: relative;
   padding: $padding;
+
+  #toast-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: auto;
+    .toast { margin: 0 0 8px; }
+    @media (min-width: $small-screen-up) {
+      right: 2%;
+      left: auto;
+      .toast { margin: 10px 0 0; }
+    }
+    .toast-error {
+      background: $error-color;
+    }
+  }
 }
 
 /* Global aux styles

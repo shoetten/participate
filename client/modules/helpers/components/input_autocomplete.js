@@ -94,7 +94,7 @@ InputAutocomplete.propTypes = {
   exposeApiCallback: React.PropTypes.func.isRequired,
   onChange: React.PropTypes.func.isRequired,
   setQuery: React.PropTypes.func.isRequired,
-  initialTags: React.PropTypes.object,
+  initialTags: React.PropTypes.array,
   busy: React.PropTypes.bool,
   suggestions: React.PropTypes.array,
 };

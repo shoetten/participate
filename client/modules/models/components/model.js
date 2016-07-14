@@ -62,12 +62,6 @@ class Model extends React.Component {
       newLinkStartPos: {},
       newLinkPos: {},
     };
-
-    const {setPageTitle, model} = this.props;
-    // if user is not authorized, there might be no model
-    if (model) {
-      setPageTitle(model.title);
-    }
   }
 
   componentDidMount() {
@@ -108,7 +102,16 @@ class Model extends React.Component {
 
 
     // init materialize tooltips
-    $('.tooltipped').tooltip({delay: 20});
+    $('.tooltipped').tooltip({delay: 30});
+    // XXX: HTML in materialize tooltips. This hack should be removed, once
+    // materialize css comes up with something better, see
+    // https://github.com/Dogfalo/materialize/issues/1537
+    $('.tooltipped').each((index, el) => {
+      const span = $(`#${$(el).attr('data-tooltip-id')} > span:first-child`);
+      const html = $(el).find('.tooltipped-content').html() || $(el).attr('data-tooltip');
+      span.before(html);
+      span.remove();
+    });
 
     // XXX: Dirty fix to get the zoom range slider thumb
     // hidden again in Firefox. Until this is resolved:
@@ -448,9 +451,6 @@ class Model extends React.Component {
             </div>
           </div>
 
-          {/* container for materialize css toasts */}
-          <div id="toast-container"></div>
-
           <button
             className="btn-floating btn-large waves-effect waves-light new"
             onClick={(e) => this.onCreateVariable(e, {x: -130, y: -130})}
@@ -469,7 +469,6 @@ Model.propTypes = {
   variables: React.PropTypes.array.isRequired,
   links: React.PropTypes.array.isRequired,
   // actions
-  setPageTitle: React.PropTypes.func.isRequired,
   createVariable: React.PropTypes.func.isRequired,
   removeVariable: React.PropTypes.func.isRequired,
   changeVariableName: React.PropTypes.func.isRequired,

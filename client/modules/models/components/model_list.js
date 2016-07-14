@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import {pathFor} from '/lib/utils';
-import NewModel from '../containers/new_model';
+import EditModel from '../containers/edit_model';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 
 class ModelList extends React.Component {
@@ -11,8 +11,6 @@ class ModelList extends React.Component {
   }
 
   showModelDialog(event) {
-    // Becaus the test cannot get event argument
-    // so call preventDefault() on undefined cause an error
     if (event && event.preventDefault) {
       event.preventDefault();
     }
@@ -98,7 +96,7 @@ class ModelList extends React.Component {
             <i className="material-icons">add</i>
           </a>
 
-          <NewModel />
+          <EditModel />
         </div>
       </EnsureLoggedIn>
     );

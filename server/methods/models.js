@@ -2,6 +2,7 @@ import {Models} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {check} from 'meteor/check';
 import {flow, uniqWith, isEqual, reduce} from 'lodash/fp';
+import {checkUserPermissions} from '../lib/utils';
 
 export default function () {
   Meteor.methods({
@@ -17,8 +18,8 @@ export default function () {
 
       const createdAt = new Date();
       members.push({id: this.userId});
-      // Alternative to _.chain.
-      // See https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba
+      // Alternative to _.chain. See
+      // https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba
       const membersDoc = flow(
         uniqWith(isEqual),
         reduce((results, member) => {

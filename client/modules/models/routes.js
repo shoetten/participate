@@ -25,19 +25,7 @@ export default function (injectDeps, {FlowRouter}) {
     action() {
       const ModelList = require('./containers/model_list').default;
       mount(MainLayoutCtxHot, {
-        NavActions,
         content: () => (<ModelList />),
-      });
-    },
-  });
-
-  FlowRouter.route('/model/:modelId/:modelSlug', {
-    name: 'models.single',
-    action({modelId}) {
-      const Model = require('./containers/model').default;
-      mount(MainLayoutCtxHot, {
-        NavActions,
-        content: () => (<Model modelId={modelId} />),
       });
     },
   });
@@ -45,10 +33,42 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/new', {
     name: 'models.new',
     action() {
-      const NewModel = require('./containers/new_model').default;
+      const NewModel = require('./containers/edit_model').default;
       mount(MainLayoutCtxHot, {
-        NavActions,
         content: () => (<NewModel modal={false} />),
+      });
+    },
+  });
+
+  FlowRouter.route('/model/edit/:modelId', {
+    name: 'models.edit',
+    action({modelId}) {
+      const ModelWrapper = require('./containers/model_wrapper').default;
+      const EditModel = require('./containers/edit_model').default;
+      mount(MainLayoutCtxHot, {
+        content: () => (
+          <ModelWrapper
+            modelId={modelId}
+            content={(model) => (<EditModel model={model} modal={false} />)}
+          />
+        ),
+      });
+    },
+  });
+
+  FlowRouter.route('/model/:modelId/:modelSlug', {
+    name: 'models.single',
+    action({modelId}) {
+      const ModelWrapper = require('./containers/model_wrapper').default;
+      const Model = require('./containers/model').default;
+      mount(MainLayoutCtxHot, {
+        NavActions: () => (<NavActions modelId={modelId} />),
+        content: () => (
+          <ModelWrapper
+            modelId={modelId}
+            content={(model) => (<Model model={model} />)}
+          />
+          ),
       });
     },
   });
@@ -58,8 +78,9 @@ if (module.hot) {
   module.hot.accept([
     '../core/components/main_layout',
     './containers/model_list',
+    './containers/model_wrapper',
     './containers/model',
-    './containers/new_model',
+    './containers/edit_model',
   ], () => {
     // If any of the above files (or their dependencies) are updated, all we
     // really need to do is re-run the current route's action() method, which

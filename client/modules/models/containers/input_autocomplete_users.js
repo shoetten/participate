@@ -1,5 +1,5 @@
 import {Mongo} from 'meteor/mongo';
-import {useDeps, composeAll, composeWithTracker} from 'mantra-core';
+import {useDeps, composeAll, compose, composeWithTracker} from 'mantra-core';
 import InputAutocomplete from '../../helpers/components/input_autocomplete';
 
 const AutocompleteUsers = new Mongo.Collection('autocomplete.users');
@@ -15,9 +15,9 @@ export const composer = ({context}, onData) => {
         limit: 6,
       };
 
-      const suggestions = AutocompleteUsers.find({}, options).fetch().map((item) => ({
-        id: item._id,
-        name: item.username,
+      const suggestions = AutocompleteUsers.find({}, options).fetch().map((user) => ({
+        id: user._id,
+        name: user.username,
       }));
 
       onData(null, {suggestions, busy: false});
@@ -29,12 +29,25 @@ export const composer = ({context}, onData) => {
   }
 };
 
+export const initialDataComposer = ({context, initialMembers}, onData) => {
+  if (initialMembers) {
+    const initialTags = initialMembers.map((member) => ({
+      id: member._id,
+      name: member.username,
+    }));
+    onData(null, {initialTags});
+  } else {
+    onData(null, {});
+  }
+};
+
 export const depsMapper = (context, actions) => ({
   setQuery: actions.inputAutocompleteUsers.setQuery,
   context: () => context,
 });
 
 export default composeAll(
+  compose(initialDataComposer),
   composeWithTracker(composer),
   useDeps(depsMapper)
 )(InputAutocomplete);
