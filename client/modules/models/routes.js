@@ -10,12 +10,12 @@ let localFlowRouter;
 export default function (injectDeps, {FlowRouter}) {
   localFlowRouter = FlowRouter;
 
-  const MainLayoutCtxHot = function (props) {
-    const MainLayout = require('../core/components/main_layout').default;
-    const MainLayoutCtx = injectDeps(MainLayout);
+  const DataLoaderCtxHot = function (props) {
+    const DataLoader = require('../core/containers/data_loader').default;
+    const DataLoaderCtx = injectDeps(DataLoader);
     return (
       <AppContainer>
-        <MainLayoutCtx {...props} />
+        <DataLoaderCtx {...props} />
       </AppContainer>
     );
   };
@@ -24,7 +24,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'models.list',
     action() {
       const ModelList = require('./containers/model_list').default;
-      mount(MainLayoutCtxHot, {
+      mount(DataLoaderCtxHot, {
         content: () => (<ModelList />),
       });
     },
@@ -33,9 +33,9 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/new', {
     name: 'models.new',
     action() {
-      const NewModel = require('./containers/edit_model').default;
-      mount(MainLayoutCtxHot, {
-        content: () => (<NewModel modal={false} />),
+      const EditModel = require('./containers/edit_model').default;
+      mount(DataLoaderCtxHot, {
+        content: () => (<EditModel modal={false} />),
       });
     },
   });
@@ -45,11 +45,12 @@ export default function (injectDeps, {FlowRouter}) {
     action({modelId}) {
       const ModelWrapper = require('./containers/model_wrapper').default;
       const EditModel = require('./containers/edit_model').default;
-      mount(MainLayoutCtxHot, {
-        content: () => (
+      mount(DataLoaderCtxHot, {
+        modelId,
+        content: (model) => (
           <ModelWrapper
-            modelId={modelId}
-            content={(model) => (<EditModel model={model} modal={false} />)}
+            model={model}
+            content={() => (<EditModel model={model} modal={false} />)}
           />
         ),
       });
@@ -61,12 +62,13 @@ export default function (injectDeps, {FlowRouter}) {
     action({modelId}) {
       const ModelWrapper = require('./containers/model_wrapper').default;
       const Model = require('./containers/model').default;
-      mount(MainLayoutCtxHot, {
-        NavActions: () => (<NavActions modelId={modelId} />),
-        content: () => (
+      mount(DataLoaderCtxHot, {
+        modelId,
+        NavActions,
+        content: (model) => (
           <ModelWrapper
-            modelId={modelId}
-            content={(model) => (<Model model={model} />)}
+            model={model}
+            content={() => (<Model model={model} />)}
           />
           ),
       });
@@ -76,7 +78,7 @@ export default function (injectDeps, {FlowRouter}) {
 
 if (module.hot) {
   module.hot.accept([
-    '../core/components/main_layout',
+    '../core/containers/data_loader',
     './containers/model_list',
     './containers/model_wrapper',
     './containers/model',
