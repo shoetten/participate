@@ -1,25 +1,29 @@
 import React from 'react';
+import EnsureUserRights from '/client/modules/users/containers/ensure_user_rights';
 import {pathFor} from '/lib/utils';
 
-const NavActions = ({model}) => (
+const NavActions = ({model, modelView}) => (
   <ul>
-    <li className="model-nav">
-      <button className="dropdown-button" href="#" data-activates="model-dropdown">
-        <i className="material-icons right">more_vert</i>
-      </button>
-      <ul id="model-dropdown" className="dropdown-content">
-        <li><a href={pathFor('models.edit', {modelId: model._id})}>
-          <i className="material-icons left">edit</i>
-          <span>Edit model</span>
-        </a></li>
-      </ul>
-    </li>
+    <EnsureUserRights model={model} action="admin">
+      <li className={modelView === 'edit' ? 'active' : ''}>
+        {modelView === 'edit' ?
+          <a href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}>
+            <i className="material-icons">edit</i>
+          </a>
+        :
+          <a href={pathFor('models.edit', {modelId: model._id})}>
+            <i className="material-icons">edit</i>
+          </a>
+        }
+
+      </li>
+    </EnsureUserRights>
   </ul>
 );
 
 NavActions.propTypes = {
   model: React.PropTypes.object.isRequired,
+  modelView: React.PropTypes.string,
 };
-
 
 export default NavActions;

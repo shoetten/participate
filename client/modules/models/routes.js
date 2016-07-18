@@ -47,6 +47,8 @@ export default function (injectDeps, {FlowRouter}) {
       const EditModel = require('./containers/edit_model').default;
       mount(DataLoaderCtxHot, {
         modelId,
+        NavActions,
+        modelView: 'edit',
         content: (model) => (
           <ModelWrapper
             model={model}
@@ -65,6 +67,7 @@ export default function (injectDeps, {FlowRouter}) {
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,
+        modelView: 'view',
         content: (model) => (
           <ModelWrapper
             model={model}

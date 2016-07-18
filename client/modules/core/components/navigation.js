@@ -29,12 +29,12 @@ class Navigation extends React.Component {
           <div className="nav-wrapper">
             {pageTitle ?
               <span className="brand-logo left">
-                <button
-                  title="Go back" className="back"
-                  onClick={() => window.history.back()}
+                <a
+                  title="Go back to models" className="back"
+                  href={pathFor('models.list')}
                 >
                   <i className="material-icons">chevron_left</i>
-                </button>
+                </a>
                 <span>{pageTitle}</span>
               </span>
             :
@@ -45,8 +45,9 @@ class Navigation extends React.Component {
 
             {currentUser ?
               <ul className="right" key="loggedInControls">
+                <li className="nav-actions">{children}</li>
                 <li className="user">
-                  <button className="dropdown-button" href="#" data-activates="user-dropdown">
+                  <button className="dropdown-button" data-activates="user-dropdown">
                     <i className="material-icons left">person</i>
                     <span>{currentUser.username}</span>
                     <i className="material-icons right">arrow_drop_down</i>
@@ -67,7 +68,6 @@ class Navigation extends React.Component {
                     </a></li>
                   </ul>
                 </li>
-                <li className="nav-actions">{children}</li>
               </ul>
             :
               <ul className="right" key="loggedOutControls">

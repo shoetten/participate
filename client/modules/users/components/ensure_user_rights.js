@@ -1,8 +1,7 @@
 import React from 'react';
-import NotFound from '/client/modules/core/components/not_found';
 
 const EnsureUserRights = ({isAllowed, children}) => (
-  isAllowed ? children : <NotFound />
+  isAllowed ? children : null
 );
 
 EnsureUserRights.propTypes = {

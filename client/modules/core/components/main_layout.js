@@ -4,13 +4,13 @@ import Navigation from '../containers/navigation';
 
 class MainLayout extends React.Component {
   render() {
-    const {content, NavActions, model} = this.props;
+    const {content, NavActions, model, modelView} = this.props;
 
     return (
       <div>
         <header>
           <Navigation>
-            {NavActions ? <NavActions model={model} /> : null}
+            {NavActions ? <NavActions model={model} modelView={modelView} /> : null}
           </Navigation>
         </header>
 
@@ -33,6 +33,7 @@ MainLayout.propTypes = {
   content: React.PropTypes.func.isRequired,
   NavActions: React.PropTypes.func,
   model: React.PropTypes.object,
+  modelView: React.PropTypes.string,
 };
 
 export default MainLayout;

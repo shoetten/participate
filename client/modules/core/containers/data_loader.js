@@ -18,6 +18,7 @@ export const composer = ({context, modelId}, onData) => {
           }
           return member;
         });
+
         onData(null, {model});
       }
     } else {
