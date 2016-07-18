@@ -12,12 +12,17 @@ class ModelWrapper extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const {setPageTitle} = this.props;
+    setPageTitle();
+  }
+
   render() {
     const {content, model} = this.props;
 
     return (
       <EnsureUserRights model={model} action="view">
-        {content(model)}
+        {content()}
       </EnsureUserRights>
     );
   }

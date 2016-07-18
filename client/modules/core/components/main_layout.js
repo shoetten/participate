@@ -4,13 +4,13 @@ import Navigation from '../containers/navigation';
 
 class MainLayout extends React.Component {
   render() {
-    const {content, NavActions} = this.props;
+    const {content, NavActions, model} = this.props;
 
     return (
       <div>
         <header>
           <Navigation>
-            {NavActions ? <NavActions /> : null}
+            {NavActions ? <NavActions model={model} /> : null}
           </Navigation>
         </header>
 
@@ -18,7 +18,7 @@ class MainLayout extends React.Component {
           {/* container for materialize css toasts */}
           <div id="toast-container"></div>
           {/* main content renders here */}
-          {content()}
+          {model ? content(model) : content()}
         </main>
 
         <footer>
@@ -32,6 +32,7 @@ class MainLayout extends React.Component {
 MainLayout.propTypes = {
   content: React.PropTypes.func.isRequired,
   NavActions: React.PropTypes.func,
+  model: React.PropTypes.object,
 };
 
 export default MainLayout;
