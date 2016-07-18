@@ -19,7 +19,7 @@ export default {
       modelId,
       (err) => {
         if (err) {
-          return LocalState.set('SAVING_ERROR', err.message);
+          return LocalState.set('SAVING_ERROR', err.reason);
         }
         return LocalState.set('SAVING_ERROR', null);
       }
@@ -37,7 +37,7 @@ export default {
       modelId,
       (err) => {
         if (err) {
-          return LocalState.set('SAVING_ERROR', err.message);
+          return LocalState.set('SAVING_ERROR', err.reason);
         }
         return LocalState.set('SAVING_ERROR', null);
       }
@@ -49,7 +49,7 @@ export default {
   changePolarity({Meteor, LocalState}, id, polarity, modelId) {
     Meteor.call('links.changePolarity', id, polarity, modelId, (err) => {
       if (err) {
-        return LocalState.set('SAVING_ERROR', err.message);
+        return LocalState.set('SAVING_ERROR', err.reason);
       }
       return LocalState.set('SAVING_ERROR', null);
     });
@@ -60,7 +60,7 @@ export default {
   remove({Meteor, LocalState}, id, modelId) {
     Meteor.call('links.remove', id, modelId, (err) => {
       if (err) {
-        return LocalState.set('SAVING_ERROR', err.message);
+        return LocalState.set('SAVING_ERROR', err.reason);
       }
       return LocalState.set('SAVING_ERROR', null);
     });

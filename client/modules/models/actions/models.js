@@ -14,7 +14,7 @@ export default {
     const id = Meteor.uuid();
     Meteor.call('models.create', id, title, slug, description, permission, members, (err) => {
       if (err) {
-        return LocalState.set('SAVING_ERROR', err.message);
+        return LocalState.set('SAVING_ERROR', err.reason);
       }
       // XXX: find a way to close the modal without jquery
       $('#new-model').closeModal();
@@ -24,7 +24,6 @@ export default {
 
     return LocalState.set('SAVING_ERROR', null);
   },
-
 
 
   select({LocalState}, id) {
