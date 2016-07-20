@@ -14,6 +14,10 @@ nav .nav-wrapper {
     }
   }
 
+  .beta-warning {
+    background-color: $error-color;
+  }
+
   // Because materialize navbar doesn't work with buttons by default
   button {
     display: inline-block;

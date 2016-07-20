@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 500">
+<defs><marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,-5L10,0L0,5" class="arrow-head"></path></marker></defs>
+
+<style>
+  .variable .outline {
+    fill: none;
+    stroke: #26c6da;
+    stroke-width: 8px;
+    stroke-opacity: 0.9;
+  }
+  .variable.beta .outline { stroke: #ffa726; }
+
+  .variable .inner-rect {
+    fill: #fff;
+    fill-opacity: 0.8;
+    stroke: none;
+  }
+
+  .variable .text {
+    fill: rgba(0, 0, 0, 0.87);
+    font-weight: bold;
+    font-size: 15px;
+    text-anchor: middle;
+    dominant-baseline: central;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .link path {
+    fill: none;
+    stroke: #444;
+    stroke-width: 4px;
+    stroke-linecap: round;
+  }
+
+  .link .polarity rect {
+    stroke: none;
+  }
+
+  .link .polarity text {
+    fill: #fff;
+    text-anchor: middle;
+    dominant-baseline: central;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .link .polarity rect.positive {
+    fill: #80c883;
+  }
+</style>
+
+<g transform="translate(380,300)">
+<g class="variable" transform="translate(202.5,-45.5)"><g transform="translate(-73,-15)"><rect class="outline" rx="10" ry="10" x="-4" y="-4" width="154" height="38"></rect><rect class="inner-rect" rx="6" ry="6" width="146" height="30"></rect></g><text class="text" x="0" y="0">Release Candidate</text></g>
+<g class="variable" transform="translate(-214.5,37.5)"><g transform="translate(-56,-15)"><rect class="outline" rx="10" ry="10" x="-4" y="-4" width="120" height="38"></rect><rect class="inner-rect" rx="6" ry="6" width="112" height="30"></rect></g><text class="text" x="0" y="0">Major version</text></g>
+<g class="variable" transform="translate(28.5,63.5)"><g transform="translate(-39.5,-15)"><rect class="outline" rx="10" ry="10" x="-4" y="-4" width="87" height="38"></rect><rect class="inner-rect" rx="6" ry="6" width="79" height="30"></rect></g><text class="text" x="0" y="0">Testing..</text></g>
+<g class="variable" transform="translate(-290.5,-108.5)"><g transform="translate(-60.5,-15)"><rect class="outline" rx="10" ry="10" x="-4" y="-4" width="129" height="38"></rect><rect class="inner-rect" rx="6" ry="6" width="121" height="30"></rect></g><text class="text" x="0" y="0">Programming..</text></g>
+<g class="variable beta" transform="translate(-136.5,-220.5)"><g transform="translate(-52,-15)"><rect class="outline" rx="10" ry="10" x="-4" y="-4" width="112" height="38"></rect><rect class="inner-rect" rx="6" ry="6" width="104" height="30"></rect></g><text class="text" x="0" y="0">Beta release</text></g>
+<g class="variable" transform="translate(129.5,-190.5)"><g transform="translate(-60.5,-15)"><rect class="outline" rx="10" ry="10" x="-4" y="-4" width="129" height="38"></rect><rect class="inner-rect" rx="6" ry="6" width="121" height="30"></rect></g><text class="text" x="0" y="0">Programming..</text></g>
+<g class="link"><path d="M -23,89.50398376236583 A 182.67347123419756,182.67347123419756 0 0,1 -179.8471447778655,67.5" style="marker-end: url(&quot;#end-arrow&quot;);"></path><g class="polarity" transform="translate(-121,93)"><rect rx="5" ry="5" x="-15" y="-12.5" width="30" height="25" class="positive"></rect><text x="0" y="0">+</text></g></g>
+<g class="link"><path d="M -72.5,-240.43052893515483 A 258.50916674698436,258.50916674698436 0 0,1 79.92792792792802,-220.5" style="marker-end: url(&quot;#end-arrow&quot;);"></path><g class="polarity" transform="translate(18,-240)"><rect rx="5" ry="5" x="-15" y="-12.5" width="30" height="25" class="positive"></rect><text x="0" y="0">+</text></g></g>
+<g class="link"><path d="M -285.236133705486,-135.5 A 125.73436559412872,125.73436559412872 0 0,1 -203.5,-217.84282813509688" style="marker-end: url(&quot;#end-arrow&quot;);"></path><g class="polarity" transform="translate(-258,-183)"><rect rx="5" ry="5" x="-15" y="-12.5" width="30" height="25" class="positive"></rect><text x="0" y="0">+</text></g></g>
+<g class="link"><path d="M 187.83070614327835,-18.5 A 182.4013213376674,182.4013213376674 0 0,1 83,57.328974804477454" style="marker-end: url(&quot;#end-arrow&quot;);"></path><g class="polarity" transform="translate(141,30)"><rect rx="5" ry="5" x="-15" y="-12.5" width="30" height="25" class="positive"></rect><text x="0" y="0">+</text></g></g>
+<g class="link"><path d="M -282.5,28.781991962211762 A 83.7382193012374,83.7382193012374 0 0,1 -314.45560668560506,-78.5" style="marker-end: url(&quot;#end-arrow&quot;);"></path><g class="polarity" transform="translate(-318,-15)"><rect rx="5" ry="5" x="-15" y="-12.5" width="30" height="25" class="positive"></rect><text x="0" y="0">+</text></g></g>
+<g class="link"><path d="M 157.70319321147952,-163.5 A 188.81778004263478,188.81778004263478 0 0,1 199.42992575085924,-75.5" style="marker-end: url(&quot;#end-arrow&quot;);"></path><g class="polarity" transform="translate(177,-136)"><rect rx="5" ry="5" x="-15" y="-12.5" width="30" height="25" class="positive"></rect><text x="0" y="0">+</text></g></g>
+</g>
+</svg>

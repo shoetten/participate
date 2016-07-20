@@ -29,12 +29,23 @@ export default function (injectDeps, {FlowRouter}) {
       });
     },
   });
+
+  FlowRouter.route('/beta', {
+    name: 'beta',
+    action() {
+      const Beta = require('./components/beta').default;
+      mount(MainLayoutCtxHot, {
+        content: () => (<Beta />),
+      });
+    },
+  });
 }
 
 if (module.hot) {
   module.hot.accept([
     '../core/components/main_layout',
-    './containers/home',
+    './components/home',
+    './components/beta',
   ], () => {
     // If any of the above files (or their dependencies) are updated, all we
     // really need to do is re-run the current route's action() method, which
