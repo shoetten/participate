@@ -11,6 +11,12 @@ const Beta = () => (
         you can <a href="mailto:shoetten[ät]uos[dot]de" title="Email">drop me a line</a> or
         ask an already registered friend to send you an invite link.
       </p>
+      <p>
+        If you find an error or think the app should behave differently in some way,
+        you could do me a huge favor
+        with <a href="mailto:shoetten[ät]uos[dot]de" title="Email">writing me</a> about
+        it. Thanks!
+      </p>
     </div>
   </div>
 );

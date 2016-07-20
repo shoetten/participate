@@ -2,6 +2,10 @@
 <defs><marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,-5L10,0L0,5" class="arrow-head"></path></marker></defs>
 
 <style>
+  text {
+    font-family: "Roboto", sans-serif;
+  }
+
   .variable .outline {
     fill: none;
     stroke: #26c6da;
