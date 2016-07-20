@@ -11,8 +11,17 @@ class EditModel extends React.Component {
   constructor(props) {
     super(props);
     this.createModel = this.createModel.bind(this);
+    this.changeTitle = this.changeTitle.bind(this);
+    this.changeSlug = this.changeSlug.bind(this);
+    this.changeDescription = this.changeDescription.bind(this);
+    this.changePermission = this.changePermission.bind(this);
+    this.addMember = this.addMember.bind(this);
+    this.removeMember = this.removeMember.bind(this);
+    this.toggleAdminRights = this.toggleAdminRights.bind(this);
+    this.markUnsaved = this.markUnsaved.bind(this);
     this.reset = this.reset.bind(this);
     this.updateSlug = this.updateSlug.bind(this);
+    this.onTitleChange = this.onTitleChange.bind(this);
     this.onSlugChange = this.onSlugChange.bind(this);
     this.handleMembersApiCallback = this.handleMembersApiCallback.bind(this);
 
@@ -20,7 +29,7 @@ class EditModel extends React.Component {
     this.state = {
       slugEdited: false,
       slugValue: model ? model.slug : '',
-      newMembers: [],    // state is tracking new members
+      members: [],    // state is tracking new members
     };
   }
 
@@ -49,13 +58,24 @@ class EditModel extends React.Component {
       // display error for 5 seconds
       Material.toast(nextProps.error, 5000, 'toast-error');
     }
+    if (!this.props.modal && nextProps.saved && !this.props.saved) {
+      Material.toast('All saved', 10000, 'toast-success');
+    }
   }
 
   componentWillUnmount() {
     $('.material-tooltip').remove();
   }
 
+  onTitleChange() {
+    if (!this.props.model) {
+      this.updateSlug();
+    }
+    this.markUnsaved();
+  }
+
   onSlugChange(event) {
+    this.markUnsaved();
     const slug = getSlug(event.target.value);
     this.setState({
       slugEdited: slug !== '',
@@ -75,12 +95,6 @@ class EditModel extends React.Component {
     }
   }
 
-  // XXX: let the HOC handle this, so the api can be called
-  // through their reference, e.g. membersRef.reset();
-  handleMembersApiCallback(reset) {
-    this.resetMembersInput = reset;
-  }
-
   createModel(event) {
     // Because the test cannot get the event argument,
     // so calling preventDefault() on undefined causes an error
@@ -93,10 +107,92 @@ class EditModel extends React.Component {
     if (!model) {
       const {create} = this.props;
       const {titleRef, slugRef, descRef, permissionRef} = this.refs;
-      const {newMembers} = this.state;
+      const {members} = this.state;
 
-      create(titleRef.value, slugRef.value, descRef.value, permissionRef.checked, newMembers);
+      create(titleRef.value, slugRef.value, descRef.value, permissionRef.checked, members);
     }
+  }
+
+  changeTitle() {
+    const {model} = this.props;
+    if (model) {
+      const {changeTitle} = this.props;
+      const {titleRef} = this.refs;
+      changeTitle(model._id, titleRef.value);
+    }
+  }
+
+  changeSlug() {
+    const {model} = this.props;
+    if (model) {
+      const {changeSlug} = this.props;
+      const {slugRef} = this.refs;
+      changeSlug(model._id, slugRef.value);
+    }
+  }
+
+  changeDescription() {
+    const {model} = this.props;
+    if (model) {
+      const {changeDescription} = this.props;
+      const {descRef} = this.refs;
+      const newDescription = descRef.value;
+      if (model.description !== newDescription) {
+        changeDescription(model._id, newDescription);
+      }
+    }
+  }
+
+  changePermission() {
+    this.markUnsaved();
+    const {model} = this.props;
+    if (model) {
+      const {changePermission} = this.props;
+      const {permissionRef} = this.refs;
+      changePermission(model._id, permissionRef.checked);
+    }
+  }
+
+  addMember(member) {
+    this.markUnsaved();
+    const {model} = this.props;
+    if (model) {
+      const {addMember} = this.props;
+      addMember(model._id, member[0]);
+      this.resetMembersInput();
+    }
+  }
+
+  removeMember(userId) {
+    this.markUnsaved();
+    const {model} = this.props;
+    if (model) {
+      const {removeMember} = this.props;
+      removeMember(model._id, userId);
+    }
+  }
+
+  toggleAdminRights(userId, makeAdmin) {
+    this.markUnsaved();
+    const {model} = this.props;
+    if (model) {
+      const {toggleAdminRights} = this.props;
+      toggleAdminRights(model._id, userId, makeAdmin);
+    }
+  }
+
+  markUnsaved() {
+    const {saved, markUnsaved} = this.props;
+    if (saved) {
+      $('.toast-success').remove();
+      markUnsaved();
+    }
+  }
+
+  // XXX: let the HOC handle this, so the api can be called
+  // through their reference, e.g. membersRef.reset();
+  handleMembersApiCallback(reset) {
+    this.resetMembersInput = reset;
   }
 
   reset(event) {
@@ -149,7 +245,8 @@ class EditModel extends React.Component {
               <input
                 id="title" ref="titleRef" type="text" className="validate"
                 defaultValue={model ? model.title : ''}
-                onChange={this.updateSlug}
+                onChange={this.onTitleChange}
+                onBlur={this.changeTitle}
               />
               <label htmlFor="title">Title</label>
             </div>
@@ -157,6 +254,7 @@ class EditModel extends React.Component {
               <input
                 id="slug" ref="slugRef" type="text" className="validate"
                 value={this.state.slugValue} onChange={this.onSlugChange}
+                onBlur={this.changeSlug}
               />
               <label htmlFor="slug">Slug</label>
             </div>
@@ -167,6 +265,8 @@ class EditModel extends React.Component {
                 id="description" ref="descRef"
                 className="materialize-textarea validate"
                 defaultValue={model ? model.description : ''}
+                onChange={this.markUnsaved}
+                onBlur={this.changeDescription}
               />
               <label htmlFor="description">Description</label>
             </div>
@@ -179,6 +279,7 @@ class EditModel extends React.Component {
                   <input
                     type="checkbox" ref="permissionRef"
                     defaultChecked={model && model.permission === 'public'}
+                    onChange={this.changePermission}
                   />
                   <span className="lever"></span>
                   Public
@@ -211,12 +312,14 @@ class EditModel extends React.Component {
                         <button
                           className="waves-effect waves-light btn admin tooltipped"
                           data-tooltip={member.isAdmin ? 'Revoke admin' : 'Make admin'}
+                          onClick={() => this.toggleAdminRights(member.userId, !member.isAdmin)}
                         >
                           Admin
                         </button>
                         <button
                           className="waves-effect waves-light btn remove tooltipped"
                           data-tooltip="Remove member"
+                          onClick={() => this.removeMember(member.userId)}
                         >
                           <i className="material-icons">delete</i>
                         </button>
@@ -226,14 +329,14 @@ class EditModel extends React.Component {
                   <li className="collection-item avatar">
                     <InputAutocompleteUsers
                       exposeApiCallback={this.handleMembersApiCallback}
-                      onChange={(newMembers) => this.setState({newMembers})}
+                      onChange={(member) => this.addMember(member)}
                     />
                   </li>
                 </ul>
               :
                 <InputAutocompleteUsers
                   exposeApiCallback={this.handleMembersApiCallback}
-                  onChange={(newMembers) => this.setState({newMembers})}
+                  onChange={(members) => this.setState({members})}
                 />
               }
             </div>
@@ -266,11 +369,19 @@ EditModel.propTypes = {
   model: React.PropTypes.object,
   // actions
   create: React.PropTypes.func.isRequired,
-  edit: React.PropTypes.func,
-  error: React.PropTypes.string,
+  changeTitle: React.PropTypes.func,
+  changeSlug: React.PropTypes.func,
+  changeDescription: React.PropTypes.func,
+  changePermission: React.PropTypes.func,
+  addMember: React.PropTypes.func,
+  removeMember: React.PropTypes.func,
+  toggleAdminRights: React.PropTypes.func,
+  markUnsaved: React.PropTypes.func,
   clearErrors: React.PropTypes.func,
-  // is the component displayed in material modal
-  modal: React.PropTypes.bool,
+  // aux
+  saved: React.PropTypes.bool,
+  error: React.PropTypes.string,
+  modal: React.PropTypes.bool,    // Is the component displayed in material modal?
 };
 
 export default EditModel;

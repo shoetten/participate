@@ -12,6 +12,11 @@ class ModelWrapper extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    const {setPageTitle} = this.props;
+    setPageTitle(nextProps.model.title);
+  }
+
   componentWillUnmount() {
     const {setPageTitle} = this.props;
     setPageTitle();

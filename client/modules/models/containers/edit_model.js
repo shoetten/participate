@@ -3,9 +3,10 @@ import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 
 export const composer = ({context, clearErrors}, onData) => {
   const {LocalState} = context();
+  const saved = LocalState.get('SAVED');
   const error = LocalState.get('SAVING_ERROR');
 
-  onData(null, {error});
+  onData(null, {saved, error});
 
   // clearErrors when unmounting the component
   return clearErrors;
@@ -13,7 +14,14 @@ export const composer = ({context, clearErrors}, onData) => {
 
 export const depsMapper = (context, actions) => ({
   create: actions.models.create,
-  edit: actions.models.edit,
+  changeTitle: actions.models.changeTitle,
+  changeSlug: actions.models.changeSlug,
+  changeDescription: actions.models.changeDescription,
+  changePermission: actions.models.changePermission,
+  addMember: actions.models.addMember,
+  removeMember: actions.models.removeMember,
+  toggleAdminRights: actions.models.toggleAdminRights,
+  markUnsaved: actions.models.markUnsaved,
   clearErrors: actions.models.clearErrors,
   context: () => context,
 });

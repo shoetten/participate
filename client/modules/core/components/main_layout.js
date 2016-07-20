@@ -12,11 +12,12 @@ class MainLayout extends React.Component {
           <Navigation>
             {NavActions ? <NavActions model={model} modelView={modelView} /> : null}
           </Navigation>
+
+          {/* container for materialize css toasts */}
+          <div id="toast-container"></div>
         </header>
 
         <main>
-          {/* container for materialize css toasts */}
-          <div id="toast-container"></div>
           {/* main content renders here */}
           {model ? content(model) : content()}
         </main>

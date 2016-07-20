@@ -1,5 +1,6 @@
-import ModelList from '../components/model_list';
+import {reduce} from 'lodash/fp';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
+import ModelList from '../components/model_list';
 import LoadingComponent from '/client/modules/core/components/loading';
 
 export const composer = ({context}, onData) => {
@@ -15,13 +16,17 @@ export const composer = ({context}, onData) => {
     const models = Collections.Models.find(selector, options).fetch();
     // add usernames to members
     models.map((model) => {
-      model.members.map((member) => {
-        const user = Collections.Users.findOne(member.userId);
-        if (user) {
-          member.username = user.username;
+      // Add usernames to members && filter removed ones.
+      model.members = reduce((members, member) => {
+        if (!member.removed) {
+          const user = Collections.Users.findOne(member.userId);
+          if (user) {
+            member.username = user.username;
+          }
+          members.push(member);
         }
-        return member;
-      });
+        return members;
+      }, [], model.members);
       return model;
     });
 
