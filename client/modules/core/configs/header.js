@@ -3,7 +3,7 @@ import {DocHead} from 'meteor/kadira:dochead';
 
 export default function (context) {
   const {LocalState} = context;
-  LocalState.set('APP_TITLE', Meteor.settings.public.appName);
+  LocalState.set('APP_TITLE', Meteor.settings.public.appTitle || 'Participate');
   LocalState.set('PAGE_TITLE', '');
 
   // define all static header attributes here
