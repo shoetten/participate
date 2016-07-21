@@ -56,7 +56,7 @@ class Invite extends React.Component {
     const {loading} = this.props;
 
     return (
-      <div className="invite">
+      <div className="invite model-backdrop">
         <div className="text-wrap block">
           <h1><i className="material-icons left">person_add</i>Invite users</h1>
           <p>

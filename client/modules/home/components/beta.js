@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Beta = () => (
-  <div className="beta">
+  <div className="beta model-backdrop">
     <div className="text-wrap">
       <h1><i className="material-icons left">warning</i>Beta</h1>
       <p>

@@ -21,10 +21,6 @@ class MainLayout extends React.Component {
           {/* main content renders here */}
           {model ? content(model) : content()}
         </main>
-
-        <footer>
-
-        </footer>
       </div>
     );
   }

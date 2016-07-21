@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Home = () => (
-  <div className="home">
+  <div className="home model-backdrop">
     <div className="brand">
       <h1>Welcome to Participate</h1>
       <p>Online participatory modelling made easy..</p>
