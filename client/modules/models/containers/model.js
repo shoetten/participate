@@ -26,7 +26,7 @@ export const selectComposer = ({context}, onData) => {
 
 export const depsMapper = (context, actions) => ({
   select: actions.models.select,
-  clearErrors: actions.models.clearErrors,
+  clearErrors: actions.core.clearErrors,
   createVariable: actions.variables.create,
   removeVariable: actions.variables.remove,
   changeVariableName: actions.variables.changeName,

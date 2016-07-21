@@ -66,6 +66,10 @@ class Navigation extends React.Component {
                       <i className="material-icons left">person</i>
                       <span>Profile</span>
                     </a></li>
+                    <li><a href={pathFor('users.invite')}>
+                      <i className="material-icons left">person_add</i>
+                      <span>Invite users</span>
+                    </a></li>
                     <li><a href={pathFor('users.bye')} className="logout">
                       <i className="material-icons left">exit_to_app</i>
                       <span>Logout</span>

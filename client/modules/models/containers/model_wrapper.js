@@ -2,7 +2,7 @@ import ModelWrapper from '../components/model_wrapper';
 import {useDeps, composeAll} from 'mantra-core';
 
 export const depsMapper = (context, actions) => ({
-  setPageTitle: actions.coreActions.setPageTitle,
+  setPageTitle: actions.core.setPageTitle,
   context: () => context,
 });
 

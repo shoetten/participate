@@ -17,6 +17,8 @@ export default function () {
       check(members, [{id: String, name: String}]);
 
       const createdAt = new Date();
+
+      const newEmails = [];
       members.push({id: this.userId});
       // Alternative to _.chain. See
       // https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba
@@ -29,7 +31,11 @@ export default function () {
               userId: member.id,
               isAdmin: member.id === this.userId,
               joined: createdAt,
+              removed: false,
             });
+          } else if (member.name.indexOf('@') >= 0) {   // if we have an email
+            // invite a new user to model
+            newEmails.push(member.name);
           }
           return results;
         }, [])
@@ -43,6 +49,23 @@ export default function () {
       };
 
       Models.insert(model);
+
+      // Inite new users, once we have the model.
+      newEmails.forEach((email) => {
+        try {
+          const user = Meteor.call('users.inviteUser', email);
+          Models.update({_id}, {$push: {
+            members: {
+              userId: user._id,
+              isAdmin: false,
+              joined: new Date(),
+              removed: false,
+            },
+          }});
+        } catch (e) {
+          throw new Meteor.Error(400, e.message);
+        }
+      });
     },
 
     'models.changeTitle'(_id, title) {
@@ -100,6 +123,17 @@ export default function () {
           Models.update({_id: modelId}, {$push: {
             members: {
               userId: member.id,
+              isAdmin: false,
+              joined: new Date(),
+              removed: false,
+            },
+          }});
+        } else if (member.name.indexOf('@') >= 0) {   // if we have an email
+          // invite a new user to model
+          const user = Meteor.call('users.inviteUser', member.name);
+          Models.update({_id: modelId}, {$push: {
+            members: {
+              userId: user._id,
               isAdmin: false,
               joined: new Date(),
               removed: false,

@@ -21,8 +21,8 @@ export const depsMapper = (context, actions) => ({
   addMember: actions.models.addMember,
   removeMember: actions.models.removeMember,
   toggleAdminRights: actions.models.toggleAdminRights,
-  markUnsaved: actions.models.markUnsaved,
-  clearErrors: actions.models.clearErrors,
+  markUnsaved: actions.core.markUnsaved,
+  clearErrors: actions.core.clearErrors,
   context: () => context,
 });
 

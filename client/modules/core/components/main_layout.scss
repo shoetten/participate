@@ -15,6 +15,31 @@
 main {
   position: relative;
   padding: $padding;
+
+  .text-wrap {
+    position: relative;
+    margin: 5% auto;
+    max-width: 600px;
+    padding: 20px;
+    background: rgba(#fff, 0.8);
+    border: solid $primary-color;
+    border-width: 10px 0;
+
+    h1 {
+      margin-top: 1rem;
+      color: $secondary-color;
+      i {
+        vertical-align: top;
+        font-size: inherit;
+      }
+    }
+    p {
+      font-size: 1.3rem;
+      @media (min-width: $small-screen-up) {
+        font-size: 1.5rem;
+      }
+    }
+  }
 }
 
 #toast-container {
@@ -34,6 +59,16 @@ main {
   }
   .toast-success {
     background: $success-color;
+  }
+}
+
+/* Typograhpy
+ ***********************************************/
+
+h1 {
+  font-size: 3.8rem;
+  @media (min-width: $small-screen-up) {
+    font-size: 4.5rem;
   }
 }
 
@@ -84,4 +119,11 @@ input[type=range]::-moz-focus-outer {
   border-radius: 5px;
   padding: 0.5rem 0.75rem !important;
   margin: 0.7rem 0;
+}
+
+// Contain floats
+.block, .cf, .row {
+  zoom: 1;
+  &:before, &:after { content: ''; display: table; }
+  &:after { clear: both; }
 }

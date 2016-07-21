@@ -7,7 +7,12 @@ import MainLayout from '../core/components/main_layout';
 import Bye from './components/bye.js';
 // import NavActions from './components/nav_actions';
 
+// So we can call FlowRotuer again later during hot reload
+let localFlowRouter;
+
 export default function (injectDeps, {FlowRouter}) {
+  localFlowRouter = FlowRouter;
+
   const MainLayoutCtx = injectDeps(MainLayout);
 
   FlowRouter.route('/login', {
@@ -64,5 +69,27 @@ export default function (injectDeps, {FlowRouter}) {
         content: () => (<Bye />),
       });
     },
+  });
+
+  FlowRouter.route('/invite', {
+    name: 'users.invite',
+    action() {
+      const Invite = require('./containers/invite').default;
+      mount(MainLayoutCtx, {
+        content: () => (<Invite />),
+      });
+    },
+  });
+}
+
+if (module.hot) {
+  module.hot.accept([
+    './containers/invite',
+  ], () => {
+    // If any of the above files (or their dependencies) are updated, all we
+    // really need to do is re-run the current route's action() method, which
+    // will require() the updated modules and re-mount MainLayoutCtx
+    // (which itself require()'s the updated MainLayout at render time).
+    localFlowRouter._current.route._action(localFlowRouter._current.params);
   });
 }

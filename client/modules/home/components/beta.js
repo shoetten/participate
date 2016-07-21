@@ -3,7 +3,7 @@ import React from 'react';
 const Beta = () => (
   <div className="beta">
     <div className="text-wrap">
-      <h1><i className="material-icons">warning</i>Beta</h1>
+      <h1><i className="material-icons left">warning</i>Beta</h1>
       <p>
         This application is not finalized and may change at any moment!
         It only serves for demonstration & testing purposes.

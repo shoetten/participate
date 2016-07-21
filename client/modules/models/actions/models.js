@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import {Match} from 'meteor/check';
-import {find} from 'lodash/fp';
 
 /**
  * Call the given Meteor method. Use this to avoid redundancy,
@@ -77,16 +76,7 @@ export default {
     return call(context, 'models.toggleAdminRights', _id, userId, makeAdmin);
   },
 
-  markUnsaved({LocalState}) {
-    return LocalState.set('SAVED', false);
-  },
-
-
   select({LocalState}, id) {
     return LocalState.set('SELECTED', id);
-  },
-
-  clearErrors({LocalState}) {
-    return LocalState.set('SAVING_ERROR', null);
   },
 };

@@ -85,6 +85,7 @@ class InputAutocomplete extends React.Component {
         minQueryLength={3}
         autofocus={false}
         classNames={classNames}
+        allowNew
       />
     );
   }

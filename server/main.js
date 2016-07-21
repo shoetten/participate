@@ -1,9 +1,9 @@
 import publications from './publications';
-import configureAuth from './configs/auth';
+import configure from './config';
 import methods from './methods';
 // import addInitialData from './configs/initial_adds.js';
 
 publications();
-configureAuth();
+configure();
 methods();
 // addInitialData();
