@@ -1,0 +1,58 @@
+@import "{}/client/modules/core/components/_variables.scss";
+
+.help-text {
+  .text-wrap {
+    max-width: 900px;
+
+    .scroll-to-top {
+      position: absolute;
+      bottom: 0;
+      right: 20px;
+      color: #fff;
+      background: $primary-color;
+      padding: 3px 5px;
+    }
+  }
+
+  .toc {
+    padding-left: 1.2rem;
+  }
+
+  .items {
+    margin: 0;
+    padding: 0 0 0 2.2rem;
+    .item {
+      margin: 2rem 0 3rem;
+      li {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        a {
+          color: $text-color;
+        }
+      }
+      .step {
+        img {
+          float: left;
+          width: 50%;
+          margin-right: 1.5rem;
+        }
+        .instructions {
+          margin: 0;
+          line-height: 1;
+          white-space: normal;
+          text-align: left;
+          user-select: auto;
+          cursor: auto;
+        }
+      }
+    }
+
+    .image-gallery {
+      margin-left: -2.2rem;
+      img {
+        background-image: url(/images/help/background.jpg);
+        background-size: 100%;
+      }
+    }
+  }
+}

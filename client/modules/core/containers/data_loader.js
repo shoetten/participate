@@ -25,8 +25,6 @@ export const composer = ({context, modelId}, onData) => {
 
         onData(null, {model});
       }
-    } else {
-      onData();
     }
   } else {
     onData(null, {});

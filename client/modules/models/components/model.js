@@ -367,9 +367,9 @@ class Model extends React.Component {
           <g transform={zoomTransform}>
             {links.map((link) => (
               <Link
-                modelId={model._id}
                 key={link._id}
                 id={link._id}
+                modelId={model._id}
                 fromVar={variables[varMapper[link.fromId]]}
                 toVar={variables[varMapper[link.toId]]}
                 controlPointPos={link.controlPointPos}

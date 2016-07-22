@@ -59,6 +59,37 @@ export default function (injectDeps, {FlowRouter}) {
     },
   });
 
+  FlowRouter.route('/model/help', {
+    name: 'models.help',
+    action() {
+      const Help = require('./components/help').default;
+      mount(DataLoaderCtxHot, {
+        NavActions,
+        modelView: 'help',
+        content: () => (<Help />),
+      });
+    },
+  });
+
+  FlowRouter.route('/model/help/:modelId', {
+    name: 'models.help',
+    action({modelId}) {
+      const ModelWrapper = require('./containers/model_wrapper').default;
+      const Help = require('./components/help').default;
+      mount(DataLoaderCtxHot, {
+        modelId,
+        NavActions,
+        modelView: 'help',
+        content: (model) => (
+          <ModelWrapper
+            model={model}
+            content={() => (<Help />)}
+          />
+        ),
+      });
+    },
+  });
+
   FlowRouter.route('/model/:modelId/:modelSlug', {
     name: 'models.single',
     action({modelId}) {
@@ -73,7 +104,7 @@ export default function (injectDeps, {FlowRouter}) {
             model={model}
             content={() => (<Model model={model} />)}
           />
-          ),
+        ),
       });
     },
   });
@@ -86,6 +117,7 @@ if (module.hot) {
     './containers/model_wrapper',
     './containers/model',
     './containers/edit_model',
+    './components/help',
   ], () => {
     // If any of the above files (or their dependencies) are updated, all we
     // really need to do is re-run the current route's action() method, which

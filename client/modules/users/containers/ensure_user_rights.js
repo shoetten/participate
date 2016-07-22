@@ -14,6 +14,8 @@ export const composer = ({context, model, action}, onData) => {
       action === 'view' && (!!member || model.isPublic()) ||
       action === 'edit' && !!member ||
       action === 'admin' && !!member && member.isAdmin;
+  } else {
+    isAllowed = true;
   }
 
   onData(null, {isAllowed});

@@ -26,6 +26,9 @@
       pointer-events: none;
       cursor: crosshair;
     }
+    &.creating-link {
+      cursor: default;
+    }
   }
 
   .edit-variable {
