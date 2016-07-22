@@ -22,7 +22,7 @@ class Navigation extends React.Component {
   }
 
   render() {
-    const {currentUser, children, appTitle, pageTitle} = this.props;
+    const {currentUser, children, appTitle, pageTitle, signUp} = this.props;
     return (
       <div className="navbar-fixed">
         <nav>
@@ -84,11 +84,13 @@ class Navigation extends React.Component {
                     Login
                   </a>
                 </li>
-                <li>
-                  <a href={pathFor('users.signup')}>
-                    Create Account
-                  </a>
-                </li>
+                {signUp ?
+                  <li>
+                    <a href={pathFor('users.signup')}>
+                      Create Account
+                    </a>
+                  </li>
+                : null}
               </ul>
             }
           </div>
@@ -103,6 +105,7 @@ Navigation.propTypes = {
   children: React.PropTypes.element,
   appTitle: React.PropTypes.string,
   pageTitle: React.PropTypes.string,
+  signUp: React.PropTypes.bool,
 };
 
 export default Navigation;

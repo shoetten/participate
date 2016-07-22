@@ -1,5 +1,6 @@
 {
   "public": {
-    "appTitle": "Participate"
+    "appTitle": "Participate",
+    "signUp": false
   }
 }

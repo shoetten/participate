@@ -1,8 +1,9 @@
-import { Accounts } from 'meteor/std:accounts-ui';
+import {Meteor} from 'meteor/meteor';
+import {Accounts} from 'meteor/std:accounts-ui';
 
 export default function () {
   Accounts.config({
     sendVerificationEmail: true,
-    forbidClientAccountCreation: false,
+    forbidClientAccountCreation: !Meteor.settings.public.signUp,
   });
 }
