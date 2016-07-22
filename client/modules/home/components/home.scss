@@ -22,4 +22,11 @@
       p { font-size: 1.4rem; }
     }
   }
+
+  .imprint {
+    position: fixed;
+    right: 15px;
+    bottom: 10px;
+    color: rgba($text-color, 0.7);
+  }
 }

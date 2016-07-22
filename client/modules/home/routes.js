@@ -39,6 +39,16 @@ export default function (injectDeps, {FlowRouter}) {
       });
     },
   });
+
+  FlowRouter.route('/imprint', {
+    name: 'imprint',
+    action() {
+      const Imprint = require('./components/imprint').default;
+      mount(MainLayoutCtxHot, {
+        content: () => (<Imprint />),
+      });
+    },
+  });
 }
 
 if (module.hot) {
@@ -46,6 +56,7 @@ if (module.hot) {
     '../core/components/main_layout',
     './components/home',
     './components/beta',
+    './components/imprint',
   ], () => {
     // If any of the above files (or their dependencies) are updated, all we
     // really need to do is re-run the current route's action() method, which
