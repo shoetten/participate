@@ -1,32 +1,21 @@
-import {Accounts} from 'meteor/std:accounts-material';
-// import {Accounts, STATES} from 'meteor/std:accounts-material';
+import React from 'react';
+import {Accounts, STATES} from 'meteor/std:accounts-material';
 
-class AuthForms extends Accounts.ui.LoginForm {
-  fields() {
-    // const {formState} = this.state;
-    // if (formState === STATES.SIGN_UP) {
-    //   return {
-    //     ...super.fields(),
-    //     firstname: {
-    //       id: 'firstname',
-    //       hint: 'Enter firstname',
-    //       label: 'Firstname',
-    //       onChange: this.handleChange.bind(this, 'firstname'),
-    //     },
-    //   };
-    // }
-    return super.fields();
-  }
+const AuthForms = (props) => (
+  <div className="auth-forms">
+    <div className="text-wrap">
+      <h1>
+        {props.formState === STATES.SIGN_UP ? 'Register' : null}
+        {props.formState === STATES.SIGN_IN ? 'Login' : null}
+        {props.formState === STATES.PROFILE ? 'Profile' : null}
+      </h1>
+      <Accounts.ui.LoginForm {...props} />
+    </div>
+  </div>
+);
 
-  signUp(options = {}) {
-    // const { firstname = null } = this.state;
-    // if (firstname !== null) {
-    //   options.profile = Object.assign(options.profile || {}, {
-    //     firstname,
-    //   });
-    // }
-    super.signUp(options);
-  }
-}
+AuthForms.propTypes = {
+  formState: React.PropTypes.symbol,
+};
 
 export default AuthForms;

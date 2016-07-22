@@ -8,9 +8,11 @@ class Bye extends React.Component {
 
   render() {
     return (
-      <div>
-        <h2>Bye</h2>
-        <p>Hope to see you soon!</p>
+      <div className="logged-out">
+        <div className="text-wrap">
+          <h2>Bye</h2>
+          <p>Hope to see you soon!</p>
+        </div>
       </div>
     );
   }
