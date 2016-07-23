@@ -6,9 +6,12 @@ export default function () {
     passwordSignupFields: 'USERNAME_AND_EMAIL',
     loginPath: '/login',
     signUpPath: '/signup',
+    resetPasswordPath: '/reset-password',
     profilePath: '/profile',
     onSignedInHook: () => FlowRouter.go('models.list'),
     onSignedOutHook: () => FlowRouter.go('users.bye'),
     onPostSignUpHook: () => FlowRouter.go('models.list'),
+    onEnrollAccountHook: () => FlowRouter.go('users.enroll'),
+    onPostEnrollAccountHook: () => FlowRouter.go('models.list'),
   });
 }

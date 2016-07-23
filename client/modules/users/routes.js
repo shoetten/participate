@@ -47,6 +47,22 @@ export default function (injectDeps, {FlowRouter}) {
     },
   });
 
+  FlowRouter.route('/confirm-account', {
+    name: 'users.enroll',
+    action() {
+      mount(MainLayoutCtx, {
+        content: () => (
+          <AuthForms
+            {...{
+              formState: STATES.ENROLL_ACCOUNT,
+              loginPath: '/login',
+            }}
+          />
+        ),
+      });
+    },
+  });
+
   FlowRouter.route('/profile', {
     name: 'users.profile',
     action() {

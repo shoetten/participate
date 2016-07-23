@@ -14,7 +14,7 @@ export default function () {
   );
   Accounts.emailTemplates.enrollAccount.text = (user, url) => (
     `Hey ${user.username},\n\n`
-    + `You have been invited to join the beta version of ${appTitle}!\n\n`
+    + `you have been invited to join the beta version of ${appTitle}!\n\n`
     + `To activate your account, simply click the link below:\n${url}\n\n`
     + 'Please report any bugs you may encounter back to this email address!\n'
     + 'Thanks!\nSimon'
