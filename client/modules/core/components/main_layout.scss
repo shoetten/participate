@@ -63,7 +63,10 @@ main {
   top: 56px;
   left: 0;
   bottom: auto;
-  .toast { margin: 0 0 8px; }
+  .toast {
+    margin: 0 0 8px;
+    float: right;
+  }
   @media (min-width: $small-screen-up) {
     top: 64px;
     right: 2%;

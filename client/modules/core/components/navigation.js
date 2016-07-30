@@ -22,7 +22,7 @@ class Navigation extends React.Component {
   }
 
   render() {
-    const {currentUser, children, appTitle, pageTitle, signUp} = this.props;
+    const {currentUser, children, appTitle, pageTitle, signUp, model} = this.props;
     return (
       <div className="navbar-fixed">
         <nav>
@@ -35,7 +35,16 @@ class Navigation extends React.Component {
                 >
                   <i className="material-icons">chevron_left</i>
                 </a>
-                <span>{pageTitle}</span>
+                {model ?
+                  <a
+                    title={pageTitle}
+                    href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}
+                  >
+                    {pageTitle}
+                  </a>
+                :
+                  <span>{pageTitle}</span>
+                }
               </span>
             :
               <a href={pathFor('home')} className="brand-logo left">
@@ -106,6 +115,7 @@ Navigation.propTypes = {
   appTitle: React.PropTypes.string,
   pageTitle: React.PropTypes.string,
   signUp: React.PropTypes.bool,
+  model: React.PropTypes.object,
 };
 
 export default Navigation;

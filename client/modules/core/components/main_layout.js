@@ -9,7 +9,7 @@ class MainLayout extends React.Component {
     return (
       <div>
         <header>
-          <Navigation>
+          <Navigation model={model}>
             {NavActions ? <NavActions model={model} modelView={modelView} /> : null}
           </Navigation>
 
