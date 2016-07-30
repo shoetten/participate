@@ -1,6 +1,6 @@
 {
   "public": {
     "appTitle": "Participate",
-    "signUp": false
+    "signUp": true
   }
 }
