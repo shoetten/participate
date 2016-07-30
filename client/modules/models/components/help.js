@@ -3,8 +3,14 @@ import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/build/image-gallery.css';
 import getSlug from 'speakingurl';
 import Scroll from 'react-scroll';
+import {pathFor} from '/lib/utils';
 
 class Help extends React.Component {
+  scrollToTop(event) {
+    event.preventDefault();
+    Scroll.animateScroll.scrollToTop();
+  }
+
   renderItem(item) {
     return (
       <div className="step block">
@@ -20,11 +26,6 @@ class Help extends React.Component {
         }
       </div>
     );
-  }
-
-  scrollToTop(event) {
-    event.preventDefault();
-    Scroll.animateScroll.scrollToTop();
   }
 
   render() {
@@ -76,9 +77,21 @@ class Help extends React.Component {
       },
     ];
 
+    const {model} = this.props;
+
     return (
       <div className="help-text">
-        <div className="text-wrap">
+        <div className="text-wrap wide">
+          {model &&
+            <a
+              className="close-window"
+              title="Back to model"
+              href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}
+            >
+              <i className="material-icons">close</i>
+            </a>
+          }
+
           <h1><i className="material-icons left">help</i>Help</h1>
           <ol className="toc">
             {items.map((item, i) => (
@@ -122,5 +135,9 @@ class Help extends React.Component {
     );
   }
 }
+
+Help.propTypes = {
+  model: React.PropTypes.object,
+};
 
 export default Help;

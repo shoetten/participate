@@ -83,7 +83,7 @@ export default function (injectDeps, {FlowRouter}) {
         content: (model) => (
           <ModelWrapper
             model={model}
-            content={() => (<Help />)}
+            content={() => (<Help model={model} />)}
           />
         ),
       });
