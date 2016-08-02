@@ -10,7 +10,7 @@ const Imprint = () => (
       </p>
       <p>
         Entwickelt im Rahmen meiner Bachelor-Arbeit an der&nbsp;
-        <a href="https://uos.de" target="_blank" title="Universität Osnabrück">
+        <a href="https://uos.de" title="Universität Osnabrück">
           Uni Osnabrück
         </a>.
       </p>

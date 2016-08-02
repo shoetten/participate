@@ -1,6 +1,9 @@
 import React from 'react';
 import $ from 'jquery';
 import {debounce, find} from 'lodash/fp';
+import {Keys} from '/client/lib/utils';
+import Variable from '../containers/variable';
+import Link from '../containers/link';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
@@ -14,9 +17,6 @@ const Material = Materialize.Materialize;
 //   event as currentEvent,
 // } from 'd3';
 const d3 = require('d3');
-import Variable from '../containers/variable';
-import Link from '../containers/link';
-import {Keys} from '/client/lib/utils';
 
 class Model extends React.Component {
   constructor(props) {
@@ -84,14 +84,14 @@ class Model extends React.Component {
     this.eventCatcher.call(this.zoom).on('dblclick.zoom', null);
 
 
-    // get svg dom size & reset zoom to center when finished
+    // Get svg dom size & reset zoom to center when finished.
     this.setState({
-      canvasSize: this.refs.canvasRef.getBoundingClientRect(),
+      canvasSize: this.canvas.getBoundingClientRect(),
     }, () => this.resetZoom(false));
 
     this.onResize = debounce(600, () => {
       this.setState({
-        canvasSize: this.refs.canvasRef.getBoundingClientRect(),
+        canvasSize: this.canvas.getBoundingClientRect(),
       });
     });
     window.addEventListener('resize', this.onResize);
@@ -291,22 +291,26 @@ class Model extends React.Component {
     this.setState({
       editingVariable: true,
       editBoxPos: {
-        left: x - dimensions.width / 2,
-        top: y - dimensions.height / 2,
+        left: x - (dimensions.width / 2),
+        top: y - (dimensions.height / 2),
         width: dimensions.width,
         height: dimensions.height,
       },
-    }, () => this.refs.variableName.focus());
+    }, () => this.variableName.focus());
   }
 
   changeVariableName(event) {
     if (event && event.preventDefault) {
       event.preventDefault();
     }
+
     const {changeVariableName, variables, model, selected} = this.props;
     const {varMapper} = this.state;
-    const {variableName} = this.refs;
-    changeVariableName(variables[varMapper[selected]]._id, variableName.value.trim(), model._id);
+    changeVariableName(
+      variables[varMapper[selected]]._id,
+      this.variableName.value.trim(),
+      model._id
+    );
 
     this.setState({
       editingVariable: false,
@@ -351,10 +355,13 @@ class Model extends React.Component {
 
     return (
       <div className="single-model">
-        <svg className={`canvas${creatingLink ? ' creating-link' : ''}`} ref="canvasRef">
+        <svg
+          className={`canvas${creatingLink ? ' creating-link' : ''}`}
+          ref={(c) => (this.canvas = c)}
+        >
           <defs>
             <marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
-              <path d="M0,-5L10,0L0,5" className="arrow-head"></path>
+              <path d="M0,-5L10,0L0,5" className="arrow-head" />
             </marker>
           </defs>
 
@@ -420,7 +427,7 @@ class Model extends React.Component {
           >
             <input
               type="text"
-              ref="variableName"
+              ref={(c) => (this.variableName = c)}
               defaultValue={justAdded ? '' : variables[varMapper[selected]].name}
               placeholder="Variable name.."
               onBlur={this.changeVariableName}
@@ -439,12 +446,12 @@ class Model extends React.Component {
           </i>
           <div className="range-field">
             <input
-              ref="zoomerRef"
+              ref={(c) => (this.zommer = c)}
               type="range"
               step="0.1"
               min="1" max="100"
               value={this.zoomScale.invert(scale)}
-              onChange={() => this.scaleTo(this.zoomScale(this.refs.zoomerRef.value))}
+              onChange={() => this.scaleTo(this.zoomScale(this.zommer.value))}
             />
           </div>
         </div>

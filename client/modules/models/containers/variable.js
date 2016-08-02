@@ -1,5 +1,5 @@
-import Variable from '../components/variable';
 import {useDeps, composeAll} from 'mantra-core';
+import Variable from '../components/variable';
 
 // All data is handled in the model container, so
 // we are just injecting actions here

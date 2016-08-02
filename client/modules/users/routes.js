@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {mount} from 'react-mounter';
 import {STATES} from 'meteor/std:accounts-ui';
@@ -91,6 +92,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'users.invite',
     action() {
       const Invite = require('./containers/invite').default;
+
       mount(MainLayoutCtx, {
         content: () => (<Invite />),
       });

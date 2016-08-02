@@ -1,12 +1,11 @@
 import React from 'react';
 import $ from 'jquery';
+import getSlug from 'speakingurl';
+import {pathFor} from '/lib/utils';
+import InputAutocompleteUsers from '/client/modules/models/containers/input_autocomplete_users';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
-import getSlug from 'speakingurl';
-import {pathFor} from '/lib/utils';
-
-import InputAutocompleteUsers from '../containers/input_autocomplete_users';
 
 class EditModel extends React.Component {
   constructor(props) {
@@ -86,8 +85,7 @@ class EditModel extends React.Component {
 
   updateSlug() {
     if (!this.state.slugEdited) {
-      const {titleRef} = this.refs;
-      const slug = getSlug(titleRef.value);
+      const slug = getSlug(this.titleRef.value);
       this.setState({
         slugValue: slug,
       }, () => {
@@ -107,10 +105,15 @@ class EditModel extends React.Component {
     const {model} = this.props;
     if (!model) {
       const {create} = this.props;
-      const {titleRef, slugRef, descRef, permissionRef} = this.refs;
       const {members} = this.state;
 
-      create(titleRef.value, slugRef.value, descRef.value, permissionRef.checked, members);
+      create(
+        this.titleRef.value,
+        this.slugRef.value,
+        this.descRef.value,
+        this.permissionRef.checked,
+        members
+      );
     }
   }
 
@@ -118,8 +121,7 @@ class EditModel extends React.Component {
     const {model} = this.props;
     if (model) {
       const {changeTitle} = this.props;
-      const {titleRef} = this.refs;
-      const newTitle = titleRef.value;
+      const newTitle = this.titleRef.value;
       if (model.title !== newTitle) {
         changeTitle(model._id, newTitle);
       }
@@ -130,8 +132,7 @@ class EditModel extends React.Component {
     const {model} = this.props;
     if (model) {
       const {changeSlug} = this.props;
-      const {slugRef} = this.refs;
-      const newSlug = slugRef.value;
+      const newSlug = this.slugRef.value;
       if (model.slug !== newSlug) {
         changeSlug(model._id, newSlug);
       }
@@ -142,8 +143,7 @@ class EditModel extends React.Component {
     const {model} = this.props;
     if (model) {
       const {changeDescription} = this.props;
-      const {descRef} = this.refs;
-      const newDescription = descRef.value;
+      const newDescription = this.descRef.value;
       if (model.description !== newDescription) {
         changeDescription(model._id, newDescription);
       }
@@ -155,8 +155,7 @@ class EditModel extends React.Component {
     const {model} = this.props;
     if (model) {
       const {changePermission} = this.props;
-      const {permissionRef} = this.refs;
-      changePermission(model._id, permissionRef.checked);
+      changePermission(model._id, this.permissionRef.checked);
     }
   }
 
@@ -207,8 +206,7 @@ class EditModel extends React.Component {
       event.preventDefault();
     }
 
-    const {formRef} = this.refs;
-    formRef.reset();
+    this.formRef.reset();
     this.resetMembersInput();
 
     const {clearErrors} = this.props;
@@ -235,7 +233,11 @@ class EditModel extends React.Component {
             </a>
           }
 
-          <form ref="formRef" className="edit-model modal-content" onSubmit={this.createModel}>
+          <form
+            ref={(c) => (this.formRef = c)}
+            className="edit-model modal-content"
+            onSubmit={this.createModel}
+          >
             <div className="row">
               {!model ?
                 <h4>New model</h4>
@@ -262,7 +264,7 @@ class EditModel extends React.Component {
             <div className="row">
               <div className="input-field col s12 m8 l6">
                 <input
-                  id="title" ref="titleRef" type="text" className="validate"
+                  id="title" ref={(c) => (this.titleRef = c)} type="text" className="validate"
                   defaultValue={model ? model.title : ''}
                   onChange={this.onTitleChange}
                   onBlur={this.changeTitle}
@@ -271,7 +273,7 @@ class EditModel extends React.Component {
               </div>
               <div className="input-field col s12 m8 l6">
                 <input
-                  id="slug" ref="slugRef" type="text" className="validate"
+                  id="slug" ref={(c) => (this.slugRef = c)} type="text" className="validate"
                   value={this.state.slugValue} onChange={this.onSlugChange}
                   onBlur={this.changeSlug}
                 />
@@ -281,7 +283,7 @@ class EditModel extends React.Component {
             <div className="row">
               <div className="input-field col s12">
                 <textarea
-                  id="description" ref="descRef"
+                  id="description" ref={(c) => (this.descRef = c)}
                   className="materialize-textarea validate"
                   defaultValue={model ? model.description : ''}
                   onChange={this.markUnsaved}
@@ -293,14 +295,15 @@ class EditModel extends React.Component {
             <div className="row">
               <div className="col">
                 <div className="switch left">
-                  <label>
+                  <label htmlFor="permission">
                     Private
                     <input
-                      type="checkbox" ref="permissionRef"
+                      id="permission"
+                      type="checkbox" ref={(c) => (this.permissionRef = c)}
                       defaultChecked={model && model.permission === 'public'}
                       onChange={this.changePermission}
                     />
-                    <span className="lever"></span>
+                    <span className="lever" />
                     Public
                   </label>
                 </div>

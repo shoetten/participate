@@ -42,7 +42,11 @@ export default function () {
       )(members);
 
       const model = {
-        _id, title, description, slug, createdAt,
+        _id,
+        title,
+        description,
+        slug,
+        createdAt,
         modifiedAt: createdAt,
         permission: permission ? 'public' : 'private',
         members: membersDoc,
@@ -118,30 +122,28 @@ export default function () {
         Models.update({_id: modelId, 'members.userId': member.id}, {$set: {
           'members.$.removed': false,
         }});
+      } else if (Meteor.users.findOne({_id: member.id})) {
+        Models.update({_id: modelId}, {$push: {
+          members: {
+            userId: member.id,
+            isAdmin: false,
+            joined: new Date(),
+            removed: false,
+          },
+        }});
+      } else if (member.name.indexOf('@') >= 0) {   // if we have an email
+        // invite a new user to model
+        const user = Meteor.call('users.inviteUser', member.name);
+        Models.update({_id: modelId}, {$push: {
+          members: {
+            userId: user._id,
+            isAdmin: false,
+            joined: new Date(),
+            removed: false,
+          },
+        }});
       } else {
-        if (Meteor.users.findOne({_id: member.id})) {
-          Models.update({_id: modelId}, {$push: {
-            members: {
-              userId: member.id,
-              isAdmin: false,
-              joined: new Date(),
-              removed: false,
-            },
-          }});
-        } else if (member.name.indexOf('@') >= 0) {   // if we have an email
-          // invite a new user to model
-          const user = Meteor.call('users.inviteUser', member.name);
-          Models.update({_id: modelId}, {$push: {
-            members: {
-              userId: user._id,
-              isAdmin: false,
-              joined: new Date(),
-              removed: false,
-            },
-          }});
-        } else {
-          throw new Meteor.Error(400, 'User does not exist!');
-        }
+        throw new Meteor.Error(400, 'User does not exist!');
       }
     },
 

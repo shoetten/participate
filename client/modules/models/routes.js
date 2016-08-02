@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {mount} from 'react-mounter';
 import {AppContainer} from 'react-hot-loader';
@@ -12,6 +13,7 @@ export default function (injectDeps, {FlowRouter}) {
 
   const DataLoaderCtxHot = function (props) {
     const DataLoader = require('../core/containers/data_loader').default;
+
     const DataLoaderCtx = injectDeps(DataLoader);
     return (
       <AppContainer>
@@ -24,6 +26,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'models.list',
     action() {
       const ModelList = require('./containers/model_list').default;
+
       mount(DataLoaderCtxHot, {
         content: () => (<ModelList />),
       });
@@ -34,6 +37,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'models.new',
     action() {
       const EditModel = require('./containers/edit_model').default;
+
       mount(DataLoaderCtxHot, {
         content: () => (<EditModel modal={false} />),
       });
@@ -45,6 +49,7 @@ export default function (injectDeps, {FlowRouter}) {
     action({modelId}) {
       const ModelWrapper = require('./containers/model_wrapper').default;
       const EditModel = require('./containers/edit_model').default;
+
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,
@@ -63,6 +68,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'models.help',
     action() {
       const Help = require('./components/help').default;
+
       mount(DataLoaderCtxHot, {
         NavActions,
         modelView: 'help',
@@ -76,6 +82,7 @@ export default function (injectDeps, {FlowRouter}) {
     action({modelId}) {
       const ModelWrapper = require('./containers/model_wrapper').default;
       const Help = require('./components/help').default;
+
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,
@@ -95,6 +102,7 @@ export default function (injectDeps, {FlowRouter}) {
     action({modelId}) {
       const ModelWrapper = require('./containers/model_wrapper').default;
       const Model = require('./containers/model').default;
+
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,

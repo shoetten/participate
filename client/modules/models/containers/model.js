@@ -1,5 +1,5 @@
-import Model from '../components/model';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
+import Model from '../components/model';
 
 export const composer = ({context, model, setPageTitle, clearErrors}, onData) => {
   const {Collections, LocalState} = context();

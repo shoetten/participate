@@ -1,5 +1,5 @@
-import EditModel from '../components/edit_model';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
+import EditModel from '../components/edit_model';
 
 export const composer = ({context, clearErrors}, onData) => {
   const {LocalState} = context();

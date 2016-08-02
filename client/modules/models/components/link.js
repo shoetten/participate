@@ -78,13 +78,13 @@ class Link extends React.Component {
       // when hitting another element layered on top.
       document.addEventListener('mousemove', this.dragMove);
       document.addEventListener('mouseup', this.dragEnd);
-      this.refs.controlRef.addEventListener('touchmove', this.dragMove);
-      this.refs.controlRef.addEventListener('touchend', this.dragEnd);
+      this.controlRef.addEventListener('touchmove', this.dragMove);
+      this.controlRef.addEventListener('touchend', this.dragEnd);
     } else if (!this.state.dragging && prevState.dragging) {
       document.removeEventListener('mousemove', this.dragMove);
       document.removeEventListener('mouseup', this.dragEnd);
-      this.refs.controlRef.removeEventListener('touchmove', this.dragMove);
-      this.refs.controlRef.removeEventListener('touchend', this.dragEnd);
+      this.controlRef.removeEventListener('touchmove', this.dragMove);
+      this.controlRef.removeEventListener('touchend', this.dragEnd);
     }
   }
 
@@ -178,9 +178,9 @@ class Link extends React.Component {
     c.x -= a.x;
     c.y -= a.y;
 
-    const z1 = b.x * b.x + b.y * b.y;
-    const z2 = c.x * c.x + c.y * c.y;
-    const d = 2 * (b.x * c.y - c.x * b.y);
+    const z1 = (b.x * b.x) + (b.y * b.y);
+    const z2 = (c.x * c.x) + (c.y * c.y);
+    const d = 2 * ((b.x * c.y) - (c.x * b.y));
     // console.log(`z1: ${z1}, z2: ${z2}, d: ${d}`);
 
     let center;
@@ -198,8 +198,8 @@ class Link extends React.Component {
       radius = 0;
     } else {
       center = {
-        x: (z1 * c.y - z2 * b.y) / d + a.x,
-        y: (b.x * z2 - c.x * z1) / d + a.y,
+        x: (((z1 * c.y) - (z2 * b.y)) / d) + a.x,
+        y: (((b.x * z2) - (c.x * z1)) / d) + a.y,
       };
       // Since we're just dealing with circular arc's,
       // we can just calculate the distance between the
@@ -236,8 +236,8 @@ class Link extends React.Component {
 
     // Check east & west with possible x values
     const possibleX = [
-      a.x - variable.dimensions.width / 2 - varStrokeWidth - padding,
-      a.x + variable.dimensions.width / 2 + varStrokeWidth + padding,
+      a.x - (variable.dimensions.width / 2) - varStrokeWidth - padding,
+      a.x + (variable.dimensions.width / 2) + varStrokeWidth + padding,
     ];
     possibleX.forEach((x) => {
       const ySquared = [
@@ -246,8 +246,8 @@ class Link extends React.Component {
       ];
       // Check if the derived y value is in range of rectangle
       ySquared.forEach((y) => {
-        if (y >= a.y - variable.dimensions.height / 2 - varStrokeWidth - padding &&
-            y <= a.y + variable.dimensions.height / 2 + varStrokeWidth + padding) {
+        if (y >= a.y - (variable.dimensions.height / 2) - varStrokeWidth - padding &&
+            y <= a.y + (variable.dimensions.height / 2) + varStrokeWidth + padding) {
           points.push({x, y});
         }
       });
@@ -255,8 +255,8 @@ class Link extends React.Component {
 
     // Check north & south with possible y values
     const possibleY = [
-      a.y - variable.dimensions.height / 2 - varStrokeWidth - padding,
-      a.y + variable.dimensions.height / 2 + varStrokeWidth + padding,
+      a.y - (variable.dimensions.height / 2) - varStrokeWidth - padding,
+      a.y + (variable.dimensions.height / 2) + varStrokeWidth + padding,
     ];
     possibleY.forEach((y) => {
       const xSquared = [
@@ -265,8 +265,8 @@ class Link extends React.Component {
       ];
       // Check if the derived x value is in range of rectangle
       xSquared.forEach((x) => {
-        if (x >= a.x - variable.dimensions.width / 2 - varStrokeWidth - padding &&
-            x <= a.x + variable.dimensions.width / 2 + varStrokeWidth + padding) {
+        if (x >= a.x - (variable.dimensions.width / 2) - varStrokeWidth - padding &&
+            x <= a.x + (variable.dimensions.width / 2) + varStrokeWidth + padding) {
           points.push({x, y});
         }
       });
@@ -312,8 +312,8 @@ class Link extends React.Component {
       const length = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
       // Calculate the unit vector and multiply by desired distance from end point.
       const translationVector = [
-        vector[0] / length * distance,
-        vector[1] / length * distance,
+        (vector[0] / length) * distance,
+        (vector[1] / length) * distance,
       ];
       point = {
         x: Math.round(this.end.x - translationVector[0]),
@@ -371,8 +371,8 @@ class Link extends React.Component {
       const y = this.props.controlPointPos.y + deltaY;
       const pt = (event.changedTouches && event.changedTouches[0]) || event;
       const controlPointPos = {
-        x: x + (pt.clientX - mouseDownPositionX) / scale,
-        y: y + (pt.clientY - mouseDownPositionY) / scale,
+        x: x + ((pt.clientX - mouseDownPositionX) / scale),
+        y: y + ((pt.clientY - mouseDownPositionY) / scale),
       };
       const path = this.calculatePath(undefined, controlPointPos);
       const polarityPointPos = this.calculatePolarityPoint();
@@ -469,7 +469,7 @@ class Link extends React.Component {
           cx={control.x} cy={control.y}
           r="10"
           className="control-point"
-          ref="controlRef"
+          ref={(c) => (this.controlRef = c)}
           onMouseDown={this.dragStart}
           onTouchStart={this.dragStart}
         />

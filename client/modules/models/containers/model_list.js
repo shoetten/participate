@@ -1,7 +1,7 @@
 import {reduce} from 'lodash/fp';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
-import ModelList from '../components/model_list';
 import LoadingComponent from '/client/modules/core/components/loading';
+import ModelList from '../components/model_list';
 
 export const composer = ({context}, onData) => {
   const {Meteor, Collections} = context();

@@ -20,7 +20,8 @@ export default function ({Meteor, Collections}) {
       const createdAt = new Date();
 
       const variable = {
-        _id, name,
+        _id,
+        name,
         modelId,
         createdAt,
         modifiedAt: createdAt,

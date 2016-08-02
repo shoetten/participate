@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React from 'react';
 import {mount} from 'react-mounter';
 import {AppContainer} from 'react-hot-loader';
@@ -12,6 +13,7 @@ export default function (injectDeps, {FlowRouter}) {
 
   const MainLayoutCtxHot = function (props) {
     const MainLayout = require('../core/components/main_layout').default;
+
     const MainLayoutCtx = injectDeps(MainLayout);
     return (
       <AppContainer>
@@ -24,6 +26,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'home',
     action() {
       const Home = require('./components/home').default;
+
       mount(MainLayoutCtxHot, {
         content: () => (<Home />),
       });
@@ -34,6 +37,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'beta',
     action() {
       const Beta = require('./components/beta').default;
+
       mount(MainLayoutCtxHot, {
         content: () => (<Beta />),
       });
@@ -44,6 +48,7 @@ export default function (injectDeps, {FlowRouter}) {
     name: 'imprint',
     action() {
       const Imprint = require('./components/imprint').default;
+
       mount(MainLayoutCtxHot, {
         content: () => (<Imprint />),
       });

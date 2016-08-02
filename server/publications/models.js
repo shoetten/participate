@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback */
 import {Models, Users, Variables, Links} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {Match, check} from 'meteor/check';

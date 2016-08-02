@@ -1,8 +1,8 @@
 import {Variables} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 import {check, Match} from 'meteor/check';
-import {checkUserPermissions, markModelModified} from '../lib/utils';
 import {isFloat} from '/lib/utils';
+import {checkUserPermissions, markModelModified} from '../lib/utils';
 
 export default function () {
   Meteor.methods({
@@ -21,7 +21,8 @@ export default function () {
       const createdAt = new Date();
 
       const variable = {
-        _id, name,
+        _id,
+        name,
         modelId,
         createdAt,
         modifiedAt: createdAt,

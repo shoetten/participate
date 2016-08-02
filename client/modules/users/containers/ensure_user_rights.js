@@ -11,9 +11,9 @@ export const composer = ({context, model, action}, onData) => {
     // If user is logged in, look up associated member data.
     const member = userId ? find({userId}, model.members) : false;
     isAllowed =
-      action === 'view' && (!!member || model.isPublic()) ||
-      action === 'edit' && !!member ||
-      action === 'admin' && !!member && member.isAdmin;
+      (action === 'view' && (!!member || model.isPublic())) ||
+      (action === 'edit' && !!member) ||
+      (action === 'admin' && !!member && member.isAdmin);
   } else {
     isAllowed = true;
   }

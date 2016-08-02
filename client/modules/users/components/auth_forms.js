@@ -1,5 +1,5 @@
 import React from 'react';
-import {Accounts, STATES} from 'meteor/std:accounts-material';
+import {STATES, Accounts} from 'meteor/std:accounts-material';
 
 const AuthForms = (props) => (
   <div className="auth-forms">

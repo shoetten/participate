@@ -20,9 +20,12 @@ export default function () {
       const createdAt = new Date();
 
       const link = {
-        _id, modelId,
-        createdAt, modifiedAt: createdAt,
-        fromId, toId,
+        _id,
+        modelId,
+        createdAt,
+        modifiedAt: createdAt,
+        fromId,
+        toId,
         controlPointPos: {x: controlPointX, y: controlPointY},
         polarity,
       };

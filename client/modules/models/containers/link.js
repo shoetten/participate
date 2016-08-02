@@ -1,5 +1,5 @@
-import Link from '../components/link';
 import {useDeps, composeAll} from 'mantra-core';
+import Link from '../components/link';
 
 // All data is handled in the model container, so
 // we are just injecting actions here

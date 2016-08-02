@@ -38,6 +38,10 @@
       { "allow": ["_id", "_qs", "_current", "_action", "_publishCursor"] }
     ],
     "max-len": ["warn", 100],
-    "new-cap": ["error", { "capIsNewExceptions": ["Where"] }]
+    "new-cap": ["error", { "capIsNewExceptions": ["Where"] }],
+    "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
+    "object-shorthand": ["error", "always", { "avoidQuotes": false }],
+    "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
+    "import/no-extraneous-dependencies": ["off", { "devDependencies": true }]
   }
 }

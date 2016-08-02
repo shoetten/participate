@@ -56,13 +56,13 @@ class Variable extends React.Component {
       // when hitting another element layered on top
       document.addEventListener('mousemove', this.dragMove);
       document.addEventListener('mouseup', this.dragEnd);
-      this.refs.innerRectRef.addEventListener('touchmove', this.dragMove);
-      this.refs.innerRectRef.addEventListener('touchend', this.dragEnd);
+      this.innerRect.addEventListener('touchmove', this.dragMove);
+      this.innerRect.addEventListener('touchend', this.dragEnd);
     } else if (!this.state.dragging && prevState.dragging) {
       document.removeEventListener('mousemove', this.dragMove);
       document.removeEventListener('mouseup', this.dragEnd);
-      this.refs.innerRectRef.removeEventListener('touchmove', this.dragMove);
-      this.refs.innerRectRef.removeEventListener('touchend', this.dragEnd);
+      this.innerRect.removeEventListener('touchmove', this.dragMove);
+      this.innerRect.removeEventListener('touchend', this.dragEnd);
     }
   }
 
@@ -90,10 +90,9 @@ class Variable extends React.Component {
    */
   updateDimensions() {
     const padding = 10;
-    const {textRef} = this.refs;
-    const bbox = textRef.getBBox();
+    const bbox = this.text.getBBox();
     const dimensions = {
-      width: Math.max(bbox.width, 10) + 2 * padding,
+      width: Math.max(bbox.width, 10) + (2 * padding),
       height: 30,  // height is fixed for now
     };
 
@@ -129,8 +128,8 @@ class Variable extends React.Component {
       const y = position.y + deltaY;
       const pt = (event.changedTouches && event.changedTouches[0]) || event;
       this.setState({
-        x: x + (pt.clientX - mouseDownPositionX) / scale,
-        y: y + (pt.clientY - mouseDownPositionY) / scale,
+        x: x + ((pt.clientX - mouseDownPositionX) / scale),
+        y: y + ((pt.clientY - mouseDownPositionY) / scale),
       });
     }
   }
@@ -180,7 +179,12 @@ class Variable extends React.Component {
     } = this.state;
     const stroke = varStrokeWidth;
 
-    const classes = `variable${hover ? ' hover' : ''}${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
+    const classes = [
+      'variable',
+      hover ? 'hover' : '',
+      selected ? 'selected' : '',
+      dragging ? 'dragging' : '',
+    ].join(' ');
 
     return (
       <g className={classes} transform={`translate(${x},${y})`} ref={(c) => (this.node = c)}>
@@ -198,7 +202,7 @@ class Variable extends React.Component {
             onMouseDown={(e) => newLinkStartCallback(e, id)}
           />
           <rect
-            ref="innerRectRef"
+            ref={(c) => (this.innerRect = c)}
             className="inner-rect"
             rx="6" ry="6"
             width={dimensions.width} height={dimensions.height}
@@ -207,30 +211,29 @@ class Variable extends React.Component {
           />
         </g>
         {!editing ?
-          <text className="text" ref="textRef" x="0" y="0">{name}</text>
+          <text className="text" ref={(c) => (this.text = c)} x="0" y="0">{name}</text>
         : null}
 
         <g
           className={`edit${editing ? ' active' : ''}`}
-          transform={`translate(${dimensions.width / 2 + stroke + 16},${-(dimensions.height / 2 + stroke) - 11})`}
+          transform={`translate(${(dimensions.width / 2) + stroke + 16},${-((dimensions.height / 2) + stroke) - 11})`}
         >
           <circle
-            ref="editBtnRef"
             cx="12" cy="12" r="18"
             onClick={(e) => editCallback(e, id)}
           />
-          {/* Material pencil icon */}
+          {/* XXX: Material pencil icon. Replace this with something more dynamic. */}
           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
         </g>
         <g
           className={`remove${editing ? ' active' : ''}`}
-          transform={`translate(${dimensions.width / 2 + stroke + 16},${-(dimensions.height / 2 + stroke) + 31})`}
+          transform={`translate(${(dimensions.width / 2) + stroke + 16},${-((dimensions.height / 2) + stroke) + 31})`}
         >
           <circle
             cx="12" cy="12" r="18"
             onClick={this.onRemoveClick}
           />
-          {/* Material clear icon */}
+          {/* XXX: Material clear icon. Replace this. */}
           <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
         </g>
       </g>

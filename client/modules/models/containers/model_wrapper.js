@@ -1,5 +1,5 @@
-import ModelWrapper from '../components/model_wrapper';
 import {useDeps, composeAll} from 'mantra-core';
+import ModelWrapper from '../components/model_wrapper';
 
 export const depsMapper = (context, actions) => ({
   setPageTitle: actions.core.setPageTitle,

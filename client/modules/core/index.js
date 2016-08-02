@@ -1,10 +1,9 @@
+// This has to be loaded first, in order to get HMR to work
+import 'react-hot-loader/patch';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import routes from './routes';
 import actions from './actions';
 import setHeader from './configs/header';
-
-// This has to be loaded first, in order to get HMR to work
-import 'react-hot-loader/patch';
 
 export default {
   routes,

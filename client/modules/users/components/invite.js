@@ -1,10 +1,10 @@
 import React from 'react';
 import update from 'react-addons-update';
+import {pathFor} from '/lib/utils';
+import LoadingComponent from '/client/modules/core/components/loading';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
-import {pathFor} from '/lib/utils';
-import LoadingComponent from '../../core/components/loading';
 
 class Invite extends React.Component {
   constructor(props) {
@@ -67,7 +67,7 @@ class Invite extends React.Component {
             edit model dialog instead.
           </p>
 
-          <form ref="formRef" onSubmit={this.inviteUsers}>
+          <form onSubmit={this.inviteUsers}>
             <div className="row">
               {!loading ?
                 emails.map((email, i) => (
