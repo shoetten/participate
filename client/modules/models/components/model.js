@@ -199,6 +199,8 @@ class Model extends React.Component {
 
 
   onNewLinkStart(event, id) {
+    event.preventDefault();
+
     const pt = (event.changedTouches && event.changedTouches[0]) || event;
     const {canvasSize, xScale, yScale} = this.state;
 
