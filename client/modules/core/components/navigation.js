@@ -1,6 +1,5 @@
 import React from 'react';
 import $ from 'jquery';
-import {DocHead} from 'meteor/kadira:dochead';
 import {pathFor} from '/lib/utils';
 
 class Navigation extends React.Component {
@@ -9,25 +8,15 @@ class Navigation extends React.Component {
       belowOrigin: true,
       alignment: 'right',
     });
-
-    this.setTitle(this.props);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setTitle(nextProps);
-  }
-
-  setTitle({pageTitle, appTitle}) {
-    DocHead.setTitle(`${pageTitle ? `${pageTitle} | ` : ''}${appTitle}`);
   }
 
   render() {
-    const {currentUser, children, appTitle, pageTitle, signUp, model} = this.props;
+    const {currentUser, children, signUp, model} = this.props;
     return (
       <div className="navbar-fixed">
         <nav>
           <div className="nav-wrapper">
-            {pageTitle ?
+            {model ?
               <span className="brand-logo left">
                 <a
                   title="Go back to models" className="back"
@@ -35,20 +24,16 @@ class Navigation extends React.Component {
                 >
                   <i className="material-icons">chevron_left</i>
                 </a>
-                {model ?
-                  <a
-                    title={pageTitle}
-                    href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}
-                  >
-                    {pageTitle}
-                  </a>
-                :
-                  <span>{pageTitle}</span>
-                }
+                <a
+                  title={model.title}
+                  href={pathFor('models.single', {modelId: model._id, modelSlug: model.slug})}
+                >
+                  {model.title}
+                </a>
               </span>
             :
               <a href={pathFor('home')} className="brand-logo left">
-                {appTitle}
+                Participate
               </a>
             }
 
@@ -112,8 +97,6 @@ class Navigation extends React.Component {
 Navigation.propTypes = {
   currentUser: React.PropTypes.object,
   children: React.PropTypes.element,
-  appTitle: React.PropTypes.string,
-  pageTitle: React.PropTypes.string,
   signUp: React.PropTypes.bool,
   model: React.PropTypes.object,
 };

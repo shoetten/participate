@@ -1,37 +1,11 @@
 import React from 'react';
 import EnsureUserRights from '../../users/containers/ensure_user_rights';
 
-class ModelWrapper extends React.Component {
-  constructor(props) {
-    super(props);
-
-    const {setPageTitle, model} = props;
-    // if user is not authorized, there might be no model
-    if (model) {
-      setPageTitle(model.title);
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {setPageTitle} = this.props;
-    setPageTitle(nextProps.model.title);
-  }
-
-  componentWillUnmount() {
-    const {setPageTitle} = this.props;
-    setPageTitle();
-  }
-
-  render() {
-    const {content, model} = this.props;
-
-    return (
-      <EnsureUserRights model={model} action="view">
-        {content()}
-      </EnsureUserRights>
-    );
-  }
-}
+const ModelWrapper = ({content, model}) => (
+  <EnsureUserRights model={model} action="view">
+    {content()}
+  </EnsureUserRights>
+);
 
 ModelWrapper.propTypes = {
   content: React.PropTypes.func.isRequired,

@@ -1,11 +1,6 @@
-import {Meteor} from 'meteor/meteor';
 import {DocHead} from 'meteor/kadira:dochead';
 
-export default function (context) {
-  const {LocalState} = context;
-  LocalState.set('APP_TITLE', Meteor.settings.public.appTitle || 'Participate');
-  LocalState.set('PAGE_TITLE', '');
-
+export default function () {
   // define all static header attributes here
   DocHead.addMeta({
     name: 'viewport',

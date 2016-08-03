@@ -3,8 +3,9 @@ import {useDeps, composeAll, composeWithTracker} from 'mantra-core';
 import MainLayout from '../components/main_layout';
 import LoadingComponent from '../components/loading';
 
-export const composer = ({context, modelId}, onData) => {
-  const {Meteor, Collections} = context();
+export const composer = ({context, modelId, title}, onData) => {
+  const {Meteor, Collections, DocHead} = context();
+  let pageTitle = title;
 
   if (modelId) {
     if (Meteor.subscribe('models.single', modelId).ready()) {
@@ -23,12 +24,15 @@ export const composer = ({context, modelId}, onData) => {
           return members;
         }, [], model.members);
 
+        pageTitle = model.title;
         onData(null, {model});
       }
     }
   } else {
     onData(null, {});
   }
+
+  DocHead.setTitle(`${pageTitle ? `${pageTitle} | ` : ''}Participate`);
 };
 
 export const depsMapper = (context) => ({

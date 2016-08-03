@@ -1,12 +1,10 @@
 /* eslint-disable global-require */
 import React from 'react';
 import {mount} from 'react-mounter';
+import {AppContainer} from 'react-hot-loader';
 import {STATES} from 'meteor/std:accounts-ui';
 import AuthForms from './components/auth_forms';
-
-import MainLayout from '../core/components/main_layout';
 import Bye from './components/bye.js';
-// import NavActions from './components/nav_actions';
 
 // So we can call FlowRotuer again later during hot reload
 let localFlowRouter;
@@ -14,12 +12,22 @@ let localFlowRouter;
 export default function (injectDeps, {FlowRouter}) {
   localFlowRouter = FlowRouter;
 
-  const MainLayoutCtx = injectDeps(MainLayout);
+  const DataLoaderCtxHot = function (props) {
+    const DataLoader = require('../core/containers/data_loader').default;
+
+    const DataLoaderCtx = injectDeps(DataLoader);
+    return (
+      <AppContainer>
+        <DataLoaderCtx {...props} />
+      </AppContainer>
+    );
+  };
 
   FlowRouter.route('/login', {
     name: 'users.login',
     action() {
-      mount(MainLayoutCtx, {
+      mount(DataLoaderCtxHot, {
+        title: 'Login',
         content: () => (
           <AuthForms
             {...{
@@ -35,7 +43,8 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/signup', {
     name: 'users.signup',
     action() {
-      mount(MainLayoutCtx, {
+      mount(DataLoaderCtxHot, {
+        title: 'Sign up',
         content: () => (
           <AuthForms
             {...{
@@ -51,7 +60,8 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/confirm-account', {
     name: 'users.enroll',
     action() {
-      mount(MainLayoutCtx, {
+      mount(DataLoaderCtxHot, {
+        title: 'Confirm account',
         content: () => (
           <AuthForms
             {...{
@@ -67,7 +77,8 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/profile', {
     name: 'users.profile',
     action() {
-      mount(MainLayoutCtx, {
+      mount(DataLoaderCtxHot, {
+        title: 'Profile',
         content: () => (
           <AuthForms
             {...{
@@ -82,7 +93,7 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/bye', {
     name: 'users.bye',
     action() {
-      mount(MainLayoutCtx, {
+      mount(DataLoaderCtxHot, {
         content: () => (<Bye />),
       });
     },
@@ -93,7 +104,8 @@ export default function (injectDeps, {FlowRouter}) {
     action() {
       const Invite = require('./containers/invite').default;
 
-      mount(MainLayoutCtx, {
+      mount(DataLoaderCtxHot, {
+        title: 'Invite users',
         content: () => (<Invite />),
       });
     },
@@ -106,7 +118,7 @@ if (module.hot) {
   ], () => {
     // If any of the above files (or their dependencies) are updated, all we
     // really need to do is re-run the current route's action() method, which
-    // will require() the updated modules and re-mount MainLayoutCtx
+    // will require() the updated modules and re-mount DataLoaderCtxHot
     // (which itself require()'s the updated MainLayout at render time).
     localFlowRouter._current.route._action(localFlowRouter._current.params);
   });

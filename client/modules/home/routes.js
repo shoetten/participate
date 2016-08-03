@@ -11,13 +11,13 @@ let localFlowRouter;
 export default function (injectDeps, {FlowRouter}) {
   localFlowRouter = FlowRouter;
 
-  const MainLayoutCtxHot = function (props) {
-    const MainLayout = require('../core/components/main_layout').default;
+  const DataLoaderCtxHot = function (props) {
+    const DataLoader = require('../core/containers/data_loader').default;
 
-    const MainLayoutCtx = injectDeps(MainLayout);
+    const DataLoaderCtx = injectDeps(DataLoader);
     return (
       <AppContainer>
-        <MainLayoutCtx {...props} />
+        <DataLoaderCtx {...props} />
       </AppContainer>
     );
   };
@@ -27,7 +27,7 @@ export default function (injectDeps, {FlowRouter}) {
     action() {
       const Home = require('./components/home').default;
 
-      mount(MainLayoutCtxHot, {
+      mount(DataLoaderCtxHot, {
         content: () => (<Home />),
       });
     },
@@ -38,7 +38,8 @@ export default function (injectDeps, {FlowRouter}) {
     action() {
       const Beta = require('./components/beta').default;
 
-      mount(MainLayoutCtxHot, {
+      mount(DataLoaderCtxHot, {
+        title: 'Beta',
         content: () => (<Beta />),
       });
     },
@@ -49,7 +50,8 @@ export default function (injectDeps, {FlowRouter}) {
     action() {
       const Imprint = require('./components/imprint').default;
 
-      mount(MainLayoutCtxHot, {
+      mount(DataLoaderCtxHot, {
+        title: 'Imprint',
         content: () => (<Imprint />),
       });
     },

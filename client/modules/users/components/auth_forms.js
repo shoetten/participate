@@ -5,7 +5,7 @@ const AuthForms = (props) => (
   <div className="auth-forms">
     <div className="text-wrap">
       <h1>
-        {props.formState === STATES.SIGN_UP && 'Register'}
+        {props.formState === STATES.SIGN_UP && 'Sign up'}
         {props.formState === STATES.ENROLL_ACCOUNT && 'Confirm account'}
         {props.formState === STATES.SIGN_IN && 'Login'}
         {props.formState === STATES.PROFILE && 'Profile'}
