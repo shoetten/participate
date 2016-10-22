@@ -4,6 +4,7 @@ import {debounce, find} from 'lodash/fp';
 import {Keys} from '/client/lib/utils';
 import Variable from '../containers/variable';
 import Link from '../containers/link';
+import NoElementFound from './no_element_found';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
@@ -457,6 +458,12 @@ class Model extends React.Component {
             />
           </div>
         </div>
+
+        {variables.length === 0 &&
+          <NoElementFound arrowText="..create the first one!">
+            <h1>No variables have been created.<br />Go ahead and..</h1>
+          </NoElementFound>
+        }
 
         <button
           className="btn-floating btn-large waves-effect waves-light new"

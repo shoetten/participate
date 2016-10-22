@@ -3,6 +3,7 @@ import $ from 'jquery';
 import {pathFor} from '/lib/utils';
 import EditModel from '../containers/edit_model';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
+import NoElementFound from './no_element_found';
 
 class ModelList extends React.Component {
   constructor(props) {
@@ -79,13 +80,10 @@ class ModelList extends React.Component {
               ))}
             </div>
           :
-            <div className="nothing-found">
-              <div className="text">
-                <h1>You're not modelling anything, yet..</h1>
-                <p>Let a friend invite you to an existing model, or..</p>
-              </div>
-              <div className="arrow"><span>..create a new one!</span></div>
-            </div>
+            <NoElementFound arrowText="..create a new one!">
+              <h1>You're not modelling anything, yet..</h1>
+              <p>Let a friend invite you to an existing model, or..</p>
+            </NoElementFound>
           }
 
           <a
