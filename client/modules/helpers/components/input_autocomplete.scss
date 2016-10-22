@@ -1,6 +1,6 @@
 @import "{}/client/modules/core/components/_variables.scss";
 
-.ReactTags {
+.react-tags {
   position: relative;
 
   transition: border-bottom 0.3s, box-shadow 0.3s;
@@ -10,15 +10,15 @@
     box-shadow: 0 1px 0 0 $secondary-color;
   }
 
-  .ReactTags__selected {
+  .react-tags__selected {
     display: inline;
 
-    .ReactTags__tag {
+    .react-tags__selected-tag {
       border: none;
       margin-right: 6px;
     }
   }
-  .ReactTags__tagInput {
+  .react-tags__search {
     display: inline-block;
 
     @media (min-width: $small-screen-up) {
@@ -34,7 +34,7 @@
       box-shadow: none !important;
     }
 
-    .ReactTags__suggestions {
+    .react-tags__suggestions {
       position: absolute;
       z-index: 99;
       top: 100%;
@@ -62,6 +62,6 @@
 }
 
 // float left when positioned in columns
-.col .ReactTags {
+.col .react-tags {
   float: left;
 }

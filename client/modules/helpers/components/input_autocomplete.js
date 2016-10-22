@@ -10,9 +10,9 @@ class InputAutocomplete extends React.Component {
       tags: props.initialTags ? props.initialTags : [],
       suggestions: [],
       classNames: {
-        tag: 'ReactTags__tag chip',
-        suggestions: 'ReactTags__suggestions dropdown-content',
-        isActive: 'selected',
+        selectedTag: 'react-tags__selected-tag chip',
+        suggestions: 'react-tags__suggestions dropdown-content',
+        suggestionActive: 'selected',
       },
     };
     this.handleDelete = this.handleDelete.bind(this);

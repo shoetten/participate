@@ -15,7 +15,7 @@ export const composer = ({context}, onData) => {
         limit: 6,
       };
 
-      const suggestions = AutocompleteUsers.find({}, options).fetch().map((user) => ({
+      const suggestions = AutocompleteUsers.find({}, options).fetch().map(user => ({
         id: user._id,
         name: user.username,
       }));
@@ -31,7 +31,7 @@ export const composer = ({context}, onData) => {
 
 export const initialDataComposer = ({context, initialMembers}, onData) => {
   if (initialMembers) {
-    const initialTags = initialMembers.map((member) => ({
+    const initialTags = initialMembers.map(member => ({
       id: member._id,
       name: member.username,
     }));
