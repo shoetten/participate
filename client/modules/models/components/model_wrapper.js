@@ -11,8 +11,6 @@ ModelWrapper.propTypes = {
   content: React.PropTypes.func.isRequired,
   // data
   model: React.PropTypes.object,
-  // actions
-  setPageTitle: React.PropTypes.func.isRequired,
 };
 
 export default ModelWrapper;

@@ -47,14 +47,14 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/edit/:modelId', {
     name: 'models.edit',
     action({modelId}) {
-      const ModelWrapper = require('./containers/model_wrapper').default;
+      const ModelWrapper = require('./components/model_wrapper').default;
       const EditModel = require('./containers/edit_model').default;
 
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,
         modelView: 'edit',
-        content: (model) => (
+        content: model => (
           <ModelWrapper
             model={model}
             content={() => (<EditModel model={model} modal={false} />)}
@@ -80,14 +80,14 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/help/:modelId', {
     name: 'models.help',
     action({modelId}) {
-      const ModelWrapper = require('./containers/model_wrapper').default;
+      const ModelWrapper = require('./components/model_wrapper').default;
       const Help = require('./components/help').default;
 
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,
         modelView: 'help',
-        content: (model) => (
+        content: model => (
           <ModelWrapper
             model={model}
             content={() => (<Help model={model} />)}
@@ -100,14 +100,14 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/:modelId/:modelSlug', {
     name: 'models.single',
     action({modelId}) {
-      const ModelWrapper = require('./containers/model_wrapper').default;
+      const ModelWrapper = require('./components/model_wrapper').default;
       const Model = require('./containers/model').default;
 
       mount(DataLoaderCtxHot, {
         modelId,
         NavActions,
         modelView: 'view',
-        content: (model) => (
+        content: model => (
           <ModelWrapper
             model={model}
             content={() => (<Model model={model} />)}
