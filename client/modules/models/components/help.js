@@ -96,13 +96,13 @@ class Help extends React.Component {
           <ol className="toc">
             {items.map((item, i) => (
               <li key={i}>
-                <Scroll.DirectLink
+                <Scroll.Link
                   to={getSlug(item.header)} href={`#${getSlug(item.header)}`}
                   smooth duration={500}
                   offset={-75}
                 >
                   {item.header}
-                </Scroll.DirectLink>
+                </Scroll.Link>
               </li>
             ))}
           </ol>

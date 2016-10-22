@@ -51,6 +51,10 @@
         background-image: url(/images/help/background.jpg);
         background-size: 100%;
       }
+      .image-gallery-left-nav, .image-gallery-right-nav {
+        border: none;
+        background: none;
+      }
     }
   }
 }
