@@ -35,7 +35,7 @@ export const composer = ({context, modelId, title}, onData) => {
   DocHead.setTitle(`${pageTitle ? `${pageTitle} | ` : ''}Participate`);
 };
 
-export const depsMapper = (context) => ({
+export const depsMapper = context => ({
   context: () => context,
 });
 

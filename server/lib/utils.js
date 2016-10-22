@@ -22,7 +22,7 @@ export function isModelAdmin(userId, modelId) {
 
 export function checkUserPermissions(userId, modelId, action = 'edit') {
   // Is user allowed to edit this model?
-  check(modelId, Match.Where((id) => (
+  check(modelId, Match.Where(id => (
     action === 'admin' ? isModelAdmin(userId, id) : isModelMember(userId, id)
   )));
 }

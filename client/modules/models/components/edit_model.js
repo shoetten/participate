@@ -234,7 +234,7 @@ class EditModel extends React.Component {
           }
 
           <form
-            ref={(c) => (this.formRef = c)}
+            ref={c => (this.formRef = c)}
             className="edit-model modal-content"
             onSubmit={this.createModel}
           >
@@ -264,7 +264,7 @@ class EditModel extends React.Component {
             <div className="row">
               <div className="input-field col s12 m8 l6">
                 <input
-                  id="title" ref={(c) => (this.titleRef = c)} type="text" className="validate"
+                  id="title" ref={c => (this.titleRef = c)} type="text" className="validate"
                   defaultValue={model ? model.title : ''}
                   onChange={this.onTitleChange}
                   onBlur={this.changeTitle}
@@ -273,7 +273,7 @@ class EditModel extends React.Component {
               </div>
               <div className="input-field col s12 m8 l6">
                 <input
-                  id="slug" ref={(c) => (this.slugRef = c)} type="text" className="validate"
+                  id="slug" ref={c => (this.slugRef = c)} type="text" className="validate"
                   value={this.state.slugValue} onChange={this.onSlugChange}
                   onBlur={this.changeSlug}
                 />
@@ -283,7 +283,7 @@ class EditModel extends React.Component {
             <div className="row">
               <div className="input-field col s12">
                 <textarea
-                  id="description" ref={(c) => (this.descRef = c)}
+                  id="description" ref={c => (this.descRef = c)}
                   className="materialize-textarea validate"
                   defaultValue={model ? model.description : ''}
                   onChange={this.markUnsaved}
@@ -299,7 +299,7 @@ class EditModel extends React.Component {
                     Private
                     <input
                       id="permission"
-                      type="checkbox" ref={(c) => (this.permissionRef = c)}
+                      type="checkbox" ref={c => (this.permissionRef = c)}
                       defaultChecked={model && model.permission === 'public'}
                       onChange={this.changePermission}
                     />
@@ -351,14 +351,14 @@ class EditModel extends React.Component {
                     <li className="collection-item avatar">
                       <InputAutocompleteUsers
                         exposeApiCallback={this.handleMembersApiCallback}
-                        onChange={(member) => this.addMember(member)}
+                        onChange={member => this.addMember(member)}
                       />
                     </li>
                   </ul>
                 :
                   <InputAutocompleteUsers
                     exposeApiCallback={this.handleMembersApiCallback}
-                    onChange={(members) => this.setState({members})}
+                    onChange={members => this.setState({members})}
                   />
                 }
               </div>

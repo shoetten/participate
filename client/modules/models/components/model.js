@@ -273,7 +273,7 @@ class Model extends React.Component {
       yScale.invert(pt.clientY + offset.y),
       {width: 150, height: 30},
       model._id,
-      (id) => this.setState({justAdded: id})
+      id => this.setState({justAdded: id})
     );
   }
 
@@ -359,7 +359,7 @@ class Model extends React.Component {
       <div className="single-model">
         <svg
           className={`canvas${creatingLink ? ' creating-link' : ''}`}
-          ref={(c) => (this.canvas = c)}
+          ref={c => (this.canvas = c)}
         >
           <defs>
             <marker id="end-arrow" viewBox="0 -5 10 10" refX="7" markerWidth="5" markerHeight="5" orient="auto">
@@ -374,7 +374,7 @@ class Model extends React.Component {
             onMouseUp={this.onCanvasUp}
           />
           <g transform={zoomTransform}>
-            {links.map((link) => (
+            {links.map(link => (
               <Link
                 key={link._id}
                 id={link._id}
@@ -396,7 +396,7 @@ class Model extends React.Component {
               />
             : null}
 
-            {variables.map((variable) => (
+            {variables.map(variable => (
               <Variable
                 modelId={model._id}
                 key={variable._id}
@@ -429,7 +429,7 @@ class Model extends React.Component {
           >
             <input
               type="text"
-              ref={(c) => (this.variableName = c)}
+              ref={c => (this.variableName = c)}
               defaultValue={justAdded ? '' : variables[varMapper[selected]].name}
               placeholder="Variable name.."
               onBlur={this.changeVariableName}
@@ -448,7 +448,7 @@ class Model extends React.Component {
           </i>
           <div className="range-field">
             <input
-              ref={(c) => (this.zommer = c)}
+              ref={c => (this.zommer = c)}
               type="range"
               step="0.1"
               min="1" max="100"
@@ -460,7 +460,7 @@ class Model extends React.Component {
 
         <button
           className="btn-floating btn-large waves-effect waves-light new"
-          onClick={(e) => this.onCreateVariable(e, {x: -130, y: -130})}
+          onClick={e => this.onCreateVariable(e, {x: -130, y: -130})}
         >
           <i className="material-icons">add</i>
         </button>

@@ -4,7 +4,7 @@ import {mount} from 'react-mounter';
 import {AppContainer} from 'react-hot-loader';
 import {STATES} from 'meteor/std:accounts-ui';
 import AuthForms from './components/auth_forms';
-import Bye from './components/bye.js';
+import Bye from './components/bye';
 
 // So we can call FlowRotuer again later during hot reload
 let localFlowRouter;

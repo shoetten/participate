@@ -3,7 +3,7 @@ import {useDeps, composeAll, composeWithTracker} from 'mantra-core';
 import Navigation from '../components/navigation';
 
 export const composer = ({context}, onData) => {
-  const {Meteor, LocalState} = context();
+  const {Meteor} = context();
   const signUp = Meteor.settings.public.signUp;
 
   if (Meteor.subscribe('users.current').ready()) {
@@ -12,7 +12,7 @@ export const composer = ({context}, onData) => {
   }
 };
 
-export const depsMapper = (context) => ({
+export const depsMapper = context => ({
   context: () => context,
 });
 

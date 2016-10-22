@@ -75,7 +75,7 @@ class Invite extends React.Component {
                     <input
                       id={`email${i}`} type="email" className="validate"
                       value={email}
-                      onChange={(event) => this.onEmailChange(event, i)}
+                      onChange={event => this.onEmailChange(event, i)}
                     />
                     <label htmlFor={`email${i}`}>Email</label>
                   </div>
