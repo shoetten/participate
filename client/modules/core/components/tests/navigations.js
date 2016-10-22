@@ -9,14 +9,12 @@ describe('core.components.navigation', () => {
   it('should contain a link to home', () => {
     const el = shallow(<Navigation />);
     const homeLink = el.find('a').at(0);
-    expect(homeLink.text()).to.be.equal('Home');
     expect(homeLink.prop('href')).to.be.equal('/');
   });
 
-  it('should contain a link to create a new model', () => {
+  it('should contain a link to login when logged out', () => {
     const el = shallow(<Navigation />);
-    const newModelLink = el.find('a').at(1);
-    expect(newModelLink.text()).to.be.equal('New Model');
-    expect(newModelLink.prop('href')).to.be.equal('/model/new');
+    const loginLink = el.find('.right a').at(0);
+    expect(loginLink.prop('href')).to.be.equal('/login');
   });
 });
