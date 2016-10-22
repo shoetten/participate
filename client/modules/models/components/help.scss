@@ -54,6 +54,8 @@
       .image-gallery-left-nav, .image-gallery-right-nav {
         border: none;
         background: none;
+        padding: 4rem 0;
+        transform: translateY(-50%);
       }
     }
   }
