@@ -1,7 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import {debounce, find} from 'lodash/fp';
-import {Keys} from '/client/lib/utils';
+import {Keys} from '../../../lib/utils';
 import Variable from '../containers/variable';
 import Link from '../containers/link';
 import NoElementFound from './no_element_found';

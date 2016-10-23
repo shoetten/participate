@@ -1,6 +1,5 @@
 import React from 'react';
 import ImageGallery from 'react-image-gallery';
-import 'react-image-gallery/build/image-gallery.css';
 import getSlug from 'speakingurl';
 import Scroll from 'react-scroll';
 import {pathFor} from '/lib/utils';

@@ -1,6 +1,6 @@
 import {reduce} from 'lodash/fp';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
-import LoadingComponent from '/client/modules/core/components/loading';
+import LoadingComponent from '../../core/components/loading';
 import ModelList from '../components/model_list';
 
 export const composer = ({context}, onData) => {

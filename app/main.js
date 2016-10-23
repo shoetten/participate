@@ -3,13 +3,13 @@
  */
 
 import {createApp} from 'mantra-core';
-import initContext from '/client/configs/context';
+import initContext from './configs/context';
 
 // import all modules here
-import coreModule from '/client/modules/core';
-import users from '/client/modules/users';
-import home from '/client/modules/home';
-import models from '/client/modules/models';
+import coreModule from './modules/core';
+import users from './modules/users';
+import home from './modules/home';
+import models from './modules/models';
 
 // init context
 const context = initContext();

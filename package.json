@@ -5,8 +5,8 @@
   "private": true,
   "scripts": {
     "start": "meteor --settings settings.json",
-    "lint": "eslint ./lib ./client ./server --ext .js",
-    "unit-tests": "mocha .tests/mocha_boot.js client/**/tests/**/*.js --require babel-register",
+    "lint": "eslint ./lib ./app ./server --ext .js",
+    "unit-tests": "mocha .tests/mocha_boot.js app/**/tests/**/*.js --require babel-register",
     "test": "npm run lint && npm run unit-tests"
   },
   "repository": {
@@ -36,7 +36,8 @@
     "react-scroll": "^1.4.2",
     "react-tag-autocomplete": "^5.0.4",
     "react-tap-event-plugin": "^1.0.0",
-    "speakingurl": "^10.0.0"
+    "speakingurl": "^10.0.0",
+    "webshot": "^0.18.0"
   },
   "devDependencies": {
     "babel-preset-airbnb": "^2.1.1",

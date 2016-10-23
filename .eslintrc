@@ -42,6 +42,7 @@
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
     "object-shorthand": ["error", "always", { "avoidQuotes": false }],
     "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
-    "import/no-extraneous-dependencies": ["off", { "devDependencies": true }]
+    "import/no-extraneous-dependencies": ["off", { "devDependencies": true }],
+    "import/no-absolute-path": 0  // turn off, since meteor absolute imports are relative to root dir
   }
 }

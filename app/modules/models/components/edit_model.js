@@ -2,7 +2,7 @@ import React from 'react';
 import $ from 'jquery';
 import getSlug from 'speakingurl';
 import {pathFor} from '/lib/utils';
-import InputAutocompleteUsers from '/client/modules/models/containers/input_autocomplete_users';
+import InputAutocompleteUsers from '../containers/input_autocomplete_users';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;

@@ -1,6 +1,6 @@
 import React from 'react';
-import EnsureUserRights from '/client/modules/users/containers/ensure_user_rights';
 import {pathFor} from '/lib/utils';
+import EnsureUserRights from '../../users/containers/ensure_user_rights';
 
 const NavItem = ({href, icon}) => (
   <a href={href}>

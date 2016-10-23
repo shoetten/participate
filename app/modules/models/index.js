@@ -6,6 +6,10 @@ export default {
   routes,
   actions,
   load(context) {
-    methodStubs(context);
+    const {Meteor} = context;
+    // XXX: Combine client and server methods?
+    if (Meteor.isClient) {
+      methodStubs(context);
+    }
   },
 };

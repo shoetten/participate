@@ -1,4 +1,5 @@
-@import "{}/client/modules/core/components/_variables.scss";
+@import "{}/app/modules/core/components/_variables.scss";
+@import "{}/node_modules/react-image-gallery/styles/scss/image-gallery.scss";
 
 .help-text {
   .text-wrap {
@@ -51,11 +52,15 @@
         background-image: url(/images/help/background.jpg);
         background-size: 100%;
       }
-      .image-gallery-left-nav, .image-gallery-right-nav {
-        border: none;
+      button:focus {
         background: none;
-        padding: 4rem 0;
-        transform: translateY(-50%);
+      }
+      .image-gallery-index {
+        top: auto;
+        bottom: 0;
+      }
+      .image-gallery-play-button, .image-gallery-fullscreen-button {
+        display: none;
       }
     }
   }

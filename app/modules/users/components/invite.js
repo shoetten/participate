@@ -1,7 +1,7 @@
 import React from 'react';
 import update from 'react-addons-update';
 import {pathFor} from '/lib/utils';
-import LoadingComponent from '/client/modules/core/components/loading';
+import LoadingComponent from '../../core/components/loading';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
