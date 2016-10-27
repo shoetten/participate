@@ -33,6 +33,7 @@ class Model extends React.Component {
     this.onNewLinkMove = this.onNewLinkMove.bind(this);
     this.onNewLinkEnd = this.onNewLinkEnd.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
+    this.updateDimensions = this.updateDimensions.bind(this);
 
     // these won't change
     this.scaleExtent = [0.5, 5];
@@ -64,6 +65,10 @@ class Model extends React.Component {
     };
   }
 
+  componentWillMount() {
+    this.updateDimensions();
+  }
+
   componentDidMount() {
     const {xScale, yScale} = this.state;
     // init the pan & zoom behaviour
@@ -84,22 +89,13 @@ class Model extends React.Component {
       .on('click', this.onCanvasDown);
     this.eventCatcher.call(this.zoom).on('dblclick.zoom', null);
 
-
-    // Get svg dom size & reset zoom to center when finished.
-    this.setState({
-      canvasSize: this.canvas.getBoundingClientRect(),
-    }, () => this.resetZoom(false));
-
-    this.onResize = debounce(600, () => {
-      this.setState({
-        canvasSize: this.canvas.getBoundingClientRect(),
-      });
-    });
-    window.addEventListener('resize', this.onResize);
+    window.addEventListener('resize', debounce(600, this.updateDimensions));
 
     // Add global key event listener for keyboard shortcuts.
     document.addEventListener('keyup', this.onKeyUp);
 
+    // Reset svg transform to initial values.
+    this.resetZoom(false);
 
     // init materialize tooltips
     $('.tooltipped').tooltip({delay: 30});
@@ -159,7 +155,7 @@ class Model extends React.Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('resize', this.updateDimensions);
     document.removeEventListener('keyup', this.onKeyUp);
   }
 
@@ -203,28 +199,28 @@ class Model extends React.Component {
     event.preventDefault();
 
     const pt = (event.changedTouches && event.changedTouches[0]) || event;
-    const {canvasSize, xScale, yScale} = this.state;
+    const {xScale, yScale} = this.state;
+    const offset = this.canvas.getBoundingClientRect();
+    const pos = {
+      x: xScale.invert(pt.clientX - offset.left),
+      y: yScale.invert(pt.clientY - offset.top),
+    };
 
     this.setState({
       creatingLink: id,
-      newLinkStartPos: {
-        x: xScale.invert(pt.clientX),
-        y: yScale.invert(pt.clientY - canvasSize.top),
-      },
-      newLinkPos: {
-        x: xScale.invert(pt.clientX),
-        y: yScale.invert(pt.clientY - canvasSize.top),
-      },
+      newLinkStartPos: pos,
+      newLinkPos: pos,
+      offset,
     });
   }
 
   onNewLinkMove(event) {
     const pt = (event.changedTouches && event.changedTouches[0]) || event;
-    const {canvasSize, xScale, yScale} = this.state;
+    const {offset, xScale, yScale} = this.state;
 
     this.setState({newLinkPos: {
-      x: xScale.invert(pt.clientX),
-      y: yScale.invert(pt.clientY - canvasSize.top),
+      x: xScale.invert(pt.clientX - offset.left),
+      y: yScale.invert(pt.clientY - offset.top),
     }});
   }
 
@@ -318,6 +314,17 @@ class Model extends React.Component {
     this.setState({
       editingVariable: false,
       justAdded: '',
+    });
+  }
+
+  updateDimensions() {
+    const canvasSize = {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    };
+
+    this.setState({
+      canvasSize,
     });
   }
 
