@@ -186,8 +186,6 @@ class Variable extends React.PureComponent {
       dragging ? 'dragging' : '',
     ].join(' ');
 
-    // console.log(`Render variable ${name}`);
-
     return (
       <g className={classes} transform={`translate(${x},${y})`} ref={c => (this.node = c)}>
         <g
