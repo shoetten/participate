@@ -43,6 +43,24 @@ export default function ({Meteor, Collections}) {
       Variables.update({_id}, {$set: {name}});
     },
 
+    'variables.changePosition'(_id, x, y, modelId) {
+      // On client-side, only check if user is logged in
+      check(Meteor.userId(), String);
+      // check given data
+      check(_id, String);
+      check(x, Match.Where(isFloat));
+      check(y, Match.Where(isFloat));
+
+      const position = {x, y};
+
+      // Get previous position, so that control points of possible
+      // links can be moved, based on the delta
+      const prevPos = Variables.findOne(_id).position;
+      Meteor.call('links.translateAttached', _id, prevPos, position, modelId);
+
+      Variables.update({_id}, {$set: {position}});
+    },
+
     'variables.changeDimensions'(_id, width, height, modelId) {
       // On client-side, only check if user is logged in
       check(Meteor.userId(), String);

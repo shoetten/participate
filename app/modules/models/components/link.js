@@ -2,7 +2,7 @@ import React from 'react';
 import {isEqual, clone, sortBy} from 'lodash/fp';
 import {varStrokeWidth} from '../configs/constants';
 
-class Link extends React.Component {
+class Link extends React.PureComponent {
   constructor(props) {
     super(props);
     this.dragStart = this.dragStart.bind(this);
@@ -421,8 +421,10 @@ class Link extends React.Component {
 
     const classes = `link${selected ? ' selected' : ''}${dragging ? ' dragging' : ''}`;
 
+    // console.log(`Render link ${this.props.id}`);
+
     return (
-      <g className={classes} ref={(c) => (this.node = c)}>
+      <g className={classes} ref={c => (this.node = c)}>
         <path
           d={path}
           style={{markerEnd: 'url("#end-arrow")'}}

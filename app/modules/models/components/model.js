@@ -356,6 +356,8 @@ class Model extends React.Component {
       canvasSize,
     } = this.state;
 
+    // console.log('Render model!');
+
     return (
       <div className="single-model">
         <svg

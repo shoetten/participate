@@ -55,9 +55,16 @@ export default function () {
       check(x, Match.Where(isFloat));
       check(y, Match.Where(isFloat));
 
-      Variables.update({_id}, {$set: {
-        position: {x, y},
-      }});
+      const nextPos = {x, y};
+
+      // Get previous position, so that control points of possible
+      // links can be moved, based on the delta
+      const prevPos = Variables.findOne(_id).position;
+      Meteor.call('links.translateAttached', _id, prevPos, nextPos, modelId);
+
+      this.unblock();
+
+      Variables.update({_id}, {$set: {position: nextPos}});
       markModelModified(modelId);
     },
 

@@ -9,7 +9,6 @@ export const depsMapper = (context, actions) => ({
   changeDimensions: actions.variables.changeDimensions,
   remove: actions.variables.remove,
   select: actions.models.select,
-  context: () => context,
 });
 
 export default composeAll(

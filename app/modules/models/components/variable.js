@@ -1,7 +1,7 @@
 import React from 'react';
 import {varStrokeWidth} from '../configs/constants';
 
-class Variable extends React.Component {
+class Variable extends React.PureComponent {
   constructor(props) {
     super(props);
     this.dragStart = this.dragStart.bind(this);
@@ -186,23 +186,25 @@ class Variable extends React.Component {
       dragging ? 'dragging' : '',
     ].join(' ');
 
+    // console.log(`Render variable ${name}`);
+
     return (
-      <g className={classes} transform={`translate(${x},${y})`} ref={(c) => (this.node = c)}>
+      <g className={classes} transform={`translate(${x},${y})`} ref={c => (this.node = c)}>
         <g
           transform={`translate(${-dimensions.width / 2},${-dimensions.height / 2})`}
           onMouseEnter={() => this.setState({hover: true})}
           onMouseLeave={() => this.setState({hover: false})}
-          onMouseUp={(e) => newLinkEndCallback(e, id)}
+          onMouseUp={e => newLinkEndCallback(e, id)}
         >
           <rect
             className="outline"
             rx="10" ry="10"
             x={-stroke / 2} y={-stroke / 2}
             width={dimensions.width + stroke} height={dimensions.height + stroke}
-            onMouseDown={(e) => newLinkStartCallback(e, id)}
+            onMouseDown={e => newLinkStartCallback(e, id)}
           />
           <rect
-            ref={(c) => (this.innerRect = c)}
+            ref={c => (this.innerRect = c)}
             className="inner-rect"
             rx="6" ry="6"
             width={dimensions.width} height={dimensions.height}
@@ -211,7 +213,7 @@ class Variable extends React.Component {
           />
         </g>
         {!editing ?
-          <text className="text" ref={(c) => (this.text = c)} x="0" y="0">{name}</text>
+          <text className="text" ref={c => (this.text = c)} x="0" y="0">{name}</text>
         : null}
 
         <g
@@ -220,7 +222,7 @@ class Variable extends React.Component {
         >
           <circle
             cx="12" cy="12" r="18"
-            onClick={(e) => editCallback(e, id)}
+            onClick={e => editCallback(e, id)}
           />
           {/* XXX: Material pencil icon. Replace this with something more dynamic. */}
           <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />

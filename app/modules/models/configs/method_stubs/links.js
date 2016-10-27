@@ -64,14 +64,17 @@ export default function ({Meteor, Collections}) {
       Links.update(selector, {$set: {removed: true}}, {multi: true});
     },
 
-    'links.translateAttached'(varId, deltaX, deltaY, modelId) {
+    'links.translateAttached'(varId, prevPos, nextPos, modelId) {
       // On client-side, only check if user is logged in
       check(Meteor.userId(), String);
       check(modelId, String);
       // check given data
       check(varId, String);
-      check(deltaX, Number);
-      check(deltaY, Number);
+      check(prevPos, {x: Number, y: Number});
+      check(nextPos, {x: Number, y: Number});
+
+      const deltaX = Math.round(nextPos.x - prevPos.x);
+      const deltaY = Math.round(nextPos.y - prevPos.y);
 
       const selector = {
         $or: [
