@@ -1,16 +1,16 @@
 import React from 'react';
 import update from 'react-addons-update';
+import autobind from 'autobind-decorator';
 import {pathFor} from '/lib/utils';
 import LoadingComponent from '../../core/components/loading';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
 
+@autobind
 class Invite extends React.Component {
   constructor(props) {
     super(props);
-    this.inviteUsers = this.inviteUsers.bind(this);
-    this.onEmailChange = this.onEmailChange.bind(this);
 
     this.state = {
       emails: [''],

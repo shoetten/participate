@@ -1,14 +1,11 @@
 import React from 'react';
+import autobind from 'autobind-decorator';
 import {varStrokeWidth} from '../configs/constants';
 
+@autobind
 class Variable extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.dragStart = this.dragStart.bind(this);
-    this.dragMove = this.dragMove.bind(this);
-    this.dragEnd = this.dragEnd.bind(this);
-    this.onRemoveClick = this.onRemoveClick.bind(this);
-    this.onClick = this.onClick.bind(this);
 
     this.state = {
       x: props.position.x,

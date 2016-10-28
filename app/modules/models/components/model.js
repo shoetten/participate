@@ -1,6 +1,7 @@
 import React from 'react';
 import $ from 'jquery';
 import {debounce, find} from 'lodash/fp';
+import autobind from 'autobind-decorator';
 import {Keys} from '../../../lib/utils';
 import Variable from '../containers/variable';
 import Link from '../containers/link';
@@ -19,21 +20,10 @@ const Material = Materialize.Materialize;
 // } from 'd3';
 const d3 = require('d3');
 
+@autobind
 class Model extends React.Component {
   constructor(props) {
     super(props);
-    this.onCreateVariable = this.onCreateVariable.bind(this);
-    this.resetZoom = this.resetZoom.bind(this);
-    this.scaleTo = this.scaleTo.bind(this);
-    this.onCanvasDown = this.onCanvasDown.bind(this);
-    this.onCanvasUp = this.onCanvasUp.bind(this);
-    this.onVariableEdit = this.onVariableEdit.bind(this);
-    this.changeVariableName = this.changeVariableName.bind(this);
-    this.onNewLinkStart = this.onNewLinkStart.bind(this);
-    this.onNewLinkMove = this.onNewLinkMove.bind(this);
-    this.onNewLinkEnd = this.onNewLinkEnd.bind(this);
-    this.onKeyUp = this.onKeyUp.bind(this);
-    this.updateDimensions = this.updateDimensions.bind(this);
 
     // these won't change
     this.scaleExtent = [0.5, 5];

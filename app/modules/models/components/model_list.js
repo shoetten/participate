@@ -1,16 +1,13 @@
 import React from 'react';
+import autobind from 'autobind-decorator';
 import $ from 'jquery';
 import {pathFor} from '/lib/utils';
 import EditModel from '../containers/edit_model';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 import NoElementFound from './no_element_found';
 
+@autobind
 class ModelList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.showModelDialog = this.showModelDialog.bind(this);
-  }
-
   showModelDialog(event) {
     if (event && event.preventDefault) {
       event.preventDefault();

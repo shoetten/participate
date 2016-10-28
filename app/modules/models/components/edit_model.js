@@ -1,29 +1,17 @@
 import React from 'react';
 import $ from 'jquery';
 import getSlug from 'speakingurl';
+import autobind from 'autobind-decorator';
 import {pathFor} from '/lib/utils';
 import InputAutocompleteUsers from '../containers/input_autocomplete_users';
 import Materialize from 'meteor/poetic:materialize-scss';
 // weird export of Materialize
 const Material = Materialize.Materialize;
 
+@autobind
 class EditModel extends React.Component {
   constructor(props) {
     super(props);
-    this.createModel = this.createModel.bind(this);
-    this.changeTitle = this.changeTitle.bind(this);
-    this.changeSlug = this.changeSlug.bind(this);
-    this.changeDescription = this.changeDescription.bind(this);
-    this.changePermission = this.changePermission.bind(this);
-    this.addMember = this.addMember.bind(this);
-    this.removeMember = this.removeMember.bind(this);
-    this.toggleAdminRights = this.toggleAdminRights.bind(this);
-    this.markUnsaved = this.markUnsaved.bind(this);
-    this.reset = this.reset.bind(this);
-    this.updateSlug = this.updateSlug.bind(this);
-    this.onTitleChange = this.onTitleChange.bind(this);
-    this.onSlugChange = this.onSlugChange.bind(this);
-    this.handleMembersApiCallback = this.handleMembersApiCallback.bind(this);
 
     const {model} = this.props;
     this.state = {

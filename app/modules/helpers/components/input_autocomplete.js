@@ -1,7 +1,9 @@
 import React from 'react';
 import ReactTags from 'react-tag-autocomplete';
+import autobind from 'autobind-decorator';
 import {differenceWith, isEqual, some, uniqueId} from 'lodash/fp';
 
+@autobind
 class InputAutocomplete extends React.Component {
   constructor(props) {
     super(props);
@@ -15,9 +17,6 @@ class InputAutocomplete extends React.Component {
         suggestionActive: 'selected',
       },
     };
-    this.handleDelete = this.handleDelete.bind(this);
-    this.handleAddition = this.handleAddition.bind(this);
-    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentWillMount() {

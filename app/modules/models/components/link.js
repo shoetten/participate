@@ -1,17 +1,12 @@
 import React from 'react';
+import autobind from 'autobind-decorator';
 import {isEqual, clone, sortBy} from 'lodash/fp';
 import {varStrokeWidth} from '../configs/constants';
 
+@autobind
 class Link extends React.PureComponent {
   constructor(props) {
     super(props);
-    this.dragStart = this.dragStart.bind(this);
-    this.dragMove = this.dragMove.bind(this);
-    this.dragEnd = this.dragEnd.bind(this);
-    this.onClick = this.onClick.bind(this);
-    this.onPolarityEdit = this.onPolarityEdit.bind(this);
-    this.onChangePolarity = this.onChangePolarity.bind(this);
-    this.onRemoveClick = this.onRemoveClick.bind(this);
 
     const controlPointPos = props.controlPointPos;
     const path = this.calculatePath(props, controlPointPos);
