@@ -7,7 +7,7 @@ export const composer = ({context}, onData) => {
   onData(null, {});
 };
 
-export const depsMapper = (context) => ({
+export const depsMapper = context => ({
   context: () => context,
 });
 

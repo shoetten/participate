@@ -8,7 +8,7 @@ export const depsMapper = (context, actions) => ({
   changeControlPosition: actions.links.changeControlPosition,
   changePolarity: actions.links.changePolarity,
   remove: actions.links.remove,
-  select: actions.models.select
+  select: actions.models.select,
 });
 
 export default composeAll(

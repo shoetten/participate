@@ -78,7 +78,7 @@ class ModelList extends React.Component {
             </div>
           :
             <NoElementFound arrowText="..create a new one!">
-              <h1>You're not modelling anything, yet..</h1>
+              <h1>You&#039;re not modelling anything, yet..</h1>
               <p>Let a friend invite you to an existing model, or..</p>
             </NoElementFound>
           }

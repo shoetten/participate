@@ -31,7 +31,6 @@
   },
 
   "rules": {
-    "comma-dangle": [2, "always-multiline"],
     "object-curly-spacing": [0, "always"],
     "func-names": 0,
     "no-param-reassign": ["error", { "props": false }],
@@ -42,9 +41,11 @@
     "max-len": ["warn", 100],
     "new-cap": ["error", { "capIsNewExceptions": ["Where"] }],
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
+    "react/forbid-prop-types": ["warn"],     // warn, but no error on object & array props
     "object-shorthand": ["error", "always", { "avoidQuotes": false }],
     "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
     "import/no-extraneous-dependencies": ["off", { "devDependencies": true }],
-    "import/no-absolute-path": 0  // turn off, since meteor absolute imports are relative to root dir
+    "import/no-absolute-path": 0,           // turn off, since meteor absolute imports are relative to root dir
+    "import/extensions": ["off", "never"]   // doesn't work with meteor imports
   }
 }

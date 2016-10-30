@@ -466,7 +466,7 @@ class Link extends React.PureComponent {
           cx={control.x} cy={control.y}
           r="10"
           className="control-point"
-          ref={(c) => (this.controlRef = c)}
+          ref={c => (this.controlRef = c)}
           onMouseDown={this.dragStart}
           onTouchStart={this.dragStart}
         />

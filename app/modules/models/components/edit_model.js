@@ -309,7 +309,7 @@ class EditModel extends React.Component {
               <div className="col s12">
                 {model ?
                   <ul className="collection">
-                    {model.members.map((member) => (
+                    {model.members.map(member => (
                       <li
                         key={member.userId}
                         className={`collection-item avatar${member.isAdmin ? ' admin' : ''}`}

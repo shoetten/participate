@@ -9,7 +9,7 @@ const NotFound = () => (
         404 - Not Found
       </h1>
       <p>
-        There's nothing here for you.
+        There&#039;s nothing here for you.
         Maybe go <a href={pathFor('home')} title="Home">back to the homepage..?</a>
       </p>
     </div>

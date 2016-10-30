@@ -96,7 +96,6 @@ InputAutocomplete.propTypes = {
   setQuery: React.PropTypes.func.isRequired,
   initialTags: React.PropTypes.array,
   busy: React.PropTypes.bool,
-  suggestions: React.PropTypes.array,
 };
 
 export default InputAutocomplete;
