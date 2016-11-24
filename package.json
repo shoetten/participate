@@ -36,7 +36,6 @@
     "react-mounter": "^1.2.0",
     "react-scroll": "^1.4.4",
     "react-tag-autocomplete": "^5.0.4",
-    "react-tap-event-plugin": "^1.0.0",
     "speakingurl": "^10.0.0",
     "webshot": "^0.18.0"
   },
