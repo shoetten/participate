@@ -1,33 +1,21 @@
-/* eslint-disable global-require */
 import React from 'react';
 import {mount} from 'react-mounter';
-import {AppContainer} from 'react-hot-loader';
 
 import NavActions from './components/nav_actions';
-
-// So we can call FlowRotuer again later during hot reload
-let localFlowRouter;
+import DataLoader from '../core/containers/data_loader';
+import ModelList from './containers/model_list';
+import ModelWrapper from './components/model_wrapper';
+import Model from './containers/model';
+import EditModel from './containers/edit_model';
+import Help from './components/help';
 
 export default function (injectDeps, {FlowRouter}) {
-  localFlowRouter = FlowRouter;
-
-  const DataLoaderCtxHot = function (props) {
-    const DataLoader = require('../core/containers/data_loader').default;
-
-    const DataLoaderCtx = injectDeps(DataLoader);
-    return (
-      <AppContainer>
-        <DataLoaderCtx {...props} />
-      </AppContainer>
-    );
-  };
+  const DataLoaderCtx = injectDeps(DataLoader);
 
   FlowRouter.route('/models', {
     name: 'models.list',
     action() {
-      const ModelList = require('./containers/model_list').default;
-
-      mount(DataLoaderCtxHot, {
+      mount(DataLoaderCtx, {
         content: () => (<ModelList />),
       });
     },
@@ -36,9 +24,7 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/new', {
     name: 'models.new',
     action() {
-      const EditModel = require('./containers/edit_model').default;
-
-      mount(DataLoaderCtxHot, {
+      mount(DataLoaderCtx, {
         content: () => (<EditModel modal={false} />),
       });
     },
@@ -47,10 +33,7 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/edit/:modelId', {
     name: 'models.edit',
     action({modelId}) {
-      const ModelWrapper = require('./components/model_wrapper').default;
-      const EditModel = require('./containers/edit_model').default;
-
-      mount(DataLoaderCtxHot, {
+      mount(DataLoaderCtx, {
         modelId,
         NavActions,
         modelView: 'edit',
@@ -67,9 +50,7 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/help', {
     name: 'models.help',
     action() {
-      const Help = require('./components/help').default;
-
-      mount(DataLoaderCtxHot, {
+      mount(DataLoaderCtx, {
         NavActions,
         modelView: 'help',
         content: () => (<Help />),
@@ -80,10 +61,7 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/help/:modelId', {
     name: 'models.help',
     action({modelId}) {
-      const ModelWrapper = require('./components/model_wrapper').default;
-      const Help = require('./components/help').default;
-
-      mount(DataLoaderCtxHot, {
+      mount(DataLoaderCtx, {
         modelId,
         NavActions,
         modelView: 'help',
@@ -100,10 +78,7 @@ export default function (injectDeps, {FlowRouter}) {
   FlowRouter.route('/model/:modelId/:modelSlug', {
     name: 'models.single',
     action({modelId}) {
-      const ModelWrapper = require('./components/model_wrapper').default;
-      const Model = require('./containers/model').default;
-
-      mount(DataLoaderCtxHot, {
+      mount(DataLoaderCtx, {
         modelId,
         NavActions,
         modelView: 'view',
@@ -115,22 +90,5 @@ export default function (injectDeps, {FlowRouter}) {
         ),
       });
     },
-  });
-}
-
-if (module.hot) {
-  module.hot.accept([
-    '../core/containers/data_loader',
-    './containers/model_list',
-    './containers/model_wrapper',
-    './containers/model',
-    './containers/edit_model',
-    './components/help',
-  ], () => {
-    // If any of the above files (or their dependencies) are updated, all we
-    // really need to do is re-run the current route's action() method, which
-    // will require() the updated modules and re-mount MainLayoutCtx
-    // (which itself require()'s the updated MainLayout at render time).
-    localFlowRouter._current.route._action(localFlowRouter._current.params);
   });
 }
