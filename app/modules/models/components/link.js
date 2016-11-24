@@ -125,25 +125,34 @@ class Link extends React.PureComponent {
     this.center = center;
     this.radius = radius;
 
+    this.start = this.calculateBorderPoint(fromVar, center, control, 4);
+    this.end = this.calculateBorderPoint(toVar, center, control, 7);
+
     // Calculate arc sweep & large flags
     if (radius !== 0) {
-      const fromPos = fromVar.position;
-      const toPos = toVar.position;
-
       // On which side of the (imaginary) straigt line between the
       // variables is the control point? To check this, we
       // 1. Define the vector between the variables (so between a & c)
       // 2. Define the vector between fromVar and control point (so a & b)
       // 3. Calculate the cross product to determine which side you're on.
-      this.sweepFlag = (toPos.x - fromPos.x) * (control.y - fromPos.y) > (toPos.y - fromPos.y) * (control.x - fromPos.x) ? '0' : '1';
+      this.sweepFlag =
+        (this.end.x - this.start.x) * (control.y - this.start.y)
+        > (this.end.y - this.start.y) * (control.x - this.start.x)
+        ? '0' : '1';
 
-      // const startAngle = Math.atan2(fromPos.y - center.y, fromPos.x - center.x);
-      // const endAngle = Math.atan2(toPos.y - center.y, toPos.x - center.x);
-      // largeFlag = endAngle - startAngle <= Math.PI ? '0' : '1';
-      this.largeFlag = '0';
+      // Is the angle centred around the control point acute (< 90°)
+      // or obtuse (> 90°)? If the angle is acute, we need to draw
+      // the large arc.
+      const startAngle = Math.atan2(this.start.y - control.y, this.start.x - control.x);
+      const endAngle = Math.atan2(this.end.y - control.y, this.end.x - control.x);
+      const angle = ((endAngle - startAngle + (3 * Math.PI)) % (2 * Math.PI)) - Math.PI;
+
+      this.largeFlag = Math.abs(angle) > Math.PI / 2 ? '0' : '1';
+
+      // console.log(`startAngle = Math.atan2(${this.start.y} - ${control.y}, ${this.start.x} - ${control.x})`);
       // console.log(`startAngle: ${startAngle * (180/Math.PI)}, endAngle: ${endAngle * (180/Math.PI)}`);
-      // console.log(`endAngle - startAngle: ${(endAngle - startAngle) * (180/Math.PI)}`);
-      // console.log(`largeFlag: ${largeFlag}, sweepFlag: ${sweepFlag}`);
+      // console.log(`endAngle - startAngle: ${(angle) * (180/Math.PI)}`);
+      // console.log(`largeFlag: ${this.largeFlag}, sweepFlag: ${this.sweepFlag}`);
 
       // console.log(`cx="${center.x}" cy="${center.y}"`);
     } else {
@@ -151,9 +160,6 @@ class Link extends React.PureComponent {
       this.largeFlag = '0';
       this.sweepFlag = '0';
     }
-
-    this.start = this.calculateBorderPoint(fromVar, center, control, 4);
-    this.end = this.calculateBorderPoint(toVar, center, control, 7);
 
     return `M ${this.start.x},${this.start.y} A ${this.radius},${this.radius} 0 ${this.largeFlag},${this.sweepFlag} ${this.end.x},${this.end.y}`;
   }
@@ -199,7 +205,7 @@ class Link extends React.PureComponent {
       // Since we're just dealing with circular arc's,
       // we can just calculate the distance between the
       // center and one of the variables
-      radius = Math.sqrt(Math.pow(center.x - a.x, 2) + Math.pow(center.y - a.y, 2));
+      radius = Math.sqrt(((center.x - a.x) ** 2) + ((center.y - a.y) ** 2));
     }
 
     return {center, radius};
@@ -226,7 +232,6 @@ class Link extends React.PureComponent {
     control.x -= circleCenter.x;
     control.y -= circleCenter.y;
 
-
     let points = [];
 
     // Check east & west with possible x values
@@ -236,8 +241,8 @@ class Link extends React.PureComponent {
     ];
     possibleX.forEach((x) => {
       const ySquared = [
-        Math.sqrt(Math.pow(this.radius, 2) - Math.pow(x, 2)),
-        -Math.sqrt(Math.pow(this.radius, 2) - Math.pow(x, 2)),
+        Math.sqrt((this.radius ** 2) - (x ** 2)),
+        -Math.sqrt((this.radius ** 2) - (x ** 2)),
       ];
       // Check if the derived y value is in range of rectangle
       ySquared.forEach((y) => {
@@ -255,8 +260,8 @@ class Link extends React.PureComponent {
     ];
     possibleY.forEach((y) => {
       const xSquared = [
-        Math.sqrt(Math.pow(this.radius, 2) - Math.pow(y, 2)),
-        -Math.sqrt(Math.pow(this.radius, 2) - Math.pow(y, 2)),
+        Math.sqrt((this.radius ** 2) - (y ** 2)),
+        -Math.sqrt((this.radius ** 2) - (y ** 2)),
       ];
       // Check if the derived x value is in range of rectangle
       xSquared.forEach((x) => {
@@ -269,7 +274,7 @@ class Link extends React.PureComponent {
 
     // Get the point closest to the control point.
     points = sortBy((point => (
-      Math.sqrt(Math.pow(control.x - point.x, 2) + Math.pow(control.y - point.y, 2))
+      Math.sqrt(((control.x - point.x) ** 2) + ((control.y - point.y) ** 2))
     )), points);
 
     // Fallback if no point was found
@@ -297,14 +302,14 @@ class Link extends React.PureComponent {
       point = this.rotate(
         this.center.x, this.center.y,
         this.end.x, this.end.y,
-        angle
+        angle,
       );
     } else {
       const vector = [
         this.end.x - this.start.x,
         this.end.y - this.start.y,
       ];
-      const length = Math.sqrt(Math.pow(vector[0], 2) + Math.pow(vector[1], 2));
+      const length = Math.sqrt((vector[0] ** 2) + (vector[1] ** 2));
       // Calculate the unit vector and multiply by desired distance from end point.
       const translationVector = [
         (vector[0] / length) * distance,
