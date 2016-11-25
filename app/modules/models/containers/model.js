@@ -5,14 +5,16 @@ export const composer = ({context, model, setPageTitle, clearErrors}, onData) =>
   const {Collections, LocalState} = context();
   const error = LocalState.get('SAVING_ERROR');
 
-  const selector = {
-    modelId: model._id,
-    removed: {$ne: true},
-  };
-  const variables = Collections.Variables.find(selector).fetch();
-  const links = Collections.Links.find(selector).fetch();
+  if (model) {
+    const selector = {
+      modelId: model._id,
+      removed: {$ne: true},
+    };
+    const variables = Collections.Variables.find(selector).fetch();
+    const links = Collections.Links.find(selector).fetch();
 
-  onData(null, {model, variables, links, error});
+    onData(null, {model, variables, links, error});
+  }
 
   // clear errors when unmounting container
   return clearErrors;
