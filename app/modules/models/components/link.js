@@ -1,6 +1,6 @@
 import React from 'react';
 import autobind from 'autobind-decorator';
-import {isEqual, clone, sortBy} from 'lodash/fp';
+import {isEqual, clone, isEmpty} from 'lodash/fp';
 import {varStrokeWidth} from '../configs/constants';
 
 @autobind
@@ -125,19 +125,21 @@ class Link extends React.PureComponent {
     this.center = center;
     this.radius = radius;
 
-    this.start = this.calculateBorderPoint(fromVar, center, control, 4);
-    this.end = this.calculateBorderPoint(toVar, center, control, 7);
+    this.start = this.calculateBorderPoint(fromVar, toVar, center, control, 4);
+    this.end = this.calculateBorderPoint(toVar, fromVar, center, control, 7);
 
     // Calculate arc sweep & large flags
     if (radius !== 0) {
       // On which side of the (imaginary) straigt line between the
       // variables is the control point? To check this, we
-      // 1. Define the vector between the variables (so between a & c)
-      // 2. Define the vector between fromVar and control point (so a & b)
-      // 3. Calculate the cross product to determine which side you're on.
+      // 1. Define the vector between the variables (so between toPos & fromPos).
+      // 2. Define the vector between fromPos and control point.
+      // 3. Calculate the cross product between the two to determine which side you're on.
+      const fromPos = fromVar.position;
+      const toPos = toVar.position;
       this.sweepFlag =
-        (this.end.x - this.start.x) * (control.y - this.start.y)
-        > (this.end.y - this.start.y) * (control.x - this.start.x)
+        (toPos.x - fromPos.x) * (control.y - fromPos.y)
+        > (toPos.y - fromPos.y) * (control.x - fromPos.x)
         ? '0' : '1';
 
       // Is the angle centred around the control point acute (< 90°)
@@ -153,8 +155,6 @@ class Link extends React.PureComponent {
       // console.log(`startAngle: ${startAngle * (180/Math.PI)}, endAngle: ${endAngle * (180/Math.PI)}`);
       // console.log(`endAngle - startAngle: ${(angle) * (180/Math.PI)}`);
       // console.log(`largeFlag: ${this.largeFlag}, sweepFlag: ${this.sweepFlag}`);
-
-      // console.log(`cx="${center.x}" cy="${center.y}"`);
     } else {
       // If the radius is zero, the flags have no meaning
       this.largeFlag = '0';
@@ -182,7 +182,6 @@ class Link extends React.PureComponent {
     const z1 = (b.x * b.x) + (b.y * b.y);
     const z2 = (c.x * c.x) + (c.y * c.y);
     const d = 2 * ((b.x * c.y) - (c.x * b.y));
-    // console.log(`z1: ${z1}, z2: ${z2}, d: ${d}`);
 
     let center;
     let radius;
@@ -216,78 +215,91 @@ class Link extends React.PureComponent {
    * and the circular arc drawn by this link.
    * For a better understanding of what is going on here, see:
    * http://stackoverflow.com/questions/38029109/draw-non-overlapping-arc-between-two-rectangles
-   * @param  {Object} variable     Variable that defines the rectangle border
+   * @param  {Object} fromVar      Variable that defines the rectangle border
+   * @param  {Object} toVar        Variable that defines the rectangle border
    * @param  {Object} circleCenter Center point of the circle that defines the arc
    * @param  {Object} controlPoint Position of the control point
    * @param  {Number} padding      Space between the rectangle and the link
    * @return {Object}              Object containing the intersection point.
    */
-  calculateBorderPoint(variable, circleCenter, controlPoint, padding) {
-    const a = clone(variable.position);
-    const control = clone(controlPoint);
+  calculateBorderPoint(fromVar, toVar, circleCenter, controlPoint, padding) {
+    const a = clone(fromVar.position);
+    const b = clone(toVar.position);
+    const c = clone(controlPoint);
 
     // Treat center of circle as coordinate origin.
     a.x -= circleCenter.x;
     a.y -= circleCenter.y;
-    control.x -= circleCenter.x;
-    control.y -= circleCenter.y;
+    b.x -= circleCenter.x;
+    b.y -= circleCenter.y;
+    c.x -= circleCenter.x;
+    c.y -= circleCenter.y;
 
-    let points = [];
+    let borderPoint = {};
 
-    // Check east & west with possible x values
+    // Calculate y coordinate with two possible fixed x values
     const possibleX = [
-      a.x - (variable.dimensions.width / 2) - varStrokeWidth - padding,
-      a.x + (variable.dimensions.width / 2) + varStrokeWidth + padding,
+      a.x - (fromVar.dimensions.width / 2) - varStrokeWidth - padding,
+      a.x + (fromVar.dimensions.width / 2) + varStrokeWidth + padding,
     ];
     possibleX.forEach((x) => {
       const ySquared = [
         Math.sqrt((this.radius ** 2) - (x ** 2)),
         -Math.sqrt((this.radius ** 2) - (x ** 2)),
       ];
-      // Check if the derived y value is in range of rectangle
+      // Check if the derived y value is in range of the rectangle
+      // and if the point is on the same side of the line between
+      // fromVar and toVar as the control point.
       ySquared.forEach((y) => {
-        if (y >= a.y - (variable.dimensions.height / 2) - varStrokeWidth - padding &&
-            y <= a.y + (variable.dimensions.height / 2) + varStrokeWidth + padding) {
-          points.push({x, y});
+        // The side is determined by comparing the cross products of
+        // (a, b) x (a, c) and (a, b) x (a, p), where a is fromVar, b is
+        // toVar, c the control point and p the freshly calculated point.
+        const controlSide = (b.x - a.x) * (c.y - a.y) > (b.y - a.y) * (c.x - a.x);
+        const pointSide = (b.x - a.x) * (y - a.y) > (b.y - a.y) * (x - a.x);
+        if (y >= a.y - (fromVar.dimensions.height / 2) - varStrokeWidth - padding &&
+            y <= a.y + (fromVar.dimensions.height / 2) + varStrokeWidth + padding &&
+            controlSide === pointSide) {
+          borderPoint = {x, y};
         }
       });
     });
 
-    // Check north & south with possible y values
+    // Calculate x coordinate with two possible fixed y values
     const possibleY = [
-      a.y - (variable.dimensions.height / 2) - varStrokeWidth - padding,
-      a.y + (variable.dimensions.height / 2) + varStrokeWidth + padding,
+      a.y - (fromVar.dimensions.height / 2) - varStrokeWidth - padding,
+      a.y + (fromVar.dimensions.height / 2) + varStrokeWidth + padding,
     ];
     possibleY.forEach((y) => {
       const xSquared = [
         Math.sqrt((this.radius ** 2) - (y ** 2)),
         -Math.sqrt((this.radius ** 2) - (y ** 2)),
       ];
-      // Check if the derived x value is in range of rectangle
+      // Check if the derived y value is in range of the rectangle
+      // and if the point is on the same side of the line between
+      // fromVar and toVar as the control point.
       xSquared.forEach((x) => {
-        if (x >= a.x - (variable.dimensions.width / 2) - varStrokeWidth - padding &&
-            x <= a.x + (variable.dimensions.width / 2) + varStrokeWidth + padding) {
-          points.push({x, y});
+        const controlSide = (b.x - a.x) * (c.y - a.y) > (b.y - a.y) * (c.x - a.x);
+        const pointSide = (b.x - a.x) * (y - a.y) > (b.y - a.y) * (x - a.x);
+        if (x >= a.x - (fromVar.dimensions.width / 2) - varStrokeWidth - padding &&
+            x <= a.x + (fromVar.dimensions.width / 2) + varStrokeWidth + padding &&
+            controlSide === pointSide) {
+          borderPoint = {x, y};
         }
       });
     });
 
-    // Get the point closest to the control point.
-    points = sortBy((point => (
-      Math.sqrt(((control.x - point.x) ** 2) + ((control.y - point.y) ** 2))
-    )), points);
-
-    // Fallback if no point was found
-    // XXX: Remove this.
-    if (points.length === 0) {
-      points.push({x: a.x, y: a.y});
+    // Fallback if no point was found, which can happen in
+    // edge cases, where we deal with a completely straight
+    // line, which is not handled by the algorithm, yet.
+    if (isEmpty(borderPoint)) {
+      borderPoint = {x: a.x, y: a.y};
     }
 
     // Translate it back.
-    points[0].x += circleCenter.x;
-    points[0].y += circleCenter.y;
+    borderPoint.x += circleCenter.x;
+    borderPoint.y += circleCenter.y;
 
-    return points[0];
+    return borderPoint;
   }
 
   calculatePolarityPoint() {
