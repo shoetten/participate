@@ -2,6 +2,7 @@
   "name": "participate",
   "version": "0.0.1",
   "description": "Online participatory modeling",
+  "author": "Simon Hötten <simon@hoetten.org>",
   "private": true,
   "scripts": {
     "start": "meteor --settings settings.json",
