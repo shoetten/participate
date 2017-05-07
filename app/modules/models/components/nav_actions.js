@@ -1,51 +1,70 @@
 import React from 'react';
+import {ToolbarGroup} from 'material-ui/Toolbar';
+import IconButton from 'material-ui/IconButton';
+import HelpIcon from 'material-ui/svg-icons/action/help';
+import EditIcon from 'material-ui/svg-icons/image/edit';
 import {pathFor} from '/lib/utils';
 import EnsureUserRights from '../../users/containers/ensure_user_rights';
-
-const NavItem = ({href, icon}) => (
-  <a href={href}>
-    <i className="material-icons">{icon}</i>
-  </a>
-);
-
-NavItem.propTypes = {
-  href: React.PropTypes.string,
-  icon: React.PropTypes.string.isRequired,
-};
-
 
 const NavActions = ({model, modelView}) => {
   const modelId = model ? model._id : '';
   const modelSlug = model ? model.slug : '';
 
   return (
-    <ul>
-      <li className={modelView === 'help' ? 'active' : ''}>
-        {modelView === 'help' && model ?
-          <NavItem icon="help" href={pathFor('models.single', {modelId, modelSlug})} />
-        :
-          <NavItem icon="help" href={pathFor('models.help', {modelId})} />
-        }
-      </li>
+    <ToolbarGroup>
+      {modelView === 'help' && model ?
+        <IconButton
+          href={pathFor('models.single', {modelId, modelSlug})}
+          tooltip="Back to model"
+          style={{backgroundColor: 'rgba(0,0,0,0.2)'}}
+          tooltipPosition="bottom-center"
+        >
+          <HelpIcon />
+        </IconButton>
+      :
+        <IconButton
+          href={pathFor('models.help', {modelId})}
+          tooltip="Help"
+          tooltipPosition="bottom-center"
+        >
+          <HelpIcon />
+        </IconButton>
+      }
 
-      {model ?
+      {!!model &&
         <EnsureUserRights model={model} action="admin">
-          <li className={modelView === 'edit' ? 'active' : ''}>
-            {modelView === 'edit' ?
-              <NavItem icon="edit" href={pathFor('models.single', {modelId, modelSlug})} />
-            :
-              <NavItem icon="edit" href={pathFor('models.edit', {modelId: model._id})} />
-            }
-          </li>
+          {modelView === 'edit' ?
+            <IconButton
+              href={pathFor('models.single', {modelId, modelSlug})}
+              tooltip="Back to model"
+              style={{backgroundColor: 'rgba(0,0,0,0.2)'}}
+              tooltipPosition="bottom-center"
+            >
+              <EditIcon />
+            </IconButton>
+          :
+            <IconButton
+              href={pathFor('models.edit', {modelId: model._id})}
+              tooltip="Edit"
+              tooltipPosition="bottom-center"
+            >
+              <EditIcon />
+            </IconButton>
+          }
         </EnsureUserRights>
-      : null}
-    </ul>
+      }
+    </ToolbarGroup>
   );
 };
 
 NavActions.propTypes = {
   model: React.PropTypes.object,
   modelView: React.PropTypes.string,
+};
+
+NavActions.defaultProps = {
+  model: null,
+  modelView: '',
 };
 
 export default NavActions;
