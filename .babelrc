@@ -3,8 +3,8 @@
     "airbnb"
   ],
   "plugins": [
-    "react-hot-loader/babel",
-    "babel-root-slash-import",
-    "transform-decorators-legacy"
+    "transform-class-properties",
+    "transform-decorators-legacy",
+    "babel-root-slash-import"
   ]
 }

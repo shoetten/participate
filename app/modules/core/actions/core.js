@@ -6,6 +6,7 @@ export default {
   },
 
   clearErrors({LocalState}) {
-    return LocalState.set('SAVING_ERROR', null);
+    LocalState.set('ERROR_MSG', '');
+    return LocalState.set('NOTIFICATION_MSG', '');
   },
 };
