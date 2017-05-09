@@ -81,6 +81,8 @@ nav .nav-wrapper {
 
   ul.right {
     height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
   }
 
   .nav-actions {
