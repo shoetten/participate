@@ -40,7 +40,7 @@ export default function () {
       Mongo.Collection._publishCursor(
         Meteor.users.find(selector, options),
         this,
-        'autocomplete.users'
+        'autocomplete.users',
       );
 
       this.ready();

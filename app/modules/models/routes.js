@@ -1,8 +1,7 @@
 import React from 'react';
 import {mount} from 'react-mounter';
-
-import NavActions from './components/nav_actions';
 import DataLoader from '../core/containers/data_loader';
+import NavActions from './containers/nav_actions';
 import ModelList from './containers/model_list';
 import ModelWrapper from './components/model_wrapper';
 import Model from './containers/model';

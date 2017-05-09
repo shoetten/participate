@@ -25,6 +25,8 @@ const LoggedIn = (props) => {
             icon={<PersonIcon />}
           />
         }
+        anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+        targetOrigin={{horizontal: 'right', vertical: 'top'}}
       >
         <MenuItem
           primaryText="My models"

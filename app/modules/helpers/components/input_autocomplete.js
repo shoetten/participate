@@ -1,101 +1,70 @@
 import React from 'react';
-import ReactTags from 'react-tag-autocomplete';
+import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
-import {differenceWith, isEqual, some, uniqueId} from 'lodash/fp';
+import {uniqueId} from 'lodash/fp';
+import AutoComplete from 'material-ui/AutoComplete';
+
+const dataSourceConfig = {
+  text: 'name',
+  value: 'id',
+};
 
 @autobind
 class InputAutocomplete extends React.Component {
+  static propTypes = {
+    onAdd: PropTypes.func.isRequired,
+    setQuery: PropTypes.func.isRequired,
+    suggestions: PropTypes.array,
+  }
+
+  static defaultProps = {
+    suggestions: [],
+  }
+
   constructor(props) {
     super(props);
+    this.id = uniqueId();
     this.state = {
-      busy: false,
-      tags: props.initialTags ? props.initialTags : [],
-      suggestions: [],
-      classNames: {
-        selectedTag: 'react-tags__selected-tag chip',
-        suggestions: 'react-tags__suggestions dropdown-content',
-        suggestionActive: 'selected',
-      },
+      searchText: '',
     };
   }
 
-  componentWillMount() {
-    // Expose all public API functions here.
-    // For more info, see
-    // https://medium.com/@erikras/the-hoc-drill-pattern-a676a3889ced
-    this.props.exposeApiCallback(
-      this.reset.bind(this)
-    );
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      // do not suggest already included elements and store them in state
-      suggestions: differenceWith(isEqual, newProps.suggestions, this.state.tags),
-    });
-  }
-
-  handleDelete(i) {
-    const tags = this.state.tags;
-    tags.splice(i, 1);
-    this.setState({tags});
-  }
-
-  handleAddition(tag) {
-    const tags = this.state.tags;
-
-    // since tag names are unique, don't add already existing ones
-    if (some(['name', tag.name], tags)) {   // uses the `_.matchesProperty` iteratee shorthand
-      return;
-    }
-
-    tags.push({
-      id: tag.id || uniqueId('new_'),
-      name: tag.name,
-    });
-    this.setState({tags});
-    this.props.onChange(tags);
-  }
-
-  handleInputChange(input) {
+  handleUpdateInput(searchText) {
+    this.setState({searchText});
     const {setQuery} = this.props;
-    if (!this.props.busy) {
-      setQuery(input);
-    }
+    setQuery(searchText);
   }
 
-  reset() {
+  handleNewRequest(selected, index) {
+    const {onAdd, setQuery} = this.props;
     this.setState({
-      tags: [],
-      suggestions: [],
+      searchText: '',
     });
+    onAdd({
+      id: index > -1 ? selected.id : uniqueId('new_'),
+      name: index > -1 ? selected.name : selected,
+      new: index === -1,
+    });
+    setQuery('');
   }
 
   render() {
-    const {tags, suggestions, classNames} = this.state;
+    const {suggestions} = this.props;
+    const {searchText} = this.state;
     return (
-      <ReactTags
-        placeholder="Add new member"
-        tags={tags}
-        suggestions={suggestions}
-        handleDelete={this.handleDelete}
-        handleAddition={this.handleAddition}
-        handleInputChange={this.handleInputChange}
-        minQueryLength={3}
-        autofocus={false}
-        classNames={classNames}
-        allowNew
+      <AutoComplete
+        id={this.id}
+        filter={AutoComplete.noFilter}
+        searchText={searchText}
+        onUpdateInput={this.handleUpdateInput}
+        onNewRequest={this.handleNewRequest}
+        dataSource={suggestions}
+        dataSourceConfig={dataSourceConfig}
+        openOnFocus
+        fullWidth
       />
     );
   }
 }
-
-InputAutocomplete.propTypes = {
-  exposeApiCallback: React.PropTypes.func.isRequired,
-  onChange: React.PropTypes.func.isRequired,
-  setQuery: React.PropTypes.func.isRequired,
-  initialTags: React.PropTypes.array,
-  busy: React.PropTypes.bool,
-};
 
 export default InputAutocomplete;

@@ -1,18 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import autobind from 'autobind-decorator';
-import $ from 'jquery';
 import {pathFor} from '/lib/utils';
-import EditModel from '../containers/edit_model';
 import EnsureLoggedIn from '../../users/containers/ensure_logged_in';
 import NoElementFound from './no_element_found';
 
 @autobind
 class ModelList extends React.Component {
-  showModelDialog(event) {
-    if (event && event.preventDefault) {
-      event.preventDefault();
-    }
-    $('#new-model').openModal();
+  openEditDialog() {
+    const {handleDialog} = this.props;
+    handleDialog({edit: true});
   }
 
   render() {
@@ -85,13 +82,10 @@ class ModelList extends React.Component {
 
           <a
             className="btn-floating btn-large waves-effect waves-light new"
-            href="#new-model"
-            onClick={this.showModelDialog}
+            onClick={this.openEditDialog}
           >
             <i className="material-icons">add</i>
           </a>
-
-          <EditModel />
         </div>
       </EnsureLoggedIn>
     );
@@ -100,6 +94,8 @@ class ModelList extends React.Component {
 
 ModelList.propTypes = {
   models: React.PropTypes.array.isRequired,
+  // actions
+  handleDialog: PropTypes.func.isRequired,
 };
 
 export default ModelList;

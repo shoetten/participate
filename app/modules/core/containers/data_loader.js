@@ -1,7 +1,6 @@
 import {reduce} from 'lodash/fp';
 import {useDeps, composeAll, composeWithTracker} from 'mantra-core';
 import MainLayout from '../components/main_layout';
-import LoadingComponent from '../components/loading';
 
 export const composer = ({context, modelId, title}, onData) => {
   const {Meteor, Collections, DocHead} = context();
@@ -40,6 +39,6 @@ export const depsMapper = context => ({
 });
 
 export default composeAll(
-  composeWithTracker(composer, LoadingComponent),
-  useDeps(depsMapper)
+  composeWithTracker(composer),
+  useDeps(depsMapper),
 )(MainLayout);

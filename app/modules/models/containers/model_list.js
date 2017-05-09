@@ -34,7 +34,12 @@ export const composer = ({context}, onData) => {
   }
 };
 
+export const depsMapper = (context, actions) => ({
+  handleDialog: actions.core.handleDialog,
+  context: () => context,
+});
+
 export default composeAll(
   composeWithTracker(composer, LoadingComponent),
-  useDeps()
+  useDeps(depsMapper)
 )(ModelList);

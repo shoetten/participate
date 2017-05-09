@@ -49,5 +49,5 @@ export const depsMapper = (context, actions) => ({
 export default composeAll(
   compose(initialDataComposer),
   composeWithTracker(composer),
-  useDeps(depsMapper)
+  useDeps(depsMapper),
 )(InputAutocomplete);

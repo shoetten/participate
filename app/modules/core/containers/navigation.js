@@ -18,5 +18,5 @@ export const depsMapper = context => ({
 
 export default composeAll(
   composeWithTracker(composer),
-  useDeps(depsMapper)
+  useDeps(depsMapper),
 )(Navigation);

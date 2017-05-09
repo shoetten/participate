@@ -1,32 +1,38 @@
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 import EditModel from '../components/edit_model';
 
-export const composer = ({context, clearErrors}, onData) => {
-  const {LocalState} = context();
-  const saved = LocalState.get('SAVED');
-  const error = LocalState.get('SAVING_ERROR');
+export const composer = ({context, model}, onData) => {
+  const {Meteor, LocalState} = context();
+  const dialog = LocalState.get('DIALOG') || {};
+  const open = !!dialog.edit;
+  const editModel = !!model;
 
-  onData(null, {saved, error});
+  // Add current user to new model
+  // If an existing model is edited, just take that
+  const fields = !editModel && Meteor.subscribe('users.current').ready() ? {
+    title: '',
+    description: '',
+    members: [{
+      userId: Meteor.userId(),
+      username: Meteor.user().username,
+      isAdmin: true,
+      isInvited: false,
+      isConfirmed: true,
+    }],
+    permission: 'private',
+  } : model;
 
-  // clearErrors when unmounting the component
-  return clearErrors;
+  onData(null, {open, editModel, fields});
 };
 
 export const depsMapper = (context, actions) => ({
   create: actions.models.create,
-  changeTitle: actions.models.changeTitle,
-  changeSlug: actions.models.changeSlug,
-  changeDescription: actions.models.changeDescription,
-  changePermission: actions.models.changePermission,
-  addMember: actions.models.addMember,
-  removeMember: actions.models.removeMember,
-  toggleAdminRights: actions.models.toggleAdminRights,
-  markUnsaved: actions.core.markUnsaved,
-  clearErrors: actions.core.clearErrors,
+  update: actions.models.update,
+  handleDialog: actions.core.handleDialog,
   context: () => context,
 });
 
 export default composeAll(
   composeWithTracker(composer),
-  useDeps(depsMapper)
+  useDeps(depsMapper),
 )(EditModel);

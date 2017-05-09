@@ -38,8 +38,13 @@
       "error",
       { "allow": ["_id", "_qs", "_current", "_action", "_publishCursor"] }
     ],
+    // Allows some Meteor non-constructor functions to start with a capital letter
+    "new-cap": [2, {
+      "capIsNewExceptions": [
+        "Match", "Maybe", "Any", "Object", "ObjectIncluding", "OneOf", "Optional", "Where"
+      ]
+    }],
     "max-len": ["warn", 100],
-    "new-cap": ["error", { "capIsNewExceptions": ["Where"] }],
     "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
     "react/forbid-prop-types": ["warn"],     // warn, but no error on object & array props
     "object-shorthand": ["error", "always", { "avoidQuotes": false }],

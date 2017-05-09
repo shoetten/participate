@@ -4,6 +4,7 @@ import injectSheet from 'react-jss';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import Navigation from '../containers/navigation';
 import NotificationSnackbar from '../../core/containers/notification_snackbar';
+import EditModelDialog from '../../models/containers/edit_model';
 
 const styles = {
   root: {
@@ -12,7 +13,7 @@ const styles = {
   },
 };
 
-const MainLayout = ({content, classes, NavActions, model, modelView, msg, error}) => (
+const MainLayout = ({content, classes, NavActions, model, modelView}) => (
   <MuiThemeProvider>
     <div>
       <header>
@@ -26,7 +27,8 @@ const MainLayout = ({content, classes, NavActions, model, modelView, msg, error}
         {model ? content(model) : content()}
       </main>
 
-      <NotificationSnackbar message={msg} error={error} />
+      <NotificationSnackbar />
+      <EditModelDialog model={model} />
     </div>
   </MuiThemeProvider>
 );
@@ -37,15 +39,10 @@ MainLayout.propTypes = {
   NavActions: PropTypes.func,
   model: React.PropTypes.object,
   modelView: React.PropTypes.string,
-  // aux
-  msg: PropTypes.string,
-  error: PropTypes.string,
 };
 
 MainLayout.defaultProps = {
   NavActions: null,
-  msg: '',
-  error: '',
 };
 
 export default injectSheet(styles)(MainLayout);

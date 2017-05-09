@@ -1,8 +1,62 @@
 import {Models} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
-import {check} from 'meteor/check';
+import {check, Match} from 'meteor/check';
 import {flow, uniqWith, isEqual, reduce} from 'lodash/fp';
 import {isModelMember, isRemovedMember, checkUserPermissions} from '../lib/utils';
+
+const transformMembers = (members) => {
+  const newEmails = [];
+  const today = new Date();
+
+  // Alternative to _.chain. See
+  // https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba
+  const membersDoc = flow(
+    uniqWith(isEqual),
+    reduce((results, member) => {
+      if (Meteor.users.findOne({_id: member.userId})) {
+        if (member.userId === Meteor.userId() && !member.isAdmin) {
+          throw new Meteor.Error(403, 'You cannot remove your own admin rights.');
+        }
+        if (member.userId === Meteor.userId() && member.removed) {
+          throw new Meteor.Error(403, 'You cannot remove yourself from the model.');
+        }
+
+        results.push({
+          userId: member.userId,
+          isAdmin: member.isAdmin,
+          joined: member.joined || today,
+          removed: !!member.removed,
+          isConfirmed: !member.isInvited,
+        });
+      } else if (member.username.indexOf('@') >= 0) {   // if we have an email
+        // invite a new user to model
+        newEmails.push(member.username);
+      }
+      return results;
+    }, []),
+  )(members);
+
+  return {membersDoc, newEmails};
+};
+
+const inviteMembers = (id, emails) => {
+  emails.forEach((email) => {
+    try {
+      const user = Meteor.call('users.inviteUser', email);
+      Models.update({id}, {$push: {
+        members: {
+          userId: user._id,
+          isAdmin: false,
+          joined: new Date(),
+          removed: false,
+          isConfirmed: false,
+        },
+      }});
+    } catch (e) {
+      throw new Meteor.Error(400, e.message);
+    }
+  });
+};
 
 export default function () {
   Meteor.methods({
@@ -13,33 +67,17 @@ export default function () {
       check(title, String);
       check(slug, String);
       check(description, String);
-      check(permission, Boolean);
-      check(members, [{id: String, name: String}]);
+      check(permission, String);
+      check(members, [{
+        userId: String,
+        username: String,
+        isAdmin: Boolean,
+        isInvited: Boolean,
+        isConfirmed: Boolean,
+      }]);
 
       const createdAt = new Date();
-
-      const newEmails = [];
-      members.push({id: this.userId});
-      // Alternative to _.chain. See
-      // https://medium.com/making-internets/why-using-chain-is-a-mistake-9bc1f80d51ba
-      const membersDoc = flow(
-        uniqWith(isEqual),
-        reduce((results, member) => {
-          // only add users that actually exist
-          if (Meteor.users.findOne({_id: member.id})) {
-            results.push({
-              userId: member.id,
-              isAdmin: member.id === this.userId,
-              joined: createdAt,
-              removed: false,
-            });
-          } else if (member.name.indexOf('@') >= 0) {   // if we have an email
-            // invite a new user to model
-            newEmails.push(member.name);
-          }
-          return results;
-        }, [])
-      )(members);
+      const {membersDoc, newEmails} = transformMembers(members);
 
       const model = {
         _id,
@@ -48,28 +86,31 @@ export default function () {
         slug,
         createdAt,
         modifiedAt: createdAt,
-        permission: permission ? 'public' : 'private',
+        permission,
         members: membersDoc,
       };
 
       Models.insert(model);
+      inviteMembers(_id, newEmails);
+    },
 
-      // Inite new users, once we have the model.
-      newEmails.forEach((email) => {
-        try {
-          const user = Meteor.call('users.inviteUser', email);
-          Models.update({_id}, {$push: {
-            members: {
-              userId: user._id,
-              isAdmin: false,
-              joined: new Date(),
-              removed: false,
-            },
-          }});
-        } catch (e) {
-          throw new Meteor.Error(400, e.message);
-        }
+    'models.update'(_id, newModel) {
+      check(this.userId, String);
+      // check given data
+      check(_id, String);
+      checkUserPermissions(this.userId, _id, 'admin');
+      check(newModel, {
+        title: String,
+        description: Match.Maybe(String),
+        permission: String,
+        members: [Object],
       });
+
+      const {membersDoc, newEmails} = transformMembers(newModel.members);
+      const model = Object.assign({}, newModel, {members: membersDoc});
+
+      Models.update({_id}, {$set: model});
+      inviteMembers(_id, newEmails);
     },
 
     'models.changeTitle'(_id, title) {
