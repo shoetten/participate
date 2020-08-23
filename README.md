@@ -13,4 +13,5 @@ To build and run the application, install the [Meteor framework](https://github.
 The app will run at `http://localhost:3000`.
 
 ## License
-I have not decided on a suitable license yet. If you want to contribute, please open an issue first.
+
+This code is licensed under the AGPL, see [LICENSE](./LICENSE) for details. If you want to use this project under different terms, please contact me.
